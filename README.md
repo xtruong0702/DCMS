@@ -1,58 +1,107 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
-
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <img src="https://laravel.com/assets/img/components/logo-laravel.svg" alt="Laravel Logo" width="400">
 </p>
 
-## About Laravel
+# 🏥 Dental Clinic Management System (DCMS)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Hệ thống Quản lý Phòng khám Nha khoa (DCMS) là một ứng dụng Web toàn diện được xây dựng bằng **Laravel 13**, **Tailwind CSS**, và **MySQL**. Dự án được thiết kế đặc biệt cho đồ án tốt nghiệp, cung cấp đầy đủ các tính năng để quản lý một phòng khám nha khoa chuyên nghiệp.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🌟 Các tính năng chính (Features)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Hệ thống được chia thành 3 phân hệ (Roles) với các chức năng độc lập nhưng liên kết chặt chẽ với nhau:
 
-## Learning Laravel
+### 1. 👑 Phân hệ Admin (Quản trị viên)
+- Quản lý Nhân sự: Thêm/Sửa/Xóa tài khoản Bác sĩ, Lễ tân.
+- Quản lý Dịch vụ: Thêm/Sửa/Xóa các dịch vụ khám bệnh và đơn giá.
+- Cấu hình Hệ thống: Quản lý thông tin phòng khám, Hotline, Thuế VAT.
+- Báo cáo & Thống kê: Xem doanh thu, số lượng bệnh nhân, lượt khám. Hỗ trợ xuất dữ liệu ra file **CSV (Excel)** và In báo cáo.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 2. 👩‍💼 Phân hệ Lễ tân (Receptionist)
+- Quản lý Bệnh nhân: Thêm, sửa, xóa hồ sơ bệnh nhân (Lịch sử bệnh lý, dị ứng).
+- Quản lý Lịch hẹn: Đặt lịch khám cho bệnh nhân, **Check-in** bệnh nhân vào phòng chờ.
+- Quản lý Hóa đơn: Lập hóa đơn chi tiết, áp dụng mã giảm giá, thuế VAT, thanh toán nhiều hình thức (Tiền mặt, Chuyển khoản).
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 3. 👨‍⚕️ Phân hệ Bác sĩ (Doctor)
+- Bảng điều khiển: Xem danh sách bệnh nhân đang ở phòng chờ.
+- Khám bệnh: Nhập triệu chứng, chẩn đoán bệnh, chỉ định dịch vụ.
+- Kê đơn thuốc: Thêm đơn thuốc động với liều lượng chi tiết.
+- Hồ sơ bệnh án: Xem lại lịch sử và in phiếu khám bệnh (hỗ trợ in PDF qua trình duyệt).
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+### 4. 🌍 Phân hệ Khách (Public)
+- **Landing Page cao cấp**: Giao diện giới thiệu phòng khám chuyên nghiệp với hiệu ứng Glassmorphism.
+- **Trang Đăng nhập (Custom Login)**: Giao diện đăng nhập hiện đại, tự động chuyển hướng theo phân quyền.
 
-## Agentic Development
+---
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## 🚀 Công nghệ sử dụng
+- **Backend:** Laravel 13, PHP 8.3
+- **Frontend:** Blade Templates, Tailwind CSS, Alpine.js
+- **Database:** MySQL
+- **Bảo mật:** Laravel Breeze (Authentication), Custom Middleware (`CheckRole`)
 
-```bash
-composer require laravel/boost --dev
+---
 
-php artisan boost:install
-```
+## ⚙️ Hướng dẫn Cài đặt & Khởi chạy (Installation)
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Dự án này tương thích tốt nhất với **Laragon** trên Windows.
 
-## Contributing
+1. **Clone dự án (nếu tải từ GitHub):**
+   ```bash
+   git clone https://github.com/your-username/DCMS.git
+   cd DCMS
+   ```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+2. **Cài đặt thư viện (PHP & Node):**
+   ```bash
+   composer install
+   npm install
+   ```
 
-## Code of Conduct
+3. **Cấu hình môi trường (.env):**
+   Copy file `.env.example` thành `.env`, sau đó cập nhật thông tin Database:
+   ```env
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=dcms
+   DB_USERNAME=root
+   DB_PASSWORD=
+   ```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+4. **Tạo key và khởi tạo Database:**
+   *(Hãy chắc chắn bạn đã tạo database `dcms` trong MySQL bằng HeidiSQL hoặc PhpMyAdmin)*
+   ```bash
+   php artisan key:generate
+   
+   # Chạy lệnh này để xóa DB cũ, tạo lại toàn bộ bảng và nạp dữ liệu mẫu
+   php artisan migrate:fresh --seed
+   ```
 
-## Security Vulnerabilities
+5. **Biên dịch giao diện (Tailwind CSS):**
+   ```bash
+   npm.cmd run build 
+   # (Hoặc npm run build tùy cấu hình máy)
+   ```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+6. **Khởi chạy Server:**
+   Nếu dùng Laragon, hãy bật tính năng `Auto Virtual Hosts` và truy cập `http://dcms.test`.
+   Hoặc chạy lệnh thủ công:
+   ```bash
+   php artisan serve
+   ```
+   Sau đó truy cập: `http://localhost:8000`
 
-## License
+---
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## 🔑 Tài khoản Test (Dummy Data)
+
+Sau khi chạy lệnh `--seed` ở trên, hệ thống sẽ tự động tạo sẵn 3 tài khoản mẫu để bạn test ngay lập tức:
+
+- **Admin:** `admin@smile.com` / Mật khẩu: `password`
+- **Lễ tân:** `letan@smile.com` / Mật khẩu: `password`
+- **Bác sĩ:** `bacsi@smile.com` / Mật khẩu: `password`
+
+---
+
+## 📜 Giấy phép (License)
+Dự án này là mã nguồn mở. Được thiết kế riêng cho mục đích học tập và làm đồ án tốt nghiệp.
