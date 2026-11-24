@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Traits\EnsuresClinicDataSeeded;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -11,11 +12,15 @@ use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
 {
+    use EnsuresClinicDataSeeded;
+
     /**
      * Display the login view.
      */
     public function create(): View
     {
+        $this->ensureClinicData();
+
         return view('auth.login');
     }
 
@@ -24,6 +29,8 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
+        $this->ensureClinicData();
+
         $request->authenticate();
 
         $request->session()->regenerate();

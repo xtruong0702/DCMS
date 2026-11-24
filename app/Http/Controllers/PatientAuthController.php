@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Patient;
 use App\Models\Role;
+use App\Traits\EnsuresClinicDataSeeded;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -14,6 +15,7 @@ use App\Mail\ResetPasswordOtpMail;
 
 class PatientAuthController extends Controller
 {
+    use EnsuresClinicDataSeeded;
     public function showRegister()
     {
         return view('patient.auth.register');
@@ -65,11 +67,15 @@ class PatientAuthController extends Controller
 
     public function showLogin()
     {
+        $this->ensureClinicData();
+
         return view('patient.auth.login');
     }
 
     public function login(Request $request)
     {
+        $this->ensureClinicData();
+
         $credentials = $request->validate([
             'login' => 'required|string',
             'password' => 'required|string',
