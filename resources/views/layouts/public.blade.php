@@ -124,7 +124,9 @@
                                 </a>
                             @endif
                         @else
-                            <a href="{{ route('patient.login') }}" class="px-3.5 py-2 rounded-xl text-xs font-extrabold text-slate-700 hover:text-indigo-600 hover:bg-slate-100 transition-colors">Đăng nhập</a>
+                            <a href="{{ route('patient.login') }}" class="px-3.5 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-extrabold text-slate-700 hover:text-indigo-600 transition-all flex items-center gap-1.5 shadow-2xs">
+                                🔐 Đăng nhập / Quản lý
+                            </a>
                         @endauth
                         <a href="{{ route('public.booking') }}" class="bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white px-5 py-2.5 rounded-xl text-xs font-extrabold uppercase tracking-wide shadow-md shadow-indigo-500/25 transform hover:-translate-y-0.5 transition-all duration-200">
                             📅 Đặt lịch khám
@@ -231,7 +233,8 @@
                 </div>
                 <div class="flex flex-col md:flex-row justify-between items-center text-sm">
                     <p>&copy; {{ date('Y') }} Nha Khoa Smile. Hệ thống Quản lý Phòng khám Nha khoa (DCMS).</p>
-                    <div class="space-x-5 mt-4 md:mt-0">
+                    <div class="space-x-5 mt-4 md:mt-0 flex flex-wrap items-center gap-y-2">
+                        <a href="{{ route('patient.login') }}" class="text-indigo-400 hover:text-indigo-300 font-bold transition-colors">🔐 Cổng Quản lý (Admin / Bác sĩ / Lễ tân)</a>
                         <button type="button" @click="legalModal = 'privacy'" class="hover:text-white transition-colors underline decoration-slate-700 underline-offset-4">Chính sách bảo mật</button>
                         <button type="button" @click="legalModal = 'terms'" class="hover:text-white transition-colors underline decoration-slate-700 underline-offset-4">Điều khoản sử dụng</button>
                     </div>
