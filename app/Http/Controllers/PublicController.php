@@ -12,6 +12,14 @@ class PublicController extends Controller
 {
     public function home()
     {
+        try {
+            if (\App\Models\Patient::count() === 0 && \Illuminate\Support\Facades\Schema::hasTable('patients')) {
+                \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
+            }
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('Auto seed on home: ' . $e->getMessage());
+        }
+
         $featuredServices = Service::where('is_active', true)->take(6)->get();
         $doctors = \App\Models\Doctor::with('user')->take(4)->get();
 

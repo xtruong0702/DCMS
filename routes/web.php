@@ -21,6 +21,23 @@ Route::get('/dat-lich', [\App\Http\Controllers\PublicController::class, 'booking
 Route::post('/dat-lich', [\App\Http\Controllers\PublicController::class, 'storeBooking'])->name('public.booking.store');
 Route::get('/tra-cuu', [\App\Http\Controllers\PublicController::class, 'lookup'])->name('public.lookup');
 
+// Route tự động nạp dữ liệu mẫu trực tiếp (Seed Database)
+Route::get('/seed-database', function () {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
+        return response()->json([
+            'success' => true,
+            'message' => 'Đã tự động nạp toàn bộ danh sách Bệnh nhân, Bác sĩ, Lễ tân và Lịch sử khám thành công!',
+            'output' => \Illuminate\Support\Facades\Artisan::output(),
+        ]);
+    } catch (\Throwable $e) {
+        return response()->json([
+            'success' => false,
+            'error' => $e->getMessage(),
+        ], 500);
+    }
+});
+
 // Patient Auth Routes
 Route::get('/patient/register', [\App\Http\Controllers\PatientAuthController::class, 'showRegister'])->name('patient.register');
 Route::post('/patient/register', [\App\Http\Controllers\PatientAuthController::class, 'register'])->name('patient.register.store');
