@@ -20,7 +20,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if (app()->environment('production') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')) {
+        // Tự động ép HTTPS khi chạy trên môi trường online/production hoặc proxy (như Railway)
+        $isLocalhost = isset($_SERVER['HTTP_HOST']) && in_array(explode(':', $_SERVER['HTTP_HOST'])[0], ['localhost', '127.0.0.1'], true);
+        if (!$isLocalhost) {
             URL::forceScheme('https');
         }
     }
