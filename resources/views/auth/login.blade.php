@@ -63,49 +63,5 @@
                 Đăng Nhập
             </button>
         </div>
-
-        <!-- Tài khoản mẫu đăng nhập nhanh -->
-        <div class="mt-6 pt-5 border-t border-gray-100">
-            <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 text-center">⚡ Chọn nhanh tài khoản trải nghiệm (Mật khẩu: password)</p>
-            <div class="grid grid-cols-2 gap-2 text-xs">
-                <button type="button" onclick="fillAuthLogin('admin@smile.com')" class="p-2.5 rounded-xl bg-purple-50 text-purple-700 hover:bg-purple-100 font-bold text-left border border-purple-200 transition-colors flex items-center gap-1.5 cursor-pointer">
-                    <span>🛡️</span>
-                    <div>
-                        <div class="font-extrabold">Quản trị viên</div>
-                        <div class="text-[10px] text-purple-600 font-normal">admin@smile.com</div>
-                    </div>
-                </button>
-                <button type="button" onclick="fillAuthLogin('bacsi@smile.com')" class="p-2.5 rounded-xl bg-blue-50 text-blue-700 hover:bg-blue-100 font-bold text-left border border-blue-200 transition-colors flex items-center gap-1.5 cursor-pointer">
-                    <span>🩺</span>
-                    <div>
-                        <div class="font-extrabold">Bác sĩ khám</div>
-                        <div class="text-[10px] text-blue-600 font-normal">bacsi@smile.com</div>
-                    </div>
-                </button>
-                <button type="button" onclick="fillAuthLogin('letan@smile.com')" class="p-2.5 rounded-xl bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-bold text-left border border-emerald-200 transition-colors flex items-center gap-1.5 cursor-pointer">
-                    <span>👩‍💼</span>
-                    <div>
-                        <div class="font-extrabold">Lễ tân / Thu ngân</div>
-                        <div class="text-[10px] text-emerald-600 font-normal">letan@smile.com</div>
-                    </div>
-                </button>
-                <button type="button" onclick="fillAuthLogin('hung.nguyen@gmail.com')" class="p-2.5 rounded-xl bg-amber-50 text-amber-800 hover:bg-amber-100 font-bold text-left border border-amber-200 transition-colors flex items-center gap-1.5 cursor-pointer">
-                    <span>🧑</span>
-                    <div>
-                        <div class="font-extrabold">Bệnh nhân</div>
-                        <div class="text-[10px] text-amber-700 font-normal">hung.nguyen@gmail.com</div>
-                    </div>
-                </button>
-            </div>
-        </div>
-
-        <script>
-            function fillAuthLogin(val) {
-                const inputEmail = document.getElementById('email');
-                const inputPass = document.getElementById('password');
-                if (inputEmail) inputEmail.value = val;
-                if (inputPass) inputPass.value = 'password';
-            }
-        </script>
     </form>
 </x-guest-layout>

@@ -99,50 +99,6 @@
                 </button>
             </form>
 
-            <!-- Tài khoản mẫu đăng nhập nhanh -->
-            <div class="mt-8 pt-6 border-t border-gray-100">
-                <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 text-center">⚡ Chọn nhanh tài khoản trải nghiệm (Mật khẩu: password)</p>
-                <div class="grid grid-cols-2 gap-2 text-xs">
-                    <button type="button" onclick="fillLogin('admin@smile.com')" class="p-2.5 rounded-xl bg-purple-50 text-purple-700 hover:bg-purple-100 font-bold text-left border border-purple-200 transition-colors flex items-center gap-1.5">
-                        <span>🛡️</span>
-                        <div>
-                            <div class="font-extrabold">Quản trị viên</div>
-                            <div class="text-[10px] text-purple-600 font-normal">admin@smile.com</div>
-                        </div>
-                    </button>
-                    <button type="button" onclick="fillLogin('bacsi@smile.com')" class="p-2.5 rounded-xl bg-blue-50 text-blue-700 hover:bg-blue-100 font-bold text-left border border-blue-200 transition-colors flex items-center gap-1.5">
-                        <span>🩺</span>
-                        <div>
-                            <div class="font-extrabold">Bác sĩ khám</div>
-                            <div class="text-[10px] text-blue-600 font-normal">bacsi@smile.com</div>
-                        </div>
-                    </button>
-                    <button type="button" onclick="fillLogin('letan@smile.com')" class="p-2.5 rounded-xl bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-bold text-left border border-emerald-200 transition-colors flex items-center gap-1.5">
-                        <span>👩‍💼</span>
-                        <div>
-                            <div class="font-extrabold">Lễ tân / Thu ngân</div>
-                            <div class="text-[10px] text-emerald-600 font-normal">letan@smile.com</div>
-                        </div>
-                    </button>
-                    <button type="button" onclick="fillLogin('0981112233')" class="p-2.5 rounded-xl bg-amber-50 text-amber-800 hover:bg-amber-100 font-bold text-left border border-amber-200 transition-colors flex items-center gap-1.5">
-                        <span>🧑</span>
-                        <div>
-                            <div class="font-extrabold">Bệnh nhân</div>
-                            <div class="text-[10px] text-amber-700 font-normal">0981112233</div>
-                        </div>
-                    </button>
-                </div>
-            </div>
-
-            <script>
-                function fillLogin(val) {
-                    const inputLogin = document.getElementById('login');
-                    const inputPass = document.getElementById('password');
-                    if (inputLogin) inputLogin.value = val;
-                    if (inputPass) inputPass.value = 'password';
-                }
-            </script>
-
             <div class="mt-8 text-center text-sm text-gray-600">
                 Chưa có tài khoản? 
                 <a href="{{ route('patient.register') }}" class="font-bold text-blue-600 hover:text-blue-700 transition-colors">Đăng ký ngay</a>
