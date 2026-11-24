@@ -11,6 +11,14 @@ class ReceptionistController extends Controller
 {
     public function dashboard()
     {
+        try {
+            if (\App\Models\Patient::count() === 0 && \Illuminate\Support\Facades\Schema::hasTable('patients')) {
+                \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
+            }
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('Auto seed: ' . $e->getMessage());
+        }
+
         $todayAppointments = Appointment::with(['patient', 'doctor.user', 'service'])
             ->whereDate('appointment_time', today())
             ->orderBy('appointment_time', 'ASC')

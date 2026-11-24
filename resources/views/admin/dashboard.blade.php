@@ -167,34 +167,209 @@
                 </div>
             </div>
 
-            <!-- Bệnh nhân mới -->
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-                <div class="px-6 py-4 bg-slate-50 border-b border-gray-200 flex justify-between items-center">
-                    <h3 class="text-sm font-extrabold uppercase text-slate-700">👥 Hồ Sơ Bệnh Nhân Mới Tiếp Nhận</h3>
-                    <a href="{{ route('admin.patients.index') }}" class="text-xs font-bold text-indigo-600 hover:text-indigo-800">Quản lý Bệnh nhân &rarr;</a>
+            <!-- BẢNG QUẢN LÝ DANH SÁCH BỆNH NHÂN TRỰC TIẾP TRÊN BẢNG ĐIỀU KHIỂN -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden" x-data="{ searchPatient: '' }">
+                <div class="p-5 sm:p-6 bg-slate-50/80 border-b border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <div class="flex items-center gap-2.5">
+                            <h3 class="text-base font-extrabold text-slate-800 flex items-center gap-2">
+                                <span>👥</span> Danh Sách Bệnh Nhân & Hồ Sơ Y Khoa
+                            </h3>
+                            <span class="px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-indigo-100 text-indigo-700">
+                                {{ $patientsList->count() }} hồ sơ
+                            </span>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-1">Quản lý toàn bộ thông tin bệnh nhân, tiền sử bệnh, dị ứng thuốc và lịch sử khám nha khoa trực tiếp tại bảng điều khiển</p>
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-2.5">
+                        <!-- Ô tìm kiếm nhanh bệnh nhân -->
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                            </span>
+                            <input type="text" x-model="searchPatient" placeholder="Tìm tên, SĐT, mã BN..." 
+                                   class="pl-9 pr-3 py-2 bg-white border border-slate-300 rounded-xl text-xs font-medium focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 w-48 sm:w-56 shadow-2xs">
+                        </div>
+
+                        <!-- Nút Tự động nạp dữ liệu mẫu -->
+                        <form action="{{ route('admin.seed-demo-data') }}" method="POST" onsubmit="return confirm('Bạn có muốn tự động nạp/làm mới danh sách bệnh nhân, bác sĩ và lịch sử khám mẫu?');">
+                            @csrf
+                            <button type="submit" class="px-3.5 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-xl text-xs font-bold shadow-xs transition flex items-center gap-1.5 cursor-pointer">
+                                <span>⚡</span> Tự động nạp dữ liệu mẫu
+                            </button>
+                        </form>
+
+                        <a href="{{ route('admin.patients.create') }}" class="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow-xs transition flex items-center gap-1">
+                            <span>➕</span> Tiếp nhận BN
+                        </a>
+                        <a href="{{ route('admin.patients.index') }}" class="px-3 py-2 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-xl text-xs font-bold transition">
+                            Tất cả &rarr;
+                        </a>
+                    </div>
                 </div>
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200 text-xs">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3 text-left font-bold text-slate-600 uppercase">Mã BN</th>
-                                <th class="px-6 py-3 text-left font-bold text-slate-600 uppercase">Họ và Tên</th>
-                                <th class="px-6 py-3 text-left font-bold text-slate-600 uppercase">Số điện thoại</th>
-                                <th class="px-6 py-3 text-left font-bold text-slate-600 uppercase">Ngày đăng ký</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-100">
-                            @foreach($recentPatients as $patient)
-                                <tr class="hover:bg-indigo-50/30 transition">
-                                    <td class="px-6 py-3.5 whitespace-nowrap font-mono font-bold text-indigo-600">{{ $patient->patient_code }}</td>
-                                    <td class="px-6 py-3.5 whitespace-nowrap text-sm font-bold text-slate-900">{{ $patient->name }}</td>
-                                    <td class="px-6 py-3.5 whitespace-nowrap font-semibold text-slate-600">{{ $patient->phone ?? '-' }}</td>
-                                    <td class="px-6 py-3.5 whitespace-nowrap text-slate-500">{{ $patient->created_at->format('d/m/Y') }}</td>
+
+                @if($patientsList->isEmpty())
+                    <!-- Trạng thái trống: Cho phép bấm 1 click để tự nạp bệnh nhân -->
+                    <div class="p-12 text-center">
+                        <div class="w-16 h-16 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl">
+                            👥
+                        </div>
+                        <h4 class="text-base font-extrabold text-slate-800 mb-1">Chưa có danh sách bệnh nhân</h4>
+                        <p class="text-xs text-slate-500 max-w-md mx-auto mb-6">Hệ thống đang trống dữ liệu bệnh nhân. Bạn có thể bấm nút bên dưới để hệ thống tự động nạp danh sách 6 bệnh nhân thực tế cùng hồ sơ bệnh án mẫu!</p>
+                        <form action="{{ route('admin.seed-demo-data') }}" method="POST">
+                            @csrf
+                            <button type="submit" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl text-xs font-extrabold shadow-md shadow-indigo-500/20 transition inline-flex items-center gap-2">
+                                <span>⚡</span> Tự động thêm danh sách bệnh nhân mẫu ngay
+                            </button>
+                        </form>
+                    </div>
+                @else
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-slate-200 text-xs">
+                            <thead class="bg-slate-50 text-slate-600 uppercase font-bold tracking-wider text-[11px]">
+                                <tr>
+                                    <th class="px-5 py-3.5 text-left">Bệnh nhân</th>
+                                    <th class="px-5 py-3.5 text-left">Liên hệ & CCCD</th>
+                                    <th class="px-5 py-3.5 text-left">Tiền sử bệnh & Cảnh báo</th>
+                                    <th class="px-5 py-3.5 text-left">Ca khám gần nhất</th>
+                                    <th class="px-5 py-3.5 text-left">Chi phí / Hóa đơn</th>
+                                    <th class="px-5 py-3.5 text-right">Thao tác</th>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-slate-100">
+                                @foreach($patientsList as $pat)
+                                    @php
+                                        $latestApp = $pat->appointments->sortByDesc('appointment_time')->first();
+                                        $latestInvoice = $pat->invoices->sortByDesc('created_at')->first();
+                                        $age = $pat->dob ? \Carbon\Carbon::parse($pat->dob)->age : null;
+                                        $hasAllergy = !empty($pat->allergy_history) && !str_contains(mb_strtolower($pat->allergy_history), 'không');
+                                    @endphp
+                                    <tr class="hover:bg-slate-50/70 transition"
+                                        x-show="!searchPatient || '{{ strtolower($pat->name . ' ' . $pat->phone . ' ' . $pat->patient_code . ' ' . $pat->allergy_history) }}'.includes(searchPatient.toLowerCase())">
+                                        <!-- Cột 1: Thông tin bệnh nhân -->
+                                        <td class="px-5 py-4 whitespace-nowrap">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-blue-600 text-white font-extrabold flex items-center justify-center text-sm shadow-xs flex-shrink-0">
+                                                    {{ mb_strtoupper(mb_substr($pat->name, 0, 1)) }}
+                                                </div>
+                                                <div>
+                                                    <a href="{{ route('admin.patients.show', $pat->id) }}" class="font-extrabold text-sm text-slate-900 hover:text-indigo-600 transition">
+                                                        {{ $pat->name }}
+                                                    </a>
+                                                    <div class="flex items-center gap-2 mt-0.5">
+                                                        <span class="font-mono text-[11px] font-bold text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-100">
+                                                            {{ $pat->patient_code }}
+                                                        </span>
+                                                        <span class="text-slate-400">•</span>
+                                                        <span class="text-slate-500 font-medium">
+                                                            {{ $pat->gender ?? '---' }} {{ $age ? "({$age} tuổi)" : '' }}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        <!-- Cột 2: Liên hệ -->
+                                        <td class="px-5 py-4 whitespace-nowrap">
+                                            <div class="font-bold text-slate-800 flex items-center gap-1.5">
+                                                <span class="text-indigo-600">📞</span>
+                                                <a href="tel:{{ $pat->phone }}" class="hover:underline font-mono">{{ $pat->phone ?? '---' }}</a>
+                                            </div>
+                                            <div class="text-[11px] text-slate-500 truncate max-w-[180px] mt-0.5">
+                                                {{ $pat->email ?? ($pat->job ?? '---') }}
+                                            </div>
+                                        </td>
+
+                                        <!-- Cột 3: Tiền sử & Dị ứng -->
+                                        <td class="px-5 py-4">
+                                            <div class="space-y-1 max-w-[220px]">
+                                                @if($hasAllergy)
+                                                    <div class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-extrabold bg-rose-50 text-rose-700 border border-rose-200">
+                                                        <span>⚠️</span> {{ $pat->allergy_history }}
+                                                    </div>
+                                                @else
+                                                    <span class="text-[11px] font-medium text-slate-400">Không dị ứng thuốc</span>
+                                                @endif
+
+                                                @if(!empty($pat->medical_history) && !str_contains(mb_strtolower($pat->medical_history), 'không') && !str_contains(mb_strtolower($pat->medical_history), 'bình thường'))
+                                                    <div class="text-[11px] text-amber-700 font-semibold truncate">
+                                                        🏥 {{ $pat->medical_history }}
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </td>
+
+                                        <!-- Cột 4: Ca khám gần nhất -->
+                                        <td class="px-5 py-4">
+                                            @if($latestApp)
+                                                <div class="max-w-[220px]">
+                                                    <div class="font-bold text-slate-800 text-[11px] truncate">
+                                                        {{ $latestApp->service->name ?? 'Khám tổng quát' }}
+                                                    </div>
+                                                    <div class="text-[10px] text-slate-500 mt-0.5 flex items-center gap-1.5">
+                                                        <span>👨‍⚕️ {{ $latestApp->doctor->user->name ?? 'Bác sĩ' }}</span>
+                                                        <span>•</span>
+                                                        <span>{{ \Carbon\Carbon::parse($latestApp->appointment_time)->format('d/m H:i') }}</span>
+                                                    </div>
+                                                    <div class="mt-1">
+                                                        @if($latestApp->status === 'completed')
+                                                            <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-100 text-emerald-800">✓ Đã khám xong</span>
+                                                        @elseif($latestApp->status === 'in_progress')
+                                                            <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-blue-100 text-blue-800 animate-pulse">⏳ Đang khám</span>
+                                                        @elseif($latestApp->status === 'waiting')
+                                                            <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-100 text-amber-800">🛋️ Ghế chờ</span>
+                                                        @elseif($latestApp->status === 'confirmed')
+                                                            <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-purple-100 text-purple-800">📅 Đã hẹn lịch</span>
+                                                        @else
+                                                            <span class="px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-700">{{ $latestApp->status }}</span>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            @else
+                                                <span class="text-slate-400 text-xs italic">Chưa có lịch hẹn</span>
+                                            @endif
+                                        </td>
+
+                                        <!-- Cột 5: Chi phí & Hóa đơn -->
+                                        <td class="px-5 py-4 whitespace-nowrap">
+                                            @if($latestInvoice)
+                                                <div class="font-extrabold text-slate-900 font-mono text-xs">
+                                                    {{ number_format($latestInvoice->final_amount) }} đ
+                                                </div>
+                                                <div class="mt-1">
+                                                    @if($latestInvoice->status === 'paid')
+                                                        <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                                            ✓ Đã thanh toán
+                                                        </span>
+                                                    @else
+                                                        <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-rose-50 text-rose-700 border border-rose-200">
+                                                            ⏳ Chưa thanh toán
+                                                        </span>
+                                                    @endif
+                                                </div>
+                                            @else
+                                                <span class="text-slate-400 text-xs">--</span>
+                                            @endif
+                                        </td>
+
+                                        <!-- Cột 6: Thao tác -->
+                                        <td class="px-5 py-4 whitespace-nowrap text-right space-x-1">
+                                            <a href="{{ route('admin.patients.show', $pat->id) }}" 
+                                               class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-xs transition border border-indigo-200/60 shadow-2xs">
+                                                <span>📋</span> Bệnh án
+                                            </a>
+                                            <a href="{{ route('admin.patients.edit', $pat->id) }}" 
+                                               class="inline-flex items-center px-2 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs transition">
+                                                ✏️
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @endif
             </div>
 
             <!-- Yêu cầu Tư vấn / Liên hệ từ Website -->

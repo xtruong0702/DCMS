@@ -16,6 +16,14 @@ class AdminController extends Controller
 {
     public function dashboard()
     {
+        // Tự động nạp dữ liệu mẫu nếu hệ thống chưa có dữ liệu bệnh nhân
+        try {
+            if (Patient::count() === 0 && \Illuminate\Support\Facades\Schema::hasTable('patients')) {
+                \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
+            }
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('Auto seed failed: ' . $e->getMessage());
+        }
         // Thống kê quản trị tổng thể
         $data = [
             'total_doctors' => Doctor::count(),
@@ -61,13 +69,17 @@ class AdminController extends Controller
             ->take(8)
             ->get();
 
-        // Khách hàng mới nhất
-        $recentPatients = Patient::latest()->take(5)->get();
+        // Danh sách bệnh nhân kèm lịch sử khám & hóa đơn hiển thị chi tiết tại Dashboard
+        $patientsList = Patient::with(['appointments.service', 'appointments.doctor.user', 'invoices', 'medicalRecords'])
+            ->latest()
+            ->take(20)
+            ->get();
+        $recentPatients = $patientsList;
 
         // Yêu cầu tư vấn / liên hệ từ Website
         $contactInquiries = \App\Support\ContactInquiryStore::all()->take(8);
         $data['pending_inquiries'] = \App\Support\ContactInquiryStore::pending()->count();
 
-        return view('admin.dashboard', compact('data', 'chartDates', 'chartRevenues', 'upcomingAppointments', 'recentPatients', 'contactInquiries'));
+        return view('admin.dashboard', compact('data', 'chartDates', 'chartRevenues', 'upcomingAppointments', 'recentPatients', 'patientsList', 'contactInquiries'));
     }
 }

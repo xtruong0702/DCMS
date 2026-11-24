@@ -45,6 +45,13 @@ Route::middleware('auth')->group(function () {
     
     // Redirect /dashboard based on role
     Route::get('/dashboard', function () {
+        try {
+            if (\App\Models\Patient::count() === 0 && \Illuminate\Support\Facades\Schema::hasTable('patients')) {
+                \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
+            }
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('Auto seed failed: ' . $e->getMessage());
+        }
         $role = strtolower(auth()->user()->role->name ?? '');
         if ($role === 'admin') return redirect()->route('admin.dashboard');
         if ($role === 'doctor') return redirect()->route('doctor.dashboard');
@@ -57,6 +64,14 @@ Route::middleware('auth')->group(function () {
 // 🔐 ADMIN – QUẢN TRỊ
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+    Route::post('/seed-demo-data', function () {
+        try {
+            \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
+            return back()->with('success', 'Đã tự động nạp thành công toàn bộ danh sách Bệnh nhân, Bác sĩ, Lễ tân và Lịch sử khám mẫu vào hệ thống!');
+        } catch (\Throwable $e) {
+            return back()->with('error', 'Lỗi khi nạp dữ liệu mẫu: ' . $e->getMessage());
+        }
+    })->name('seed-demo-data');
     
     // Quản lý tài khoản (Admin, Lễ tân, Bác sĩ)
     Route::resource('staff', \App\Http\Controllers\Admin\StaffController::class)->except(['show']);
