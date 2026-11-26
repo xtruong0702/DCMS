@@ -494,8 +494,6 @@
                             </div>
                         </x-slot>
                     </x-dropdown>
-                        </x-slot>
-                    </x-dropdown>
                 @endauth
 
                 <!-- User Profile Pill Dropdown -->
