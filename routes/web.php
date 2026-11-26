@@ -18,8 +18,28 @@ Route::get('/tuyen-dung', [\App\Http\Controllers\PublicController::class, 'caree
 Route::get('/lien-he', [\App\Http\Controllers\PublicController::class, 'contact'])->name('public.contact');
 Route::post('/lien-he', [\App\Http\Controllers\PublicController::class, 'storeContact'])->name('public.contact.store');
 Route::get('/dat-lich', [\App\Http\Controllers\PublicController::class, 'booking'])->name('public.booking');
+Route::get('/booking', [\App\Http\Controllers\PublicController::class, 'booking'])->name('booking.index');
 Route::post('/dat-lich', [\App\Http\Controllers\PublicController::class, 'storeBooking'])->name('public.booking.store');
 Route::get('/tra-cuu', [\App\Http\Controllers\PublicController::class, 'lookup'])->name('public.lookup');
+
+// Route dọn dẹp cache hệ thống trực tiếp trên Production (View, Route, Config Cache)
+Route::get('/clear-cache', function () {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('view:clear');
+        \Illuminate\Support\Facades\Artisan::call('route:clear');
+        \Illuminate\Support\Facades\Artisan::call('config:clear');
+        \Illuminate\Support\Facades\Artisan::call('cache:clear');
+        return response()->json([
+            'success' => true,
+            'message' => 'Đã dọn dẹp toàn bộ View, Route và Config Cache thành công!',
+        ]);
+    } catch (\Throwable $e) {
+        return response()->json([
+            'success' => false,
+            'error' => $e->getMessage(),
+        ], 500);
+    }
+});
 
 // Route tự động nạp dữ liệu mẫu trực tiếp (Seed Database)
 Route::get('/seed-database', function () {
