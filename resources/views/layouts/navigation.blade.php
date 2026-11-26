@@ -267,6 +267,26 @@
                                     <span class="px-1.5 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-100 text-amber-800 border border-amber-300 leading-none">{{ $unpaidInvoicesCount }}</span>
                                 @endif
                             </x-nav-link>
+                        @elseif($role === 'patient')
+                            <x-nav-link :href="route('patient.history')" :active="request()->routeIs('patient.history') || request()->routeIs('patient.appointments')">
+                                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                <span>Lịch khám & Bệnh án</span>
+                            </x-nav-link>
+
+                            <x-nav-link :href="route('patient.invoices')" :active="request()->routeIs('patient.invoices*')">
+                                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z"/></svg>
+                                <span>Hóa đơn dịch vụ</span>
+                            </x-nav-link>
+
+                            <x-nav-link :href="route('patient.profile')" :active="request()->routeIs('patient.profile')">
+                                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                <span>Hồ sơ sức khỏe</span>
+                            </x-nav-link>
+
+                            <a href="{{ route('public.booking') }}" class="ml-1 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs transition">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+                                <span>Đặt lịch khám</span>
+                            </a>
                         @endif
                     @endauth
                 </div>
@@ -501,6 +521,12 @@
                     <x-responsive-nav-link :href="route('receptionist.appointments.index')" :active="request()->routeIs('receptionist.appointments.*')">📅 Lịch hẹn</x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('receptionist.patients.index')" :active="request()->routeIs('receptionist.patients.*')">👥 Hồ sơ Bệnh nhân</x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('receptionist.invoices.index')" :active="request()->routeIs('receptionist.invoices.*')">🧾 Hóa đơn & VietQR ({{ $unpaidInvoicesCount }})</x-responsive-nav-link>
+                @elseif($role === 'patient')
+                    <div class="px-4 pt-3 pb-1 text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Cổng Bệnh Nhân</div>
+                    <x-responsive-nav-link :href="route('patient.history')" :active="request()->routeIs('patient.history') || request()->routeIs('patient.appointments')">📅 Lịch khám & Bệnh án</x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('patient.invoices')" :active="request()->routeIs('patient.invoices*')">🧾 Hóa đơn dịch vụ</x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('patient.profile')" :active="request()->routeIs('patient.profile')">📋 Hồ sơ sức khỏe</x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('public.booking')">➕ Đặt lịch khám mới</x-responsive-nav-link>
                 @endif
             @endauth
         </div>

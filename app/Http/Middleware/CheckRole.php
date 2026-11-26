@@ -20,9 +20,10 @@ class CheckRole
         }
 
         $user = auth()->user();
-        $userRole = $user->role ? strtolower($user->role->name) : null;
+        $userRole = $user->role ? strtolower(trim($user->role->name)) : null;
+        $allowedRoles = array_map('strtolower', array_map('trim', $roles));
 
-        if (!in_array($userRole, $roles)) {
+        if (!$userRole || !in_array($userRole, $allowedRoles, true)) {
             abort(403, 'Bạn không có quyền truy cập.');
         }
 

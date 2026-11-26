@@ -39,7 +39,7 @@ class ConsultationController extends Controller
             $query->whereDate('appointment_time', $date);
         }
 
-        $consultations = $query->orderByRaw("FIELD(status, 'in_progress', 'waiting', 'confirmed', 'pending', 'completed')")
+        $consultations = $query->orderByRaw("CASE status WHEN 'in_progress' THEN 1 WHEN 'waiting' THEN 2 WHEN 'confirmed' THEN 3 WHEN 'pending' THEN 4 WHEN 'completed' THEN 5 ELSE 6 END")
             ->orderBy('appointment_time', 'desc')
             ->paginate(15);
 

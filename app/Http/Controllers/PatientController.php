@@ -12,7 +12,30 @@ class PatientController extends Controller
 {
     private function getPatient()
     {
-        return Auth::user()->patient;
+        $user = Auth::user();
+        if (!$user) {
+            return null;
+        }
+
+        $patient = $user->patient;
+        if (!$patient) {
+            // Tự động liên kết qua số điện thoại hoặc tạo mới bản ghi Patient nếu tài khoản chưa có
+            $patient = \App\Models\Patient::where('phone', $user->phone)->first();
+            if ($patient) {
+                $patient->update(['user_id' => $user->id]);
+            } else {
+                $patient = \App\Models\Patient::create([
+                    'patient_code' => 'BN' . date('YmdHis'),
+                    'name' => $user->name,
+                    'phone' => $user->phone ?: '0000000000',
+                    'email' => $user->email,
+                    'address' => $user->address,
+                    'user_id' => $user->id,
+                ]);
+            }
+        }
+
+        return $patient;
     }
 
     public function dashboard()
