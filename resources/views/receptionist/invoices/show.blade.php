@@ -219,21 +219,31 @@
 
                         @if($invoice->status !== 'paid' && $invoice->status !== 'cancelled' && isset($services) && isset($medicines))
                             @php
-                                $existingItemNames = $invoice->details->pluck('quantity', 'item_name')->toArray();
                                 $vatRateShow = (!empty($settings['vat_percentage']) && floatval($settings['vat_percentage']) > 0) ? floatval($settings['vat_percentage']) : 10;
+                                $matchedDetailIds = [];
                             @endphp
                             <!-- Khối Chọn Dịch vụ khám & Chọn Tiền thuốc -->
                             <div class="mt-8 pt-6 border-t border-slate-200" x-data="{ openSelector: true }">
-                                <div class="flex items-center justify-between mb-4">
+                                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
                                     <div>
                                         <h4 class="text-sm font-bold text-slate-900 flex items-center gap-2">
-                                            <span>🦷 Điều chỉnh Dịch vụ & 💊 Thuốc kê thêm</span>
+                                            <span>🦷 Điều chỉnh Dịch vụ & 💊 Thuốc thanh toán</span>
                                         </h4>
-                                        <p class="text-xs text-slate-500 mt-0.5">Tích chọn dịch vụ khám và thuốc sử dụng, hệ thống tự động tính số tiền cần thanh toán</p>
+                                        <p class="text-xs text-slate-500 mt-0.5">Tích chọn các dịch vụ và đơn thuốc cần thanh toán. Các mục Bác sĩ đã chỉ định được giữ nguyên mặc định.</p>
                                     </div>
-                                    <button type="button" @click="openSelector = !openSelector" class="px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 text-xs font-semibold hover:bg-slate-200 transition">
-                                        <span x-text="openSelector ? 'Thu gọn ▲' : 'Mở bảng chọn ▼'"></span>
-                                    </button>
+                                    <div class="flex items-center gap-2 shrink-0">
+                                        @if($invoice->appointment && $invoice->appointment->medicalRecord)
+                                            <form action="{{ route('receptionist.invoices.reset-from-doctor', $invoice) }}" method="POST" onsubmit="return confirm('Khôi phục đầy đủ toàn bộ Dịch vụ và Đơn thuốc gốc theo chỉ định ban đầu của Bác sĩ?');">
+                                                @csrf
+                                                <button type="submit" class="px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-xs font-bold transition flex items-center gap-1.5 shadow-xs" title="Khôi phục lại chính xác những gì Bác sĩ đã kê cho ca khám này">
+                                                    <span>🔄 Khôi phục đơn gốc BS</span>
+                                                </button>
+                                            </form>
+                                        @endif
+                                        <button type="button" @click="openSelector = !openSelector" class="px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 text-xs font-semibold hover:bg-slate-200 transition">
+                                            <span x-text="openSelector ? 'Thu gọn ▲' : 'Mở bảng chọn ▼'"></span>
+                                        </button>
+                                    </div>
                                 </div>
 
                                 <form action="{{ route('receptionist.invoices.update', $invoice) }}" method="POST" x-show="openSelector" class="space-y-5 bg-slate-50/70 p-5 rounded-2xl border border-slate-200/90">
@@ -244,14 +254,24 @@
 
                                     <!-- 1. Chọn Dịch vụ khám -->
                                     <div>
-                                        <label class="block text-xs font-bold uppercase text-slate-600 mb-2.5">1. Tích chọn Dịch vụ khám:</label>
+                                        <label class="block text-xs font-bold uppercase text-slate-600 mb-2.5">1. Danh mục Dịch vụ khám & Thủ thuật:</label>
                                         <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5" id="showServicesGrid">
                                             @foreach($services as $srv)
                                                 @php
-                                                    $srvKey1 = 'Dịch vụ: ' . $srv->name;
-                                                    $srvKey2 = $srv->name;
-                                                    $matchedQty = $existingItemNames[$srvKey1] ?? ($existingItemNames[$srvKey2] ?? 0);
-                                                    $isChecked = $matchedQty > 0;
+                                                    $matchedSrvDetail = $invoice->details->first(function ($dt) use ($srv, $matchedDetailIds) {
+                                                        if (in_array($dt->id, $matchedDetailIds)) return false;
+                                                        $dtName = mb_strtolower(trim($dt->item_name));
+                                                        $sName = mb_strtolower(trim($srv->name));
+                                                        return $dtName === $sName 
+                                                            || $dtName === 'dịch vụ: ' . $sName
+                                                            || $dtName === 'dịch vụ/thủ thuật: ' . $sName
+                                                            || str_contains($dtName, $sName);
+                                                    });
+                                                    $isChecked = !is_null($matchedSrvDetail);
+                                                    $matchedQty = $matchedSrvDetail ? $matchedSrvDetail->quantity : 1;
+                                                    if ($matchedSrvDetail) {
+                                                        $matchedDetailIds[] = $matchedSrvDetail->id;
+                                                    }
                                                 @endphp
                                                 <div class="show-item-card service-type rounded-xl border p-3 transition cursor-pointer flex items-center justify-between gap-2 {{ $isChecked ? 'border-[#0D7A68] bg-[#0D7A68]/5 ring-1 ring-[#0D7A68]' : 'border-slate-200 bg-white hover:border-slate-300' }}"
                                                      data-name="Dịch vụ: {{ $srv->name }}"
@@ -276,17 +296,21 @@
 
                                     <!-- 2. Chọn Tiền thuốc -->
                                     <div>
-                                        <label class="block text-xs font-bold uppercase text-slate-600 mb-2.5">2. Tích chọn Tiền thuốc kèm theo:</label>
+                                        <label class="block text-xs font-bold uppercase text-slate-600 mb-2.5">2. Danh mục Thuốc & Gói thuốc:</label>
                                         <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5" id="showMedicinesGrid">
-                                            @php $renderedMedNames = []; @endphp
                                             @foreach($medicines as $med)
                                                 @php
-                                                    $medKey1 = 'Thuốc: ' . $med->name . ' (' . ($med->unit ?? 'Đơn vị') . ')';
-                                                    $medKey2 = 'Thuốc: ' . $med->name;
-                                                    $renderedMedNames[] = $medKey1;
-                                                    $renderedMedNames[] = $medKey2;
-                                                    $matchedMedQty = $existingItemNames[$medKey1] ?? ($existingItemNames[$medKey2] ?? 0);
-                                                    $isMedChecked = $matchedMedQty > 0;
+                                                    $matchedMedDetail = $invoice->details->first(function ($dt) use ($med, $matchedDetailIds) {
+                                                        if (in_array($dt->id, $matchedDetailIds)) return false;
+                                                        $dtName = mb_strtolower(trim($dt->item_name));
+                                                        $mName = mb_strtolower(trim($med->name));
+                                                        return str_contains($dtName, $mName);
+                                                    });
+                                                    $isMedChecked = !is_null($matchedMedDetail);
+                                                    $matchedMedQty = $matchedMedDetail ? $matchedMedDetail->quantity : 1;
+                                                    if ($matchedMedDetail) {
+                                                        $matchedDetailIds[] = $matchedMedDetail->id;
+                                                    }
                                                 @endphp
                                                 <div class="show-item-card medicine-type rounded-xl border p-3 transition cursor-pointer flex items-center justify-between gap-2 {{ $isMedChecked ? 'border-[#0D7A68] bg-[#0D7A68]/5 ring-1 ring-[#0D7A68]' : 'border-slate-200 bg-white hover:border-slate-300' }}"
                                                      data-name="Thuốc: {{ $med->name }} ({{ $med->unit ?? 'Đơn vị' }})"
@@ -306,30 +330,48 @@
                                                     </div>
                                                 </div>
                                             @endforeach
-                                            {{-- Các thuốc Bác sĩ kê ngoài danh mục sẵn có --}}
-                                            @foreach($invoice->details as $dt)
-                                                @if((str_starts_with(mb_strtolower($dt->item_name), 'thuốc') || str_contains(mb_strtolower($dt->item_name), 'gói thuốc')) && !in_array($dt->item_name, $renderedMedNames))
-                                                    <div class="show-item-card medicine-type rounded-xl border border-[#0D7A68] bg-[#0D7A68]/5 ring-1 ring-[#0D7A68] p-3 transition cursor-pointer flex items-center justify-between gap-2"
-                                                         data-name="{{ $dt->item_name }}"
-                                                         data-price="{{ round($dt->unit_price) }}"
+                                        </div>
+                                    </div>
+
+                                    <!-- 3. Các mục Bác sĩ đã chỉ định trong hóa đơn (chưa khớp 2 danh mục trên) -->
+                                    @php
+                                        $unmatchedDetails = $invoice->details->whereNotIn('id', $matchedDetailIds);
+                                    @endphp
+                                    @if($unmatchedDetails->count() > 0)
+                                        <div class="pt-3 border-t border-slate-200">
+                                            <label class="block text-xs font-bold uppercase text-amber-800 mb-2.5 flex items-center gap-1.5">
+                                                <span>📋</span>
+                                                <span>3. Các mục theo chỉ định riêng của Bác sĩ (Đang có sẵn trong hóa đơn):</span>
+                                            </label>
+                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5" id="showCustomGrid">
+                                                @foreach($unmatchedDetails as $udt)
+                                                    @php
+                                                        $isMedType = str_starts_with(mb_strtolower($udt->item_name), 'thuốc') || str_contains(mb_strtolower($udt->item_name), 'gói thuốc');
+                                                    @endphp
+                                                    <div class="show-item-card {{ $isMedType ? 'medicine-type' : 'service-type' }} rounded-xl border border-[#0D7A68] bg-[#0D7A68]/5 ring-1 ring-[#0D7A68] p-3 transition cursor-pointer flex items-center justify-between gap-2"
+                                                         data-name="{{ $udt->item_name }}"
+                                                         data-price="{{ round($udt->unit_price) }}"
                                                          onclick="toggleShowCard(this)">
                                                         <div class="flex items-start gap-2.5 min-w-0">
                                                             <input type="checkbox" class="show-cb mt-0.5 rounded border-slate-300 text-[#0D7A68] pointer-events-none" checked>
                                                             <div class="min-w-0">
-                                                                <p class="text-xs font-bold text-slate-800 leading-snug">{{ $dt->item_name }}</p>
-                                                                <p class="text-xs font-bold text-[#0D7A68] mt-0.5">{{ number_format($dt->unit_price, 0, ',', '.') }} đ <span class="text-[10px] font-bold text-slate-500">(Theo đơn BS kê)</span></p>
+                                                                <p class="text-xs font-bold text-slate-800 leading-snug">{{ $udt->item_name }}</p>
+                                                                <p class="text-xs font-bold text-[#0D7A68] mt-0.5">
+                                                                    {{ number_format($udt->unit_price, 0, ',', '.') }} đ
+                                                                    <span class="text-[10px] font-bold text-slate-500">(Theo đơn Bác sĩ)</span>
+                                                                </p>
                                                             </div>
                                                         </div>
                                                         <div class="show-qty-box flex items-center gap-1 bg-white border border-slate-200 rounded-lg px-1 py-0.5 shrink-0" onclick="event.stopPropagation()">
                                                             <button type="button" onclick="changeShowQty(this, -1)" class="w-5 h-5 rounded bg-slate-100 hover:bg-slate-200 text-xs font-bold">-</button>
-                                                            <input type="text" readonly value="{{ $dt->quantity }}" class="show-qty w-6 text-center text-xs font-bold border-0 p-0 bg-transparent focus:ring-0">
+                                                            <input type="text" readonly value="{{ $udt->quantity }}" class="show-qty w-6 text-center text-xs font-bold border-0 p-0 bg-transparent focus:ring-0">
                                                             <button type="button" onclick="changeShowQty(this, 1)" class="w-5 h-5 rounded bg-slate-100 hover:bg-slate-200 text-xs font-bold">+</button>
                                                         </div>
                                                     </div>
-                                                @endif
-                                            @endforeach
+                                                @endforeach
+                                            </div>
                                         </div>
-                                    </div>
+                                    @endif
 
                                     <!-- Thanh hiển thị tổng tiền tự động & nút Cập nhật -->
                                     <div class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
@@ -514,27 +556,18 @@
             let medTotal = 0;
             let idx = 0;
 
-            document.querySelectorAll('#showServicesGrid .show-item-card').forEach(card => {
+            document.querySelectorAll('.show-item-card').forEach(card => {
                 if (card.querySelector('.show-cb').checked) {
                     const name = card.getAttribute('data-name');
                     const price = parseFloat(card.getAttribute('data-price')) || 0;
                     const qty = parseInt(card.querySelector('.show-qty').value, 10) || 1;
-                    srvTotal += price * qty;
-                    container.insertAdjacentHTML('beforeend', `
-                        <input type="hidden" name="items[${idx}][name]" value="${name}">
-                        <input type="hidden" name="items[${idx}][price]" value="${price}">
-                        <input type="hidden" name="items[${idx}][quantity]" value="${qty}">
-                    `);
-                    idx++;
-                }
-            });
+                    
+                    if (card.classList.contains('medicine-type')) {
+                        medTotal += price * qty;
+                    } else {
+                        srvTotal += price * qty;
+                    }
 
-            document.querySelectorAll('#showMedicinesGrid .show-item-card').forEach(card => {
-                if (card.querySelector('.show-cb').checked) {
-                    const name = card.getAttribute('data-name');
-                    const price = parseFloat(card.getAttribute('data-price')) || 0;
-                    const qty = parseInt(card.querySelector('.show-qty').value, 10) || 1;
-                    medTotal += price * qty;
                     container.insertAdjacentHTML('beforeend', `
                         <input type="hidden" name="items[${idx}][name]" value="${name}">
                         <input type="hidden" name="items[${idx}][price]" value="${price}">

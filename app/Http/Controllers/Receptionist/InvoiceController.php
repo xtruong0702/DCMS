@@ -170,29 +170,62 @@ class InvoiceController extends Controller
         $this->ensureDefaultMedicinesAndServices();
         $invoice->load(['patient', 'details', 'payments', 'appointment.doctor.user', 'appointment.medicalRecord.prescription.details.medicine']);
 
-        // Tự động đồng bộ thuốc Bác sĩ đã kê trong đơn thuốc sang Hóa đơn (nếu hóa đơn chưa thanh toán và chưa có thuốc đó)
-        if ($invoice->status === 'unpaid' && $invoice->appointment && $invoice->appointment->medicalRecord && $invoice->appointment->medicalRecord->prescription) {
-            $presDetails = $invoice->appointment->medicalRecord->prescription->details;
-            $addedAnyMedicine = false;
-            foreach ($presDetails as $pDetail) {
-                $alreadyExists = $invoice->details->contains(function ($d) use ($pDetail) {
-                    return str_contains(mb_strtolower($d->item_name), mb_strtolower($pDetail->medicine_name));
-                });
-                if (!$alreadyExists) {
-                    $medPrice = ($pDetail->medicine && floatval($pDetail->medicine->price) > 0) ? floatval($pDetail->medicine->price) : 15000;
-                    $unitLabel = ($pDetail->medicine && $pDetail->medicine->unit) ? $pDetail->medicine->unit : ($pDetail->dosage ?: 'Đơn vị');
-                    $qty = max(1, intval($pDetail->quantity));
-                    InvoiceDetail::create([
-                        'invoice_id' => $invoice->id,
-                        'item_name' => 'Thuốc: ' . $pDetail->medicine_name . ' (' . $unitLabel . ')',
-                        'unit_price' => $medPrice,
-                        'quantity' => $qty,
-                        'total_price' => $medPrice * $qty,
-                    ]);
-                    $addedAnyMedicine = true;
+        // Tự động đồng bộ Dịch vụ và Thuốc từ ca khám Bác sĩ vào Hóa đơn (cộng dồn đầy đủ cả hai)
+        if ($invoice->status === 'unpaid' && $invoice->appointment && $invoice->appointment->medicalRecord) {
+            $medRec = $invoice->appointment->medicalRecord;
+            $hasAnyChange = false;
+
+            // 1. Đồng bộ các Dịch vụ Bác sĩ đã chỉ định
+            if ($medRec->details && $medRec->details->count() > 0) {
+                foreach ($medRec->details as $dDetail) {
+                    if ($dDetail->service) {
+                        $sName = $dDetail->service->name;
+                        $alreadyExists = $invoice->details->contains(function ($d) use ($sName) {
+                            return str_contains(mb_strtolower($d->item_name), mb_strtolower($sName));
+                        });
+                        if (!$alreadyExists) {
+                            $price = floatval($dDetail->service->price);
+                            $qty = max(1, intval($dDetail->quantity));
+                            $itemLabel = 'Dịch vụ: ' . $sName;
+                            if (!empty($dDetail->note)) {
+                                $itemLabel .= ' (' . $dDetail->note . ')';
+                            }
+                            InvoiceDetail::create([
+                                'invoice_id' => $invoice->id,
+                                'item_name' => $itemLabel,
+                                'unit_price' => $price,
+                                'quantity' => $qty,
+                                'total_price' => $price * $qty,
+                            ]);
+                            $hasAnyChange = true;
+                        }
+                    }
                 }
             }
-            if ($addedAnyMedicine) {
+
+            // 2. Đồng bộ các Thuốc Bác sĩ đã kê
+            if ($medRec->prescription && $medRec->prescription->details) {
+                foreach ($medRec->prescription->details as $pDetail) {
+                    $alreadyExists = $invoice->details->contains(function ($d) use ($pDetail) {
+                        return str_contains(mb_strtolower($d->item_name), mb_strtolower($pDetail->medicine_name));
+                    });
+                    if (!$alreadyExists) {
+                        $medPrice = ($pDetail->medicine && floatval($pDetail->medicine->price) > 0) ? floatval($pDetail->medicine->price) : 15000;
+                        $unitLabel = ($pDetail->medicine && $pDetail->medicine->unit) ? $pDetail->medicine->unit : ($pDetail->dosage ?: 'Đơn vị');
+                        $qty = max(1, intval($pDetail->quantity));
+                        InvoiceDetail::create([
+                            'invoice_id' => $invoice->id,
+                            'item_name' => 'Thuốc: ' . $pDetail->medicine_name . ' (' . $unitLabel . ')',
+                            'unit_price' => $medPrice,
+                            'quantity' => $qty,
+                            'total_price' => $medPrice * $qty,
+                        ]);
+                        $hasAnyChange = true;
+                    }
+                }
+            }
+
+            if ($hasAnyChange) {
                 $invoice->load('details');
                 $totalAmount = $invoice->details->sum('total_price');
                 $discount = floatval($invoice->discount ?? 0);
@@ -263,6 +296,97 @@ class InvoiceController extends Controller
         }
 
         return redirect()->route('receptionist.invoices.show', $invoice)->with('success', 'Đã cập nhật Dịch vụ & Thuốc và tự động tính lại số tiền cần thanh toán!');
+    }
+
+    public function resetFromDoctor(Invoice $invoice)
+    {
+        if ($invoice->status === 'paid') {
+            return back()->with('error', 'Hóa đơn đã thanh toán, không thể hoàn tác.');
+        }
+
+        $appointment = $invoice->appointment;
+        if (!$appointment || !$appointment->medicalRecord) {
+            return back()->with('error', 'Không tìm thấy hồ sơ bệnh án của Bác sĩ cho lịch hẹn này.');
+        }
+
+        $medicalRecord = $appointment->medicalRecord;
+        $items = [];
+
+        // 1. Dịch vụ / thủ thuật khám
+        if ($medicalRecord->details && $medicalRecord->details->count() > 0) {
+            foreach ($medicalRecord->details as $detail) {
+                if ($detail->service) {
+                    $itemLabel = 'Dịch vụ: ' . $detail->service->name;
+                    if (!empty($detail->note)) {
+                        $itemLabel .= ' (' . $detail->note . ')';
+                    }
+                    $items[] = [
+                        'item_name' => $itemLabel,
+                        'unit_price' => floatval($detail->service->price),
+                        'quantity' => max(1, intval($detail->quantity)),
+                    ];
+                }
+            }
+        }
+
+        // 2. Thuốc kê đơn
+        if ($medicalRecord->prescription && $medicalRecord->prescription->details) {
+            foreach ($medicalRecord->prescription->details as $presDetail) {
+                $medPrice = 0;
+                $unitLabel = $presDetail->dosage ?: 'Đơn vị';
+                if ($presDetail->medicine && floatval($presDetail->medicine->price) > 0) {
+                    $medPrice = floatval($presDetail->medicine->price);
+                    $unitLabel = $presDetail->medicine->unit ?: $unitLabel;
+                } else {
+                    $matchedMed = Medicine::where('name', $presDetail->medicine_name)->first();
+                    $medPrice = ($matchedMed && floatval($matchedMed->price) > 0) ? floatval($matchedMed->price) : 15000;
+                }
+                $items[] = [
+                    'item_name' => 'Thuốc: ' . $presDetail->medicine_name . ' (' . $unitLabel . ')',
+                    'unit_price' => $medPrice,
+                    'quantity' => max(1, intval($presDetail->quantity)),
+                ];
+            }
+        }
+
+        if (empty($items)) {
+            $items[] = [
+                'item_name' => 'Khám và tư vấn nha khoa tổng quát',
+                'unit_price' => 100000,
+                'quantity' => 1,
+            ];
+        }
+
+        $totalAmount = 0;
+        foreach ($items as $it) {
+            $totalAmount += $it['unit_price'] * $it['quantity'];
+        }
+
+        $vatSetting = SystemSetting::where('setting_key', 'vat_percentage')->first();
+        $vatRate = ($vatSetting && floatval($vatSetting->setting_value) > 0) ? floatval($vatSetting->setting_value) : 10;
+        $vatAmount = $totalAmount * ($vatRate / 100);
+        $finalAmount = $totalAmount + $vatAmount;
+
+        $invoice->update([
+            'total_amount' => $totalAmount,
+            'discount' => 0,
+            'vat_amount' => $vatAmount,
+            'final_amount' => $finalAmount,
+        ]);
+
+        $invoice->details()->delete();
+        foreach ($items as $it) {
+            InvoiceDetail::create([
+                'invoice_id' => $invoice->id,
+                'item_name' => $it['item_name'],
+                'unit_price' => $it['unit_price'],
+                'quantity' => $it['quantity'],
+                'total_price' => $it['unit_price'] * $it['quantity'],
+            ]);
+        }
+
+        return redirect()->route('receptionist.invoices.show', $invoice)
+            ->with('success', 'Đã khôi phục toàn bộ Dịch vụ & Thuốc gốc theo đúng đơn Bác sĩ đã kê!');
     }
 
     public function print(Invoice $invoice)

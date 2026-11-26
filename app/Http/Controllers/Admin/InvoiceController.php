@@ -147,7 +147,78 @@ class InvoiceController extends Controller
     public function edit(Invoice $invoice)
     {
         $this->ensureDefaultMedicinesAndServices();
-        $invoice->load('details');
+        $invoice->load(['patient', 'details', 'appointment.doctor.user', 'appointment.medicalRecord.prescription.details.medicine']);
+
+        // Tự động đồng bộ Dịch vụ và Thuốc từ ca khám Bác sĩ vào Hóa đơn (cộng dồn đầy đủ cả hai)
+        if ($invoice->status === 'unpaid' && $invoice->appointment && $invoice->appointment->medicalRecord) {
+            $medRec = $invoice->appointment->medicalRecord;
+            $hasAnyChange = false;
+
+            if ($medRec->details && $medRec->details->count() > 0) {
+                foreach ($medRec->details as $dDetail) {
+                    if ($dDetail->service) {
+                        $sName = $dDetail->service->name;
+                        $alreadyExists = $invoice->details->contains(function ($d) use ($sName) {
+                            return str_contains(mb_strtolower($d->item_name), mb_strtolower($sName));
+                        });
+                        if (!$alreadyExists) {
+                            $price = floatval($dDetail->service->price);
+                            $qty = max(1, intval($dDetail->quantity));
+                            $itemLabel = 'Dịch vụ: ' . $sName;
+                            if (!empty($dDetail->note)) {
+                                $itemLabel .= ' (' . $dDetail->note . ')';
+                            }
+                            InvoiceDetail::create([
+                                'invoice_id' => $invoice->id,
+                                'item_name' => $itemLabel,
+                                'unit_price' => $price,
+                                'quantity' => $qty,
+                                'total_price' => $price * $qty,
+                            ]);
+                            $hasAnyChange = true;
+                        }
+                    }
+                }
+            }
+
+            if ($medRec->prescription && $medRec->prescription->details) {
+                foreach ($medRec->prescription->details as $pDetail) {
+                    $alreadyExists = $invoice->details->contains(function ($d) use ($pDetail) {
+                        return str_contains(mb_strtolower($d->item_name), mb_strtolower($pDetail->medicine_name));
+                    });
+                    if (!$alreadyExists) {
+                        $medPrice = ($pDetail->medicine && floatval($pDetail->medicine->price) > 0) ? floatval($pDetail->medicine->price) : 15000;
+                        $unitLabel = ($pDetail->medicine && $pDetail->medicine->unit) ? $pDetail->medicine->unit : ($pDetail->dosage ?: 'Đơn vị');
+                        $qty = max(1, intval($pDetail->quantity));
+                        InvoiceDetail::create([
+                            'invoice_id' => $invoice->id,
+                            'item_name' => 'Thuốc: ' . $pDetail->medicine_name . ' (' . $unitLabel . ')',
+                            'unit_price' => $medPrice,
+                            'quantity' => $qty,
+                            'total_price' => $medPrice * $qty,
+                        ]);
+                        $hasAnyChange = true;
+                    }
+                }
+            }
+
+            if ($hasAnyChange) {
+                $invoice->load('details');
+                $totalAmount = $invoice->details->sum('total_price');
+                $discount = floatval($invoice->discount ?? 0);
+                $afterDiscount = max(0, $totalAmount - $discount);
+                $vatSetting = SystemSetting::where('setting_key', 'vat_percentage')->first();
+                $vatRate = ($vatSetting && floatval($vatSetting->setting_value) > 0) ? floatval($vatSetting->setting_value) : 10;
+                $vatAmount = $afterDiscount * ($vatRate / 100);
+                $invoice->update([
+                    'total_amount' => $totalAmount,
+                    'vat_amount' => $vatAmount,
+                    'final_amount' => $afterDiscount + $vatAmount,
+                ]);
+                $invoice->refresh()->load(['details']);
+            }
+        }
+
         $patients = Patient::orderBy('name')->get();
         $services = Service::where('is_active', true)->orderBy('name')->get();
         $medicines = Medicine::orderBy('name')->get();

@@ -14,7 +14,7 @@
     </x-slot>
 
     @php
-        $existingItems = $invoice->details->pluck('quantity', 'item_name')->toArray();
+        $matchedDetailIds = [];
     @endphp
 
     <div class="py-8">
@@ -48,10 +48,20 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="editServicesGrid">
                                 @foreach($services as $srv)
                                     @php
-                                        $k1 = 'Dịch vụ: ' . $srv->name;
-                                        $k2 = $srv->name;
-                                        $q = $existingItems[$k1] ?? ($existingItems[$k2] ?? 0);
-                                        $checked = $q > 0;
+                                        $matchedSrv = $invoice->details->first(function ($dt) use ($srv, $matchedDetailIds) {
+                                            if (in_array($dt->id, $matchedDetailIds)) return false;
+                                            $dtName = mb_strtolower(trim($dt->item_name));
+                                            $sName = mb_strtolower(trim($srv->name));
+                                            return $dtName === $sName 
+                                                || $dtName === 'dịch vụ: ' . $sName
+                                                || $dtName === 'dịch vụ/thủ thuật: ' . $sName
+                                                || str_contains($dtName, $sName);
+                                        });
+                                        $checked = !is_null($matchedSrv);
+                                        $q = $matchedSrv ? $matchedSrv->quantity : 1;
+                                        if ($matchedSrv) {
+                                            $matchedDetailIds[] = $matchedSrv->id;
+                                        }
                                     @endphp
                                     <div class="adm-card srv-card rounded-xl border p-3.5 transition cursor-pointer flex items-center justify-between gap-2 {{ $checked ? 'border-indigo-500 bg-indigo-50/70 ring-1 ring-indigo-500' : 'border-slate-200 bg-white' }}"
                                          data-name="Dịch vụ: {{ $srv->name }}"
@@ -80,10 +90,17 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="editMedicinesGrid">
                                 @foreach($medicines as $med)
                                     @php
-                                        $mk1 = 'Thuốc: ' . $med->name . ' (' . ($med->unit ?? 'Đơn vị') . ')';
-                                        $mk2 = 'Thuốc: ' . $med->name;
-                                        $mq = $existingItems[$mk1] ?? ($existingItems[$mk2] ?? 0);
-                                        $mChecked = $mq > 0;
+                                        $matchedMed = $invoice->details->first(function ($dt) use ($med, $matchedDetailIds) {
+                                            if (in_array($dt->id, $matchedDetailIds)) return false;
+                                            $dtName = mb_strtolower(trim($dt->item_name));
+                                            $mName = mb_strtolower(trim($med->name));
+                                            return str_contains($dtName, $mName);
+                                        });
+                                        $mChecked = !is_null($matchedMed);
+                                        $mq = $matchedMed ? $matchedMed->quantity : 1;
+                                        if ($matchedMed) {
+                                            $matchedDetailIds[] = $matchedMed->id;
+                                        }
                                     @endphp
                                     <div class="adm-card med-card rounded-xl border p-3.5 transition cursor-pointer flex items-center justify-between gap-2 {{ $mChecked ? 'border-emerald-500 bg-emerald-50/70 ring-1 ring-emerald-500' : 'border-slate-200 bg-white' }}"
                                          data-name="Thuốc: {{ $med->name }} ({{ $med->unit ?? 'Đơn vị' }})"
@@ -105,6 +122,46 @@
                                 @endforeach
                             </div>
                         </div>
+
+                        <!-- 3. Các mục Bác sĩ đã chỉ định trong hóa đơn -->
+                        @php
+                            $unmatchedAdminDetails = $invoice->details->whereNotIn('id', $matchedDetailIds);
+                        @endphp
+                        @if($unmatchedAdminDetails->count() > 0)
+                            <div class="bg-white rounded-2xl shadow-xs border border-amber-200 p-6">
+                                <h3 class="text-xs font-extrabold uppercase tracking-wider text-amber-800 mb-4 flex items-center gap-2">
+                                    <span>📋</span>
+                                    <span>3. Các Khoản Theo Chỉ Định Của Bác Sĩ (Đang có trong hóa đơn)</span>
+                                </h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="editCustomGrid">
+                                    @foreach($unmatchedAdminDetails as $udt)
+                                        @php
+                                            $isMed = str_starts_with(mb_strtolower($udt->item_name), 'thuốc') || str_contains(mb_strtolower($udt->item_name), 'gói thuốc');
+                                        @endphp
+                                        <div class="adm-card {{ $isMed ? 'med-card' : 'srv-card' }} rounded-xl border border-[#0D7A68] bg-[#0D7A68]/5 ring-1 ring-[#0D7A68] p-3.5 transition cursor-pointer flex items-center justify-between gap-2"
+                                             data-name="{{ $udt->item_name }}"
+                                             data-price="{{ round($udt->unit_price) }}"
+                                             onclick="toggleEditCard(this)">
+                                            <div class="flex items-start gap-2.5">
+                                                <input type="checkbox" class="adm-cb mt-0.5 rounded border-slate-300 text-[#0D7A68] pointer-events-none" checked>
+                                                <div>
+                                                    <p class="text-xs font-bold text-slate-800">{{ $udt->item_name }}</p>
+                                                    <p class="text-xs font-extrabold text-[#0D7A68] mt-0.5">
+                                                        {{ number_format($udt->unit_price, 0, ',', '.') }} đ
+                                                        <span class="text-[10px] font-bold text-slate-500">(Theo đơn Bác sĩ)</span>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="adm-qty-box flex items-center gap-1 bg-white border border-slate-200 rounded-lg px-1 py-0.5" onclick="event.stopPropagation()">
+                                                <button type="button" onclick="changeEditQty(this, -1)" class="w-5 h-5 rounded bg-slate-100 text-xs font-bold">-</button>
+                                                <input type="text" readonly value="{{ $udt->quantity }}" class="adm-qty w-6 text-center text-xs font-extrabold border-0 p-0 bg-transparent">
+                                                <button type="button" onclick="changeEditQty(this, 1)" class="w-5 h-5 rounded bg-slate-100 text-xs font-bold">+</button>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
                     </div>
 
                     <div class="lg:col-span-1 sticky top-24">
@@ -173,27 +230,16 @@
             container.innerHTML = '';
             let srvTotal = 0, medTotal = 0, idx = 0;
 
-            document.querySelectorAll('#editServicesGrid .adm-card').forEach(card => {
+            document.querySelectorAll('.adm-card').forEach(card => {
                 if (card.querySelector('.adm-cb').checked) {
                     const name = card.getAttribute('data-name');
                     const price = parseFloat(card.getAttribute('data-price')) || 0;
                     const qty = parseInt(card.querySelector('.adm-qty').value, 10) || 1;
-                    srvTotal += price * qty;
-                    container.insertAdjacentHTML('beforeend', `
-                        <input type="hidden" name="items[${idx}][name]" value="${name}">
-                        <input type="hidden" name="items[${idx}][price]" value="${price}">
-                        <input type="hidden" name="items[${idx}][quantity]" value="${qty}">
-                    `);
-                    idx++;
-                }
-            });
-
-            document.querySelectorAll('#editMedicinesGrid .adm-card').forEach(card => {
-                if (card.querySelector('.adm-cb').checked) {
-                    const name = card.getAttribute('data-name');
-                    const price = parseFloat(card.getAttribute('data-price')) || 0;
-                    const qty = parseInt(card.querySelector('.adm-qty').value, 10) || 1;
-                    medTotal += price * qty;
+                    if (card.classList.contains('med-card')) {
+                        medTotal += price * qty;
+                    } else {
+                        srvTotal += price * qty;
+                    }
                     container.insertAdjacentHTML('beforeend', `
                         <input type="hidden" name="items[${idx}][name]" value="${name}">
                         <input type="hidden" name="items[${idx}][price]" value="${price}">

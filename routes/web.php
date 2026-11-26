@@ -163,6 +163,7 @@ Route::middleware(['auth', 'role:receptionist'])->prefix('receptionist')->name('
     
     // Hóa đơn & thanh toán
     Route::resource('invoices', \App\Http\Controllers\Receptionist\InvoiceController::class)->only(['index', 'create', 'store', 'show', 'update']);
+    Route::post('invoices/{invoice}/reset-from-doctor', [\App\Http\Controllers\Receptionist\InvoiceController::class, 'resetFromDoctor'])->name('invoices.reset-from-doctor');
     Route::post('invoices/{invoice}/pay', [\App\Http\Controllers\Receptionist\InvoiceController::class, 'pay'])->name('invoices.pay');
     Route::get('invoices/{invoice}/print', [\App\Http\Controllers\Receptionist\InvoiceController::class, 'print'])->name('invoices.print');
 });
