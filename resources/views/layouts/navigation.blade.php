@@ -60,19 +60,18 @@
             <!-- Left: Brand + Primary Navigation -->
             <div class="flex items-center gap-3 lg:gap-4 shrink-0">
                 <!-- Logo Nha Khoa Smile -->
-                <a href="{{ route('dashboard') }}" class="shrink-0 flex items-center gap-2.5 group focus:outline-none pr-2 border-r border-slate-200" title="Bảng điều khiển Nha Khoa Smile">
-                    <div class="w-9 h-9 bg-gradient-to-br from-blue-600 via-indigo-600 to-cyan-500 rounded-xl flex items-center justify-center text-white shadow-sm group-hover:scale-105 transition-transform duration-200 shrink-0">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                <a href="{{ route('dashboard') }}" class="shrink-0 flex items-center gap-2.5 group focus:outline-none pr-3 border-r border-slate-200" title="Bảng điều khiển Nha Khoa Smile">
+                    <div class="w-9 h-9 bg-[#0D7A68] rounded-xl flex items-center justify-center text-white shadow-xs group-hover:scale-105 transition-transform duration-200 shrink-0">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M7 4C5 4 3 6 3 9C3 13 5 17 7 21C8 22 9 22 9.5 20.5L10.5 17C11 15 13 15 13.5 17L14.5 20.5C15 22 16 22 17 21C19 17 21 13 21 9C21 6 19 4 17 4C14.5 4 13.5 6 12 6C10.5 6 9.5 4 7 4Z"/>
                         </svg>
                     </div>
                     <div class="flex flex-col whitespace-nowrap">
                         <div class="flex items-center gap-1.5">
-                            <span class="font-extrabold text-sm lg:text-base leading-none tracking-tight text-slate-900">Nha Khoa <span class="text-indigo-600">Smile</span></span>
-                            <span class="hidden xl:inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-extrabold uppercase tracking-wider bg-indigo-50 text-indigo-600 border border-indigo-200">DCMS</span>
+                            <span class="font-extrabold text-sm lg:text-[15px] leading-none tracking-tight text-slate-900">Nha Khoa Smile</span>
+                            <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-indigo-50 text-indigo-600 border border-indigo-100">DCMS Pro v2.4</span>
                         </div>
-                        <span class="text-[11px] font-semibold text-slate-400 mt-1 flex items-center gap-1">
-                            <span class="w-1.5 h-1.5 rounded-full {{ $roleBadge['dot'] }}"></span>
+                        <span class="text-[11px] font-medium text-slate-400 mt-1 leading-none">
                             {{ $roleBadge['label'] }}
                         </span>
                     </div>
@@ -246,13 +245,13 @@
                                 <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                                 <span>Danh sách chờ</span>
                                 @if($waitingQueueCount > 0)
-                                    <span class="px-1.5 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-300 leading-none">{{ $waitingQueueCount }}</span>
+                                    <span class="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-[#0D7A68] text-white leading-none ml-1">{{ $waitingQueueCount }}</span>
                                 @endif
                             </x-nav-link>
 
                             <x-nav-link :href="route('receptionist.appointments.index')" :active="request()->routeIs('receptionist.appointments.*')">
                                 <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                                <span>Lịch hẹn</span>
+                                <span>Lịch hẹn khám</span>
                             </x-nav-link>
 
                             <x-nav-link :href="route('receptionist.patients.index')" :active="request()->routeIs('receptionist.patients.*')">
@@ -264,7 +263,7 @@
                                 <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z"/></svg>
                                 <span>Hóa đơn & VietQR</span>
                                 @if($unpaidInvoicesCount > 0)
-                                    <span class="px-1.5 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-100 text-amber-800 border border-amber-300 leading-none">{{ $unpaidInvoicesCount }}</span>
+                                    <span class="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-red-600 text-white leading-none ml-1">{{ $unpaidInvoicesCount }}</span>
                                 @endif
                             </x-nav-link>
                         @elseif($role === 'patient')
@@ -498,13 +497,19 @@
                 <!-- User Profile Pill Dropdown -->
                 <x-dropdown align="right" width="64">
                     <x-slot name="trigger">
-                        <button type="button" class="inline-flex items-center gap-2 pl-2 pr-2.5 py-1.5 border border-slate-200 text-xs font-bold rounded-xl text-slate-700 bg-slate-50 hover:bg-white hover:border-indigo-300 focus:outline-none transition duration-150 ease-in-out whitespace-nowrap shrink-0">
-                            <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-600 to-blue-500 text-white font-extrabold text-xs flex items-center justify-center shrink-0">
-                                {{ mb_strtoupper(mb_substr(Auth::user()->name, 0, 1)) }}
+                        <button type="button" class="inline-flex items-center gap-2 pl-2 pr-2.5 py-1.5 border border-slate-200 text-xs font-bold rounded-xl text-slate-700 bg-slate-50 hover:bg-white hover:border-slate-300 focus:outline-none transition duration-150 ease-in-out whitespace-nowrap shrink-0">
+                            <div class="w-7 h-7 rounded-full bg-[#0D7A68] text-white font-bold text-xs flex items-center justify-center shrink-0">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                             </div>
                             <div class="text-left hidden xl:block whitespace-nowrap">
-                                <div class="text-xs font-extrabold text-slate-800 leading-none truncate max-w-[120px]">{{ Auth::user()->name }}</div>
-                                <div class="text-[10px] font-semibold text-slate-500 mt-0.5 leading-none">{{ $roleBadge['label'] }}</div>
+                                <div class="text-xs font-bold text-slate-800 leading-none truncate max-w-[120px]">{{ Auth::user()->name }}</div>
+                                <div class="text-[10px] font-medium text-slate-400 mt-1 leading-none">
+                                    @if($role === 'receptionist')
+                                        Ca sáng • Trực chính
+                                    @else
+                                        {{ $roleBadge['label'] }}
+                                    @endif
+                                </div>
                             </div>
                             <svg class="h-3.5 w-3.5 text-slate-400 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />

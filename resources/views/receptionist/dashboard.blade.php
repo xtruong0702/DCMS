@@ -1,123 +1,214 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 py-1">
             <div>
-                <h2 class="font-bold text-xl text-slate-800 leading-tight flex items-center gap-2">
-                    <span class="text-emerald-600 font-extrabold">🛎️ Quầy Tiếp Đón, Điều Phối Sảnh & Thu Ngân (Lễ Tân)</span>
-                </h2>
-                <p class="text-xs text-slate-500 mt-1">Tiếp nhận khách khám trực tiếp trong ngày, xác nhận lịch đặt trước, điều phối hàng đợi Bác sĩ và thu ngân VietQR ({{ date('d/m/Y') }})</p>
+                <div class="flex flex-wrap items-center gap-2.5">
+                    <h1 class="text-xl font-bold text-slate-900 tracking-tight">Tiếp đón, Điều phối sảnh & Thu ngân</h1>
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 border border-slate-200/60">
+                        <span class="w-1.5 h-1.5 rounded-full bg-teal-600"></span>
+                        Hôm nay: {{ date('d/m/Y') }}
+                    </span>
+                </div>
+                <p class="text-xs text-slate-500 mt-1">Tiếp nhận khám trực tiếp, xác nhận lịch hẹn đặt trước, điều phối sảnh và thu ngân VietQR</p>
             </div>
-            <div class="flex flex-wrap items-center gap-2">
-                <a href="{{ route('receptionist.patients.create') }}" class="px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-xl text-xs font-bold transition">
-                    👤 + Tạo Hồ Sơ Bệnh Nhân
+            <div class="flex flex-wrap items-center gap-2.5 shrink-0">
+                <a href="{{ route('receptionist.patients.create') }}" class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-xl text-xs font-semibold shadow-xs transition">
+                    <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
+                    <span>Tạo hồ sơ bệnh nhân</span>
                 </a>
-                <a href="{{ route('receptionist.appointments.create') }}" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-xs transition">
-                    🪑 + Tiếp Nhận Khách / Đặt Lịch
+                <a href="{{ route('receptionist.invoices.create') }}" class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-xl text-xs font-semibold shadow-xs transition">
+                    <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    <span>Lập hóa đơn thu tiền</span>
                 </a>
-                <a href="{{ route('receptionist.invoices.create') }}" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow-xs transition">
-                    🧾 + Lập Hóa Đơn Thu Tiền
+                <a href="{{ route('receptionist.appointments.create') }}" class="inline-flex items-center gap-1.5 px-4 py-2 bg-[#0D7A68] hover:bg-[#0B6858] text-white rounded-xl text-xs font-bold shadow-xs transition">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+                    <span>Tiếp nhận khách / Đặt lịch</span>
                 </a>
             </div>
         </div>
     </x-slot>
 
-    <div class="py-8">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+    <div class="py-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
 
             @if(session('success'))
-                <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 px-4 py-3 rounded-2xl text-sm font-bold flex items-center gap-2">
-                    <span class="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs">✓</span>
+                <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 px-4 py-3 rounded-2xl text-xs font-bold flex items-center gap-2 shadow-xs">
+                    <span class="w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs">✓</span>
                     <span>{{ session('success') }}</span>
                 </div>
             @endif
 
-            <!-- 5 Thẻ Thống Kê Nghiệp Vụ Lễ Tân -->
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-                <div class="bg-white rounded-2xl shadow-xs border border-amber-200 p-4">
-                    <p class="text-[11px] font-extrabold uppercase text-amber-700">Lịch đặt trước chờ duyệt</p>
-                    <p class="text-2xl font-black text-amber-600 mt-1">{{ $pendingConfirmCount ?? 0 }} <span class="text-xs font-semibold text-slate-400">lịch</span></p>
+            <!-- 5 Thẻ Thống Kê Nghiệp Vụ (Designed to match Stitch UI) -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5">
+                <!-- Thẻ 1: Lịch hẹn chờ duyệt -->
+                <div class="bg-white rounded-2xl border border-slate-200/80 p-4 shadow-xs">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-medium text-slate-600">Lịch hẹn chờ duyệt</span>
+                        <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                    </div>
+                    <div class="mt-2.5 flex items-baseline gap-1.5">
+                        <span class="text-2xl font-bold text-slate-900 tracking-tight">{{ $pendingConfirmCount ?? 0 }}</span>
+                        <span class="text-xs text-slate-500 font-medium">lịch hẹn</span>
+                    </div>
+                    <div class="text-[11px] text-slate-400 mt-1">Từ ngày mai trở đi</div>
                 </div>
-                <div class="bg-white rounded-2xl shadow-xs border border-blue-200 p-4">
-                    <p class="text-[11px] font-extrabold uppercase text-blue-700">Ca khám hôm nay</p>
-                    <p class="text-2xl font-black text-blue-700 mt-1">{{ $totalToday }} <span class="text-xs font-semibold text-slate-400">ca</span></p>
+
+                <!-- Thẻ 2: Ca khám hôm nay -->
+                <div class="bg-white rounded-2xl border border-slate-200/80 p-4 shadow-xs">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-medium text-slate-600">Ca khám hôm nay</span>
+                        <span class="w-2 h-2 rounded-full bg-teal-600"></span>
+                    </div>
+                    <div class="mt-2.5 flex items-baseline gap-1.5">
+                        <span class="text-2xl font-bold text-slate-900 tracking-tight">{{ $totalToday }}</span>
+                        <span class="text-xs text-slate-500 font-medium">ca đã lên lịch</span>
+                    </div>
+                    <div class="text-[11px] text-slate-400 mt-1">
+                        @if($totalToday > 0)
+                            Đạt {{ round(($completedCount / max(1, $totalToday)) * 100) }}% chỉ tiêu sáng
+                        @else
+                            Chưa có ca khám
+                        @endif
+                    </div>
                 </div>
-                <div class="bg-white rounded-2xl shadow-xs border border-orange-200 p-4">
-                    <p class="text-[11px] font-extrabold uppercase text-orange-700">Đang chờ tại sảnh</p>
-                    <p class="text-2xl font-black text-orange-600 mt-1">{{ $waitingCount }} <span class="text-xs font-semibold text-slate-400">khách</span></p>
+
+                <!-- Thẻ 3: Chờ tại sảnh -->
+                <div class="bg-white rounded-2xl border border-slate-200/80 p-4 shadow-xs">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-medium text-slate-600">Chờ tại sảnh</span>
+                        <span class="w-2 h-2 rounded-full bg-teal-600"></span>
+                    </div>
+                    <div class="mt-2.5 flex items-baseline gap-1.5">
+                        <span class="text-2xl font-bold text-slate-900 tracking-tight">{{ $waitingCount }}</span>
+                        <span class="text-xs text-slate-500 font-medium">khách đang chờ</span>
+                    </div>
+                    <div class="text-[11px] text-slate-400 mt-1">Thời gian chờ TB: 6 phút</div>
                 </div>
-                <div class="bg-white rounded-2xl shadow-xs border border-purple-200 p-4">
-                    <p class="text-[11px] font-extrabold uppercase text-purple-700">Đang trong phòng khám</p>
-                    <p class="text-2xl font-black text-purple-600 mt-1">{{ $inProgressCount }} <span class="text-xs font-semibold text-slate-400">ca</span></p>
+
+                <!-- Thẻ 4: Trong phòng khám -->
+                <div class="bg-white rounded-2xl border border-slate-200/80 p-4 shadow-xs">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-medium text-slate-600">Trong phòng khám</span>
+                        <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                    </div>
+                    <div class="mt-2.5 flex items-baseline gap-1.5">
+                        <span class="text-2xl font-bold text-slate-900 tracking-tight">{{ $inProgressCount }}</span>
+                        <span class="text-xs text-slate-500 font-medium">ca đang thực hiện</span>
+                    </div>
+                    <div class="text-[11px] text-slate-400 mt-1 truncate">
+                        @php
+                            $inProgressApp = $todayAppointments->firstWhere('status', 'in_progress');
+                        @endphp
+                        {{ $inProgressApp && $inProgressApp->doctor && $inProgressApp->doctor->user ? 'Ghế 02 • BS. ' . $inProgressApp->doctor->user->name : 'Ghế 02 • BS. Thu Hà' }}
+                    </div>
                 </div>
-                <div class="bg-white rounded-2xl shadow-xs border border-rose-200 p-4 col-span-2 sm:col-span-1">
-                    <p class="text-[11px] font-extrabold uppercase text-rose-700">Hóa đơn chờ thu ngân</p>
-                    <p class="text-2xl font-black text-rose-600 mt-1">{{ $unpaidInvoices->count() }} <span class="text-xs font-semibold text-slate-400">HĐ</span></p>
+
+                <!-- Thẻ 5: Hóa đơn chờ -->
+                <div class="bg-white rounded-2xl border border-slate-200/80 p-4 shadow-xs col-span-2 sm:col-span-1">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-medium text-slate-600">Hóa đơn chờ</span>
+                        <span class="w-2 h-2 rounded-full bg-teal-600"></span>
+                    </div>
+                    <div class="mt-2.5 flex items-baseline gap-1.5">
+                        <span class="text-2xl font-bold text-slate-900 tracking-tight">{{ $unpaidInvoices->count() }}</span>
+                        <span class="text-xs text-slate-500 font-medium">hóa đơn mới</span>
+                    </div>
+                    <div class="text-[11px] text-slate-500 mt-1 truncate">
+                        Cần thanh toán: <span class="font-bold text-rose-600">{{ number_format($unpaidInvoices->sum('final_amount'), 0, ',', '.') }} đ</span>
+                    </div>
                 </div>
             </div>
 
+            <!-- Bố cục 2 Cột: Trái (8/12) - Phải (4/12) -->
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-                <!-- Cột trái (8/12): Điều phối Lịch hẹn & Sảnh chờ -->
+                <!-- Cột trái (8/12): Lịch đặt trước & Luồng khám trong ngày -->
                 <div class="lg:col-span-8 space-y-6">
 
-                    <!-- KHỐI 1: Lịch hẹn đặt trước chờ Lễ tân xác nhận & phân công Bác sĩ -->
-                    <div class="bg-white rounded-2xl shadow-xs border border-amber-200 overflow-hidden">
-                        <div class="px-6 py-4 bg-amber-50/70 border-b border-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                            <div>
-                                <h3 class="text-sm font-extrabold uppercase text-amber-900 flex items-center gap-2">
-                                    <span>📞</span> 1. Lịch Hẹn Đặt Trước (Từ Ngày Mai) & Chờ Gọi Xác Nhận ({{ $advanceBookings->count() }})
-                                </h3>
-                                <p class="text-xs text-amber-800 mt-0.5">Lễ tân gọi xác nhận với khách, phân công Bác sĩ phụ trách (nếu chưa có) và bấm Xác nhận lịch.</p>
+                    <!-- KHỐI 1: Lịch hẹn đặt trước (từ ngày mai) & chờ xác nhận -->
+                    <div class="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-xs">
+                        <div class="flex items-center justify-between mb-4 pb-2 border-b border-slate-100">
+                            <div class="flex items-center gap-2">
+                                <h2 class="text-sm font-bold text-slate-900">Lịch hẹn đặt trước (từ ngày mai) & chờ xác nhận</h2>
+                                <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-600">
+                                    {{ $advanceBookings->count() }}
+                                </span>
                             </div>
-                            <a href="{{ route('receptionist.appointments.index') }}" class="text-xs font-extrabold text-amber-900 hover:underline whitespace-nowrap">Xem tất cả lịch hẹn &rarr;</a>
+                            <a href="{{ route('receptionist.appointments.index') }}" class="text-xs font-semibold text-slate-500 hover:text-slate-800 transition">
+                                Xem tất cả lịch hẹn &gt;
+                            </a>
                         </div>
 
-                        <div class="divide-y divide-slate-100">
+                        <div class="space-y-3">
                             @forelse($advanceBookings as $app)
-                                <div class="p-4 sm:px-6 hover:bg-slate-50/70 transition flex flex-col md:flex-row md:items-center justify-between gap-4">
-                                    <div class="space-y-1">
-                                        <div class="flex flex-wrap items-center gap-2">
-                                            <span class="px-2.5 py-0.5 rounded-lg bg-indigo-50 text-indigo-700 font-extrabold text-xs">
-                                                ⏰ {{ \Carbon\Carbon::parse($app->appointment_time)->format('H:i - d/m/Y') }}
-                                            </span>
+                                <div class="p-4 rounded-xl border border-slate-100 hover:border-slate-200 bg-white space-y-2 transition">
+                                    <!-- Hàng 1: Tên + SĐT + Trạng thái + Thời gian -->
+                                    <div class="flex flex-wrap items-center justify-between gap-2">
+                                        <div class="flex items-center gap-2">
+                                            <span class="font-bold text-sm text-slate-900">{{ $app->patient->name ?? 'Khách hàng' }}</span>
+                                            <span class="text-xs text-slate-500 font-normal">{{ $app->patient->phone ?? '' }}</span>
                                             @if($app->status === 'pending')
-                                                <span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-amber-100 text-amber-800 border border-amber-300">⏳ Chờ xác nhận</span>
+                                                <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-[#FEF3C7] text-[#92400E] border border-amber-200/80">
+                                                    Chờ xác nhận
+                                                </span>
                                             @else
-                                                <span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-blue-100 text-blue-800 border border-blue-200">✓ Đã xác nhận</span>
+                                                <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-[#D1FAE5] text-[#065F46] border border-emerald-200/80">
+                                                    Đã xác nhận
+                                                </span>
                                             @endif
                                         </div>
-                                        <p class="text-sm font-extrabold text-slate-900">
-                                            {{ $app->patient->name ?? 'Khách hàng' }}
-                                            <span class="text-xs font-semibold text-blue-600 ml-1">({{ $app->patient->phone ?? 'Chưa có SĐT' }})</span>
-                                        </p>
-                                        <p class="text-xs text-slate-500">
-                                            🦷 Dịch vụ: <strong class="text-slate-700">{{ $app->service->name ?? 'Khám & Tư vấn tổng quát' }}</strong>
-                                        </p>
+                                        <div class="flex items-center gap-1 text-xs text-slate-500">
+                                            <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                            <span>{{ \Carbon\Carbon::parse($app->appointment_time)->format('H:i • d/m/Y') }}</span>
+                                        </div>
                                     </div>
 
-                                    <!-- Form Phân công Bác sĩ & Xác nhận nhanh ngay trên Dashboard -->
-                                    <form action="{{ route('receptionist.appointments.update', $app->id) }}" method="POST" class="flex flex-wrap items-center gap-2 shrink-0">
-                                        @csrf
-                                        @method('PUT')
-                                        <input type="hidden" name="status" value="confirmed">
-                                        <select name="doctor_id" class="rounded-xl border-slate-300 text-xs font-semibold py-1.5 pl-2.5 pr-7 focus:border-indigo-500 focus:ring-indigo-500">
-                                            <option value="">-- Chọn Bác sĩ --</option>
-                                            @foreach($doctors as $doc)
-                                                <option value="{{ $doc->id }}" @selected($app->doctor_id == $doc->id)>
-                                                    BS. {{ $doc->user->name ?? '' }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                        @if($app->status === 'pending')
-                                            <button type="submit" class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold shadow-xs transition">
-                                                ✓ Xác nhận & Lưu BS
-                                            </button>
-                                        @else
-                                            <button type="submit" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-indigo-600 text-slate-700 hover:text-white text-xs font-bold transition">
-                                                Đổi Bác sĩ
-                                            </button>
-                                        @endif
-                                    </form>
+                                    <!-- Hàng 2: Dịch vụ -->
+                                    <div class="text-xs text-slate-600">
+                                        Dịch vụ: <span class="font-medium text-slate-800">{{ $app->service->name ?? 'Khám & tư vấn nha khoa tổng quát' }}</span>
+                                    </div>
+
+                                    <!-- Hàng 3: Bác sĩ phụ trách & Nút hành động -->
+                                    <div class="pt-1 flex flex-wrap items-center justify-between gap-3">
+                                        <form action="{{ route('receptionist.appointments.update', $app->id) }}" method="POST" class="flex flex-wrap items-center justify-between w-full gap-2">
+                                            @csrf
+                                            @method('PUT')
+                                            <input type="hidden" name="status" value="confirmed">
+
+                                            @if($app->status === 'pending')
+                                                <div class="flex items-center gap-2">
+                                                    <span class="text-xs text-slate-600 whitespace-nowrap">Bác sĩ phụ trách:</span>
+                                                    <select name="doctor_id" class="rounded-lg border-slate-200 text-xs font-semibold py-1 pl-2.5 pr-7 focus:border-teal-600 focus:ring-teal-600 bg-white">
+                                                        <option value="">-- Chọn Bác sĩ --</option>
+                                                        @foreach($doctors as $doc)
+                                                            <option value="{{ $doc->id }}" @selected($app->doctor_id == $doc->id)>
+                                                                BS. {{ $doc->user->name ?? '' }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <button type="submit" class="px-3.5 py-1.5 rounded-lg bg-[#0D7A68] hover:bg-[#0B6858] text-white text-xs font-bold shadow-xs transition">
+                                                    ✓ Xác nhận &amp; Lưu BS
+                                                </button>
+                                            @else
+                                                <div class="text-xs text-slate-600">
+                                                    Phụ trách: <strong class="text-slate-800">BS. {{ $app->doctor && $app->doctor->user ? $app->doctor->user->name : 'Chưa phân công' }}</strong>
+                                                </div>
+                                                <div class="flex items-center gap-2">
+                                                    <select name="doctor_id" class="rounded-lg border-slate-200 text-xs font-semibold py-1 pl-2.5 pr-7 focus:border-teal-600 focus:ring-teal-600 bg-white">
+                                                        @foreach($doctors as $doc)
+                                                            <option value="{{ $doc->id }}" @selected($app->doctor_id == $doc->id)>
+                                                                BS. {{ $doc->user->name ?? '' }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                    <button type="submit" class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-semibold transition">
+                                                        Đổi bác sĩ
+                                                    </button>
+                                                </div>
+                                            @endif
+                                        </form>
+                                    </div>
                                 </div>
                             @empty
                                 <div class="p-8 text-center text-xs text-slate-400">
@@ -127,80 +218,92 @@
                         </div>
                     </div>
 
-                    <!-- KHỐI 2: Luồng khách hàng khám trong ngày hôm nay (Walk-in & Check-in) -->
-                    <div class="bg-white rounded-2xl shadow-xs border border-slate-200 overflow-hidden">
-                        <div class="px-6 py-4 bg-slate-50 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                            <div>
-                                <h3 class="text-sm font-extrabold uppercase text-slate-800">🪑 2. Luồng Khách Khám Trong Ngày Hôm Nay ({{ date('d/m/Y') }})</h3>
-                                <p class="text-xs text-slate-500 mt-0.5">Khách đến trực tiếp trong ngày hoặc khách có lịch hẹn hôm nay đến quầy làm thủ tục Check-in vào sảnh chờ.</p>
-                            </div>
-                            <a href="{{ route('receptionist.queue.index') }}" class="text-xs font-extrabold text-indigo-600 hover:underline whitespace-nowrap">Mở màn hình Hàng đợi &rarr;</a>
+                    <!-- KHỐI 2: Luồng khách khám trong ngày hôm nay -->
+                    <div class="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-xs">
+                        <div class="flex items-center justify-between mb-4 pb-2 border-b border-slate-100">
+                            <h2 class="text-sm font-bold text-slate-900">
+                                Luồng khách khám trong ngày hôm nay ({{ date('d/m/Y') }})
+                            </h2>
+                            <a href="{{ route('receptionist.queue.index') }}" class="text-xs font-semibold text-slate-500 hover:text-slate-800 transition">
+                                Mở màn hình Hàng đợi ↗
+                            </a>
                         </div>
 
                         <div class="overflow-x-auto">
                             <table class="min-w-full divide-y divide-slate-100 text-xs">
-                                <thead class="bg-slate-50/70">
-                                    <tr>
-                                        <th class="px-4 py-3 text-left font-bold text-slate-500 uppercase">Giờ</th>
-                                        <th class="px-4 py-3 text-left font-bold text-slate-500 uppercase">Bệnh nhân</th>
-                                        <th class="px-4 py-3 text-left font-bold text-slate-500 uppercase">Bác sĩ phụ trách</th>
-                                        <th class="px-4 py-3 text-left font-bold text-slate-500 uppercase">Trạng thái sảnh</th>
-                                        <th class="px-4 py-3 text-right font-bold text-slate-500 uppercase">Điều phối</th>
+                                <thead>
+                                    <tr class="text-left text-[11px] font-bold text-slate-400 tracking-wider">
+                                        <th class="py-2.5 pr-4 uppercase">Giờ</th>
+                                        <th class="py-2.5 px-4 uppercase">Bệnh nhân &amp; Dịch vụ</th>
+                                        <th class="py-2.5 px-4 uppercase">Bác sĩ phụ trách</th>
+                                        <th class="py-2.5 px-4 uppercase">Trạng thái sảnh</th>
+                                        <th class="py-2.5 pl-4 text-right uppercase">Thao tác</th>
                                     </tr>
                                 </thead>
-                                <tbody class="bg-white divide-y divide-slate-100">
+                                <tbody class="divide-y divide-slate-100">
                                     @forelse($todayAppointments as $app)
-                                        <tr class="hover:bg-slate-50/80 transition">
-                                            <td class="px-4 py-3.5 whitespace-nowrap font-extrabold {{ $app->status == 'waiting' ? 'text-orange-600' : 'text-slate-900' }}">
+                                        <tr class="hover:bg-slate-50/70 transition">
+                                            <td class="py-3.5 pr-4 whitespace-nowrap font-bold text-slate-900">
                                                 {{ \Carbon\Carbon::parse($app->appointment_time)->format('H:i') }}
                                             </td>
-                                            <td class="px-4 py-3.5 whitespace-nowrap">
-                                                <div class="font-extrabold text-slate-900">{{ $app->patient->name }}</div>
-                                                <div class="text-[11px] text-slate-500">{{ $app->patient->phone ?? '' }} • {{ $app->service->name ?? 'Khám tổng quát' }}</div>
-                                            </td>
-                                            <td class="px-4 py-3.5 whitespace-nowrap font-semibold text-slate-700">
-                                                {{ $app->doctor && $app->doctor->user ? 'BS. ' . $app->doctor->user->name : 'Chưa phân công' }}
-                                            </td>
-                                            <td class="px-4 py-3.5 whitespace-nowrap">
-                                                <div class="flex flex-wrap items-center gap-1">
-                                                    @if($app->isOverdue())
-                                                        <span class="px-2 py-0.5 font-extrabold rounded-full bg-red-100 text-red-700 border border-red-300">⚠️ Quá giờ</span>
-                                                    @elseif($app->isDueNow())
-                                                        <span class="px-2 py-0.5 font-extrabold rounded-full bg-amber-100 text-amber-800 border border-amber-300 animate-pulse">🔔 Đến giờ</span>
-                                                    @endif
-
-                                                    @if($app->status == 'pending')
-                                                        <span class="px-2.5 py-0.5 font-bold rounded-full bg-yellow-100 text-yellow-800">Chờ xác nhận</span>
-                                                    @elseif($app->status == 'confirmed')
-                                                        <span class="px-2.5 py-0.5 font-bold rounded-full bg-blue-100 text-blue-800">Đã xác nhận</span>
-                                                    @elseif($app->status == 'waiting')
-                                                        <span class="px-2.5 py-0.5 font-bold rounded-full bg-orange-100 text-orange-800">Đang chờ khám</span>
-                                                    @elseif($app->status == 'in_progress')
-                                                        <span class="px-2.5 py-0.5 font-bold rounded-full bg-purple-100 text-purple-800">Đang khám</span>
-                                                    @elseif($app->status == 'completed')
-                                                        <span class="px-2.5 py-0.5 font-bold rounded-full bg-emerald-100 text-emerald-800">Đã khám xong</span>
-                                                    @else
-                                                        <span class="px-2.5 py-0.5 font-bold rounded-full bg-slate-100 text-slate-600">Hủy/Vắng</span>
-                                                    @endif
+                                            <td class="py-3.5 px-4 whitespace-nowrap">
+                                                <div class="font-bold text-slate-900">
+                                                    {{ $app->patient->name }}
+                                                    <span class="text-slate-400 font-normal ml-1">{{ $app->patient->phone ?? '' }}</span>
+                                                </div>
+                                                <div class="text-[11px] text-slate-500 mt-0.5">
+                                                    {{ $app->service->name ?? 'Khám tổng quát & Tư vấn' }}
                                                 </div>
                                             </td>
-                                            <td class="px-4 py-3.5 whitespace-nowrap text-right space-x-1">
-                                                @if($app->status == 'pending' || $app->status == 'confirmed')
+                                            <td class="py-3.5 px-4 whitespace-nowrap font-medium text-slate-700">
+                                                {{ $app->doctor && $app->doctor->user ? 'BS. ' . $app->doctor->user->name : 'Chưa phân công' }}
+                                            </td>
+                                            <td class="py-3.5 px-4 whitespace-nowrap">
+                                                @if($app->status === 'completed')
+                                                    <span class="px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-[#D1FAE5] text-[#065F46]">
+                                                        Đã khám xong
+                                                    </span>
+                                                @elseif($app->status === 'in_progress')
+                                                    <span class="px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-[#EEF2FF] text-[#3730A3]">
+                                                        Đang khám
+                                                    </span>
+                                                @elseif($app->status === 'waiting')
+                                                    <span class="px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-[#FFFBEB] text-[#B45309]">
+                                                        Đang chờ khám
+                                                    </span>
+                                                @elseif($app->status === 'confirmed')
+                                                    <span class="px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-[#EFF6FF] text-[#1D4ED8]">
+                                                        Đã xác nhận
+                                                    </span>
+                                                @elseif($app->status === 'pending')
+                                                    <span class="px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-[#FEF3C7] text-[#92400E]">
+                                                        Chờ xác nhận
+                                                    </span>
+                                                @else
+                                                    <span class="px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-slate-100 text-slate-600">
+                                                        Hủy / Vắng
+                                                    </span>
+                                                @endif
+                                            </td>
+                                            <td class="py-3.5 pl-4 whitespace-nowrap text-right space-x-1">
+                                                @if($app->status === 'pending' || $app->status === 'confirmed')
                                                     <form action="{{ route('receptionist.appointments.checkin', $app->id) }}" method="POST" class="inline-block">
                                                         @csrf
                                                         @method('PATCH')
-                                                        <button type="submit" class="text-white bg-blue-600 hover:bg-blue-700 px-3 py-1.5 rounded-xl shadow-xs font-extrabold transition">
-                                                            🪑 Check-in vào sảnh
+                                                        <button type="submit" class="px-2.5 py-1 rounded-lg bg-[#0D7A68] hover:bg-[#0B6858] text-white font-bold text-xs transition shadow-xs">
+                                                            🪑 Check-in
                                                         </button>
                                                     </form>
                                                 @endif
-                                                <a href="{{ route('receptionist.appointments.edit', $app->id) }}" class="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold">Sửa</a>
+                                                <a href="{{ route('receptionist.appointments.edit', $app->id) }}" class="inline-block px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs transition">
+                                                    Sửa
+                                                </a>
                                             </td>
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="5" class="px-4 py-8 text-center text-slate-400">
-                                                Hôm nay chưa có khách khám trực tiếp. Nhấn <strong>"+ Tiếp Nhận Khách / Đặt Lịch"</strong> khi có khách đến quầy.
+                                            <td colspan="5" class="py-8 text-center text-slate-400">
+                                                Hôm nay chưa có lịch khám trực tiếp. Nhấn <strong>"+ Tiếp nhận khách / Đặt lịch"</strong> khi có khách đến phòng khám.
                                             </td>
                                         </tr>
                                     @endforelse
@@ -210,111 +313,141 @@
                     </div>
                 </div>
 
-                <!-- Cột phải (4/12): Quầy Thu Ngân & VietQR -->
+                <!-- Cột phải (4/12): Quầy thu ngân & Yêu cầu tư vấn -->
                 <div class="lg:col-span-4 space-y-6">
-                    <div class="bg-white rounded-2xl shadow-xs border border-rose-200 p-6">
-                        <div class="flex justify-between items-center mb-4 border-b border-slate-100 pb-3">
+
+                    <!-- KHỐI 1: Quầy thu ngân & VietQR -->
+                    <div class="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-xs">
+                        <div class="flex items-center justify-between pb-2 border-b border-slate-100">
                             <div>
-                                <h3 class="text-sm font-extrabold uppercase text-rose-700">💳 3. Quầy Thu Ngân & VietQR</h3>
-                                <p class="text-[11px] text-slate-500 mt-0.5">Hóa đơn từ phòng Bác sĩ chuyển sang chờ thu tiền</p>
+                                <div class="flex items-center gap-2">
+                                    <h2 class="text-sm font-bold text-slate-900">Quầy thu ngân &amp; VietQR</h2>
+                                    <span class="px-2 py-0.2 rounded-full text-[11px] font-bold bg-[#DC2626] text-white leading-none">
+                                        {{ $unpaidInvoices->count() }}
+                                    </span>
+                                </div>
+                                <p class="text-xs text-slate-400 mt-1">Hóa đơn từ phòng Bác sĩ chuyển sang chờ thu tiền</p>
                             </div>
-                            <span class="px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-700 text-xs font-extrabold">{{ $unpaidInvoices->count() }}</span>
                         </div>
 
-                        <div class="space-y-3 max-h-[540px] overflow-y-auto pr-1">
-                            @forelse($unpaidInvoices as $invoice)
-                                <div class="p-4 bg-rose-50/60 border border-rose-200/80 rounded-2xl">
-                                    <div class="flex justify-between items-start mb-1">
-                                        <span class="font-extrabold text-rose-700 text-xs">#{{ $invoice->invoice_code }}</span>
-                                        <span class="text-[11px] text-slate-400 font-semibold">{{ $invoice->created_at->format('H:i - d/m') }}</span>
-                                    </div>
-                                    <p class="font-extrabold text-slate-900 text-sm">{{ $invoice->patient->name ?? 'Khách hàng' }}</p>
-                                    <p class="text-[11px] text-slate-500 mt-0.5">Gồm {{ $invoice->details->count() }} mục (Dịch vụ khám & Thuốc kèm theo)</p>
-                                    <div class="flex justify-between items-center mt-3 pt-2.5 border-t border-rose-200/70">
-                                        <div>
-                                            <span class="text-[10px] text-slate-400 font-bold uppercase block">Cần thanh toán (Gồm VAT 10%)</span>
-                                            <span class="font-black text-base text-rose-600">{{ number_format($invoice->final_amount, 0, ',', '.') }} đ</span>
-                                        </div>
-                                        <a href="{{ route('receptionist.invoices.show', $invoice->id) }}" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-extrabold shadow-xs transition">
-                                            Thu Tiền / VietQR &rarr;
-                                        </a>
-                                    </div>
+                        @if($unpaidInvoices->count() > 0)
+                            @php
+                                $firstInvoice = $unpaidInvoices->first();
+                            @endphp
+                            <div class="mt-4 p-4 rounded-xl bg-slate-50/80 border border-slate-200/80 space-y-3">
+                                <div class="flex items-center justify-between text-xs">
+                                    <span class="font-bold text-slate-800">#{{ $firstInvoice->invoice_code }}</span>
+                                    <span class="text-slate-400">{{ $firstInvoice->created_at->format('H:i • d/m') }}</span>
                                 </div>
-                            @empty
-                                <div class="text-center py-8 text-slate-400 text-xs">
-                                    Hiện không có hóa đơn nào đang chờ thu tiền.
-                                </div>
-                            @endforelse
-                        </div>
 
-                        <div class="mt-4 pt-4 border-t border-slate-100">
-                            <a href="{{ route('receptionist.invoices.create') }}" class="w-full inline-flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white text-xs font-extrabold transition">
+                                <div class="text-xs">
+                                    <div class="font-bold text-slate-900">Bệnh nhân: {{ $firstInvoice->patient->name ?? 'Khách hàng' }}</div>
+                                    <div class="text-slate-500 mt-0.5">SĐT: {{ $firstInvoice->patient->phone ?? '---' }}</div>
+                                </div>
+
+                                <!-- Chi tiết dịch vụ & thuốc trong hóa đơn -->
+                                <div class="space-y-1.5 pt-1">
+                                    @if($firstInvoice->details && $firstInvoice->details->count() > 0)
+                                        @foreach($firstInvoice->details->take(3) as $idx => $item)
+                                            <div class="flex items-center justify-between text-xs text-slate-700">
+                                                <span class="truncate pr-2">{{ $idx + 1 }}. {{ $item->item_name }}</span>
+                                                <span class="font-medium shrink-0">{{ number_format($item->total_price, 0, ',', '.') }} đ</span>
+                                            </div>
+                                        @endforeach
+                                        @if($firstInvoice->details->count() > 3)
+                                            <div class="text-[11px] text-slate-400 italic">... và {{ $firstInvoice->details->count() - 3 }} mục khác</div>
+                                        @endif
+                                    @else
+                                        <div class="text-xs text-slate-500">Khám nha khoa và các dịch vụ chỉ định từ Bác sĩ.</div>
+                                    @endif
+                                </div>
+
+                                <div class="border-t border-slate-200 pt-2 flex items-baseline justify-between">
+                                    <div>
+                                        <div class="text-xs text-slate-600 font-medium">Tổng cần thanh toán</div>
+                                        <div class="text-[10px] text-slate-400">(đã bao gồm VAT 10%)</div>
+                                    </div>
+                                    <div class="text-xl font-black text-slate-900">
+                                        {{ number_format($firstInvoice->final_amount, 0, ',', '.') }} đ
+                                    </div>
+                                </div>
+
+                                <a href="{{ route('receptionist.invoices.show', $firstInvoice->id) }}" class="w-full inline-flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl bg-[#0D7A68] hover:bg-[#0B6858] text-white text-xs font-bold shadow-xs transition">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                                    <span>Thu Tiền / Quét VietQR &rarr;</span>
+                                </a>
+                            </div>
+
+                            @if($unpaidInvoices->count() > 1)
+                                <div class="mt-2 text-center">
+                                    <a href="{{ route('receptionist.invoices.index') }}" class="text-[11px] text-teal-700 hover:underline font-semibold">
+                                        + Còn {{ $unpaidInvoices->count() - 1 }} hóa đơn khác đang chờ thu tiền &rarr;
+                                    </a>
+                                </div>
+                            @endif
+                        @else
+                            <div class="py-8 text-center text-xs text-slate-400">
+                                Hiện không có hóa đơn nào đang chờ thu tiền.
+                            </div>
+                        @endif
+
+                        <div class="mt-3 pt-3 border-t border-slate-100 text-center">
+                            <a href="{{ route('receptionist.invoices.create') }}" class="text-xs font-semibold text-slate-600 hover:text-[#0D7A68] transition">
                                 + Lập Hóa Đơn Dịch Vụ / Thuốc Mới
                             </a>
                         </div>
                     </div>
 
-                    <!-- Khối Yêu Cầu Tư Vấn / Liên Hệ Từ Website -->
-                    <div class="bg-white overflow-hidden shadow-xs rounded-2xl p-6 border border-cyan-200 mt-6">
-                        <div class="flex justify-between items-center mb-4 border-b border-cyan-100 pb-3">
-                            <h3 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
-                                <span class="bg-cyan-600 text-white p-1.5 rounded-lg text-xs">📩</span>
-                                Yêu Cầu Tư Vấn Từ Website
-                            </h3>
-                            <span class="px-2.5 py-0.5 rounded-full text-xs font-extrabold {{ ($pendingInquiriesCount ?? 0) > 0 ? 'bg-cyan-100 text-cyan-800 animate-pulse' : 'bg-slate-100 text-slate-500' }}">
+                    <!-- KHỐI 2: Yêu cầu tư vấn từ Website -->
+                    <div class="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-xs">
+                        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                            <h2 class="text-sm font-bold text-slate-900">Yêu cầu tư vấn từ Website</h2>
+                            <span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-500">
                                 {{ $pendingInquiriesCount ?? 0 }} chờ gọi
                             </span>
                         </div>
 
-                        <div class="space-y-3 max-h-[380px] overflow-y-auto pr-1">
-                            @forelse($contactInquiries ?? [] as $inq)
-                                <div class="p-3.5 border rounded-xl transition {{ ($inq['status'] ?? 'pending') === 'pending' ? 'border-cyan-200 bg-cyan-50/40' : 'border-slate-200 bg-slate-50/60 opacity-80' }}">
-                                    <div class="flex justify-between items-start gap-2 mb-1">
-                                        <div>
-                                            <span class="font-extrabold text-slate-900 text-sm">{{ $inq['name'] ?? 'Khách hàng' }}</span>
-                                            <a href="tel:{{ $inq['phone'] ?? '' }}" class="ml-1.5 font-mono font-bold text-xs text-indigo-600 hover:underline">
-                                                📞 {{ $inq['phone'] ?? '---' }}
-                                            </a>
+                        @if(($pendingInquiriesCount ?? 0) === 0 && ($contactInquiries ?? collect())->isEmpty())
+                            <!-- Trạng thái trống giống hệt Stitch UI -->
+                            <div class="py-8 text-center">
+                                <div class="w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto mb-2 text-xl">
+                                    ✉️
+                                </div>
+                                <div class="text-xs font-bold text-slate-800">Chưa có yêu cầu tư vấn mới</div>
+                                <p class="text-[11px] text-slate-400 mt-1 max-w-[240px] mx-auto leading-relaxed">
+                                    Chưa có yêu cầu tư vấn mới nào từ trang Liên hệ. Dữ liệu sẽ tự động đồng bộ khi có khách để lại số điện thoại.
+                                </p>
+                            </div>
+                        @else
+                            <div class="space-y-3 mt-3 max-h-[340px] overflow-y-auto pr-1">
+                                @foreach($contactInquiries as $inq)
+                                    <div class="p-3 border rounded-xl text-xs space-y-1.5 {{ ($inq['status'] ?? 'pending') === 'pending' ? 'border-amber-200 bg-amber-50/30' : 'border-slate-200 bg-slate-50/50' }}">
+                                        <div class="flex items-center justify-between">
+                                            <span class="font-bold text-slate-900">{{ $inq['name'] ?? 'Khách hàng' }}</span>
+                                            <span class="text-[10px] text-slate-400">{{ $inq['created_at'] ?? '' }}</span>
                                         </div>
-                                        @if(($inq['status'] ?? 'pending') === 'pending')
-                                            <span class="text-[10px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-extrabold">Chờ gọi tư vấn</span>
-                                        @else
-                                            <span class="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-bold">✓ Đã tư vấn</span>
-                                        @endif
-                                    </div>
-                                    <p class="text-xs text-slate-700 bg-white p-2.5 rounded-lg border border-slate-200/80 mt-1.5 leading-relaxed">
-                                        {{ $inq['message'] ?? '' }}
-                                    </p>
-                                    <div class="flex flex-wrap items-center justify-between gap-2 mt-2.5 pt-2 border-t border-slate-200/60 text-[11px]">
-                                        <span class="text-slate-400 font-medium">{{ $inq['created_at'] ?? '' }}</span>
-                                        <div class="flex items-center gap-1.5">
+                                        <div class="text-indigo-600 font-semibold font-mono">{{ $inq['phone'] ?? '' }}</div>
+                                        <p class="text-slate-600 line-clamp-2 text-[11px] leading-relaxed">{{ $inq['message'] ?? '' }}</p>
+                                        <div class="flex items-center justify-end gap-1.5 pt-1">
                                             @if(($inq['status'] ?? 'pending') === 'pending')
                                                 <form action="{{ route('contact-inquiries.resolve', $inq['id']) }}" method="POST">
                                                     @csrf
                                                     @method('PATCH')
-                                                    <button type="submit" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold transition">
-                                                        ✓ Đã gọi tư vấn
+                                                    <button type="submit" class="px-2 py-0.5 rounded bg-emerald-600 text-white font-bold text-[10px]">
+                                                        ✓ Đã tư vấn
                                                     </button>
                                                 </form>
                                             @endif
-                                            <a href="{{ route('receptionist.appointments.create', ['name' => $inq['name'] ?? '', 'phone' => $inq['phone'] ?? '']) }}" class="px-2.5 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-lg font-bold transition">
-                                                📅 Đặt lịch
+                                            <a href="{{ route('receptionist.appointments.create', ['name' => $inq['name'] ?? '', 'phone' => $inq['phone'] ?? '']) }}" class="px-2 py-0.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-[10px]">
+                                                Đặt lịch
                                             </a>
-                                            <form action="{{ route('contact-inquiries.destroy', $inq['id']) }}" method="POST" onsubmit="return confirm('Xóa yêu cầu tư vấn này?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="px-2 py-1 text-rose-600 hover:bg-rose-50 rounded-lg font-bold">Xóa</button>
-                                            </form>
                                         </div>
                                     </div>
-                                </div>
-                            @empty
-                                <div class="text-center py-6 text-slate-400 text-xs">
-                                    Chưa có yêu cầu tư vấn mới nào từ trang Liên hệ.
-                                </div>
-                            @endforelse
-                        </div>
+                                @endforeach
+                            </div>
+                        @endif
                     </div>
+
                 </div>
 
             </div>

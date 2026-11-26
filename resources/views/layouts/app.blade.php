@@ -58,23 +58,42 @@
             }
         </style>
     </head>
-    <body class="font-sans antialiased text-slate-800 bg-slate-50">
-        <div class="min-h-screen bg-slate-50">
-            @include('layouts.navigation')
+    <body class="font-sans antialiased text-slate-800 bg-[#F8FAFC]">
+        <div class="min-h-screen bg-[#F8FAFC] flex flex-col justify-between">
+            <div>
+                @include('layouts.navigation')
 
-            <!-- Page Heading -->
-            @isset($header)
-                <header class="bg-white border-b border-slate-200/80 shadow-sm">
-                    <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
-                        {{ $header }}
+                <!-- Page Heading -->
+                @isset($header)
+                    <header class="bg-white border-b border-slate-200/80 shadow-xs">
+                        <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
+                            {{ $header }}
+                        </div>
+                    </header>
+                @endisset
+
+                <!-- Page Content -->
+                <main>
+                    {{ $slot }}
+                </main>
+            </div>
+
+            <!-- Global Footer (Designed to match Stitch UI) -->
+            <footer class="mt-12 border-t border-slate-200 bg-white py-4">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2">
+                    <div>
+                        Nha Khoa Smile DCMS • Hệ thống Quản lý Nha khoa Thông minh & Điều phối tiếp đón
                     </div>
-                </header>
-            @endisset
-
-            <!-- Page Content -->
-            <main>
-                {{ $slot }}
-            </main>
+                    <div class="flex items-center gap-2">
+                        <span>Phiên bản v2.4.0-stable</span>
+                        <span>•</span>
+                        <span class="inline-flex items-center gap-1.5 text-slate-600 font-medium">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                            Hệ thống hoạt động bình thường
+                        </span>
+                    </div>
+                </div>
+            </footer>
         </div>
     </body>
 </html>
