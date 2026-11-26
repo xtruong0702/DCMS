@@ -301,12 +301,12 @@
                     </a>
 
                     <!-- Chuông thông báo có Dropdown xem nhanh & badge đếm chính xác -->
-                    <x-dropdown align="right" width="80">
+                    <x-dropdown align="right" width="w-[calc(100vw-2rem)] sm:w-[420px] max-w-[430px]" contentClasses="py-0 bg-white shadow-2xl rounded-2xl border border-slate-200/90 overflow-hidden">
                         <x-slot name="trigger">
-                            <button type="button" class="relative p-2 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl border border-transparent hover:border-indigo-100 transition shrink-0 focus:outline-none" title="Trung tâm Thông báo & Nhắc việc">
+                            <button type="button" class="relative p-2 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50/80 rounded-xl border border-transparent hover:border-indigo-100 transition shrink-0 focus:outline-none" title="Trung tâm Thông báo & Nhắc việc">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
                                 @if($todayAlertsCount > 0)
-                                    <span class="absolute -top-0.5 -right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-600 px-1 text-[10px] font-extrabold text-white shadow-xs animate-pulse">
+                                    <span class="absolute -top-0.5 -right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-rose-600 px-1 text-[10px] font-black text-white ring-2 ring-white shadow-xs animate-pulse">
                                         {{ $todayAlertsCount > 99 ? '99+' : $todayAlertsCount }}
                                     </span>
                                 @endif
@@ -314,86 +314,181 @@
                         </x-slot>
 
                         <x-slot name="content">
-                            <div class="px-4 py-3 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
-                                <span class="text-xs font-extrabold text-slate-900">🔔 Thông Báo Hệ Thống</span>
+                            <!-- Custom Scrollbar Style -->
+                            <style>
+                                .notify-dropdown-scroll::-webkit-scrollbar {
+                                    width: 5px;
+                                }
+                                .notify-dropdown-scroll::-webkit-scrollbar-track {
+                                    background: transparent;
+                                }
+                                .notify-dropdown-scroll::-webkit-scrollbar-thumb {
+                                    background: #cbd5e1;
+                                    border-radius: 9999px;
+                                }
+                                .notify-dropdown-scroll::-webkit-scrollbar-thumb:hover {
+                                    background: #94a3b8;
+                                }
+                            </style>
+
+                            <!-- Header -->
+                            <div class="px-4 py-3.5 bg-gradient-to-r from-slate-50 via-indigo-50/20 to-blue-50/20 border-b border-slate-100 flex items-center justify-between gap-2">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="w-8 h-8 rounded-xl bg-indigo-600/10 text-indigo-600 flex items-center justify-center text-sm font-bold shrink-0 shadow-xs">
+                                        🔔
+                                    </div>
+                                    <div>
+                                        <div class="text-xs font-black text-slate-900 tracking-tight leading-tight">Thông Báo Hệ Thống</div>
+                                        <div class="text-[10px] font-medium text-slate-400 mt-0.5 leading-none">Nhắc việc & điều phối công việc</div>
+                                    </div>
+                                </div>
                                 @if($todayAlertsCount > 0)
-                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-rose-100 text-rose-700">{{ $todayAlertsCount }} cần xử lý</span>
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-rose-50 text-rose-700 border border-rose-200/80 shadow-xs shrink-0">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span>
+                                        <span>{{ $todayAlertsCount }} cần xử lý</span>
+                                    </span>
                                 @else
-                                    <span class="text-[10px] font-semibold text-slate-400">Không có việc tồn đọng</span>
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/80 shrink-0">
+                                        <svg class="w-3 h-3 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                        <span>Đã xử lý xong</span>
+                                    </span>
                                 @endif
                             </div>
 
-                            <div class="divide-y divide-slate-100 max-h-80 overflow-y-auto">
+                            <!-- List items -->
+                            <div class="divide-y divide-slate-100/90 max-h-[380px] overflow-y-auto notify-dropdown-scroll" style="scrollbar-width: thin; scrollbar-color: #cbd5e1 transparent;">
                                 @if($waitingQueueCount > 0)
-                                    <a href="{{ $role === 'doctor' ? route('doctor.queue.index') : ($role === 'receptionist' ? route('receptionist.queue.index') : route('notifications.index')) }}" class="flex items-start gap-3 px-4 py-3 hover:bg-orange-50/60 transition">
-                                        <span class="w-8 h-8 rounded-xl bg-orange-100 text-orange-700 flex items-center justify-center text-sm shrink-0">🪑</span>
-                                        <div class="text-xs">
-                                            <div class="font-extrabold text-slate-900">{{ $waitingQueueCount }} bệnh nhân đang chờ tại sảnh</div>
-                                            <div class="text-[11px] text-slate-500 mt-0.5">Đã Check-in, sẵn sàng gọi vào phòng khám</div>
+                                    <a href="{{ $role === 'doctor' ? route('doctor.queue.index') : ($role === 'receptionist' ? route('receptionist.queue.index') : route('notifications.index')) }}" class="flex items-center justify-between gap-3 px-4 py-3 hover:bg-amber-50/50 transition-all duration-150 group">
+                                        <div class="flex items-start gap-3 min-w-0">
+                                            <div class="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 border border-amber-200/70 flex items-center justify-center text-base shrink-0 shadow-xs group-hover:scale-105 transition-transform">
+                                                🪑
+                                            </div>
+                                            <div class="min-w-0">
+                                                <div class="text-xs font-bold text-slate-800 group-hover:text-amber-700 transition leading-snug">
+                                                    {{ $waitingQueueCount }} bệnh nhân đang chờ tại sảnh
+                                                </div>
+                                                <div class="text-[11px] text-slate-500 mt-0.5 leading-relaxed">
+                                                    Đã Check-in, sẵn sàng gọi vào phòng khám
+                                                </div>
+                                            </div>
                                         </div>
+                                        <svg class="w-4 h-4 text-slate-300 group-hover:text-amber-600 group-hover:translate-x-0.5 transition shrink-0 self-center" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                                     </a>
                                 @endif
 
                                 @if($pendingAppsCount > 0)
-                                    <a href="{{ $role === 'receptionist' ? route('receptionist.appointments.index') : ($role === 'admin' ? route('admin.appointments.index') : route('notifications.index')) }}" class="flex items-start gap-3 px-4 py-3 hover:bg-indigo-50/60 transition">
-                                        <span class="w-8 h-8 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center text-sm shrink-0">⏳</span>
-                                        <div class="text-xs">
-                                            <div class="font-extrabold text-slate-900">{{ $pendingAppsCount }} lịch hẹn mới chờ xác nhận</div>
-                                            <div class="text-[11px] text-slate-500 mt-0.5">Khách vừa đặt lịch, cần gọi xác nhận & phân công BS</div>
+                                    <a href="{{ $role === 'receptionist' ? route('receptionist.appointments.index') : ($role === 'admin' ? route('admin.appointments.index') : route('notifications.index')) }}" class="flex items-center justify-between gap-3 px-4 py-3 hover:bg-indigo-50/50 transition-all duration-150 group">
+                                        <div class="flex items-start gap-3 min-w-0">
+                                            <div class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-200/70 flex items-center justify-center text-base shrink-0 shadow-xs group-hover:scale-105 transition-transform">
+                                                ⏳
+                                            </div>
+                                            <div class="min-w-0">
+                                                <div class="text-xs font-bold text-slate-800 group-hover:text-indigo-600 transition leading-snug">
+                                                    {{ $pendingAppsCount }} lịch hẹn mới chờ xác nhận
+                                                </div>
+                                                <div class="text-[11px] text-slate-500 mt-0.5 leading-relaxed">
+                                                    Khách vừa đặt lịch, cần gọi xác nhận & phân công BS
+                                                </div>
+                                            </div>
                                         </div>
+                                        <svg class="w-4 h-4 text-slate-300 group-hover:text-indigo-600 group-hover:translate-x-0.5 transition shrink-0 self-center" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                                     </a>
                                 @endif
 
                                 @if($unpaidInvoicesCount > 0 && in_array($role, ['receptionist', 'admin']))
-                                    <a href="{{ $role === 'receptionist' ? route('receptionist.invoices.index') : route('admin.invoices.index') }}" class="flex items-start gap-3 px-4 py-3 hover:bg-emerald-50/60 transition">
-                                        <span class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-sm shrink-0">🧾</span>
-                                        <div class="text-xs">
-                                            <div class="font-extrabold text-slate-900">{{ $unpaidInvoicesCount }} hóa đơn & đơn thuốc chờ thu</div>
-                                            <div class="text-[11px] text-slate-500 mt-0.5">Bác sĩ đã kê đơn, chờ thu ngân & phát thuốc</div>
+                                    <a href="{{ $role === 'receptionist' ? route('receptionist.invoices.index') : route('admin.invoices.index') }}" class="flex items-center justify-between gap-3 px-4 py-3 hover:bg-emerald-50/50 transition-all duration-150 group">
+                                        <div class="flex items-start gap-3 min-w-0">
+                                            <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-200/70 flex items-center justify-center text-base shrink-0 shadow-xs group-hover:scale-105 transition-transform">
+                                                🧾
+                                            </div>
+                                            <div class="min-w-0">
+                                                <div class="text-xs font-bold text-slate-800 group-hover:text-emerald-700 transition leading-snug">
+                                                    {{ $unpaidInvoicesCount }} hóa đơn & đơn thuốc chờ thu
+                                                </div>
+                                                <div class="text-[11px] text-slate-500 mt-0.5 leading-relaxed">
+                                                    Bác sĩ đã kê đơn, chờ thu ngân & phát thuốc
+                                                </div>
+                                            </div>
                                         </div>
+                                        <svg class="w-4 h-4 text-slate-300 group-hover:text-emerald-600 group-hover:translate-x-0.5 transition shrink-0 self-center" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                                     </a>
                                 @endif
 
                                 @if($dueOrOverdueCount > 0)
-                                    <a href="{{ route('notifications.index') }}" class="flex items-start gap-3 px-4 py-3 hover:bg-amber-50/60 transition">
-                                        <span class="w-8 h-8 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-sm shrink-0">⏰</span>
-                                        <div class="text-xs">
-                                            <div class="font-extrabold text-slate-900">{{ $dueOrOverdueCount }} lịch hẹn đến giờ / quá giờ</div>
-                                            <div class="text-[11px] text-slate-500 mt-0.5">Cần hỗ trợ khách Check-in hoặc liên hệ xác nhận</div>
+                                    <a href="{{ route('notifications.index') }}" class="flex items-center justify-between gap-3 px-4 py-3 hover:bg-rose-50/50 transition-all duration-150 group">
+                                        <div class="flex items-start gap-3 min-w-0">
+                                            <div class="w-9 h-9 rounded-xl bg-rose-50 text-rose-600 border border-rose-200/70 flex items-center justify-center text-base shrink-0 shadow-xs group-hover:scale-105 transition-transform">
+                                                ⏰
+                                            </div>
+                                            <div class="min-w-0">
+                                                <div class="text-xs font-bold text-slate-800 group-hover:text-rose-700 transition leading-snug">
+                                                    {{ $dueOrOverdueCount }} lịch hẹn đến giờ / quá giờ
+                                                </div>
+                                                <div class="text-[11px] text-slate-500 mt-0.5 leading-relaxed">
+                                                    Cần hỗ trợ khách Check-in hoặc liên hệ xác nhận
+                                                </div>
+                                            </div>
                                         </div>
+                                        <svg class="w-4 h-4 text-slate-300 group-hover:text-rose-600 group-hover:translate-x-0.5 transition shrink-0 self-center" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                                     </a>
                                 @endif
 
                                 @if(($pendingInquiriesNavCount ?? 0) > 0 && in_array($role, ['receptionist', 'admin']))
-                                    <a href="{{ route('notifications.index') }}" class="flex items-start gap-3 px-4 py-3 hover:bg-cyan-50/60 transition">
-                                        <span class="w-8 h-8 rounded-xl bg-cyan-100 text-cyan-700 flex items-center justify-center text-sm shrink-0">📩</span>
-                                        <div class="text-xs">
-                                            <div class="font-extrabold text-slate-900">{{ $pendingInquiriesNavCount }} yêu cầu tư vấn từ Website</div>
-                                            <div class="text-[11px] text-slate-500 mt-0.5">Khách để lại SĐT & câu hỏi, chờ gọi tư vấn</div>
+                                    <a href="{{ route('notifications.index') }}" class="flex items-center justify-between gap-3 px-4 py-3 hover:bg-cyan-50/50 transition-all duration-150 group">
+                                        <div class="flex items-start gap-3 min-w-0">
+                                            <div class="w-9 h-9 rounded-xl bg-cyan-50 text-cyan-600 border border-cyan-200/70 flex items-center justify-center text-base shrink-0 shadow-xs group-hover:scale-105 transition-transform">
+                                                📩
+                                            </div>
+                                            <div class="min-w-0">
+                                                <div class="text-xs font-bold text-slate-800 group-hover:text-cyan-700 transition leading-snug">
+                                                    {{ $pendingInquiriesNavCount }} yêu cầu tư vấn từ Website
+                                                </div>
+                                                <div class="text-[11px] text-slate-500 mt-0.5 leading-relaxed">
+                                                    Khách để lại SĐT & câu hỏi, chờ gọi tư vấn
+                                                </div>
+                                            </div>
                                         </div>
+                                        <svg class="w-4 h-4 text-slate-300 group-hover:text-cyan-600 group-hover:translate-x-0.5 transition shrink-0 self-center" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                                     </a>
                                 @endif
 
                                 @if($lowStockCount > 0 && $role === 'admin')
-                                    <a href="{{ route('admin.medicines.index') }}" class="flex items-start gap-3 px-4 py-3 hover:bg-rose-50/60 transition">
-                                        <span class="w-8 h-8 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center text-sm shrink-0">💊</span>
-                                        <div class="text-xs">
-                                            <div class="font-extrabold text-slate-900">{{ $lowStockCount }} loại thuốc sắp hết tồn kho</div>
-                                            <div class="text-[11px] text-slate-500 mt-0.5">Tồn kho ≤ 20 đơn vị, cần nhập bổ sung</div>
+                                    <a href="{{ route('admin.medicines.index') }}" class="flex items-center justify-between gap-3 px-4 py-3 hover:bg-purple-50/50 transition-all duration-150 group">
+                                        <div class="flex items-start gap-3 min-w-0">
+                                            <div class="w-9 h-9 rounded-xl bg-purple-50 text-purple-600 border border-purple-200/70 flex items-center justify-center text-base shrink-0 shadow-xs group-hover:scale-105 transition-transform">
+                                                💊
+                                            </div>
+                                            <div class="min-w-0">
+                                                <div class="text-xs font-bold text-slate-800 group-hover:text-purple-700 transition leading-snug">
+                                                    {{ $lowStockCount }} loại thuốc sắp hết tồn kho
+                                                </div>
+                                                <div class="text-[11px] text-slate-500 mt-0.5 leading-relaxed">
+                                                    Tồn kho ≤ 20 đơn vị, cần nhập bổ sung
+                                                </div>
+                                            </div>
                                         </div>
+                                        <svg class="w-4 h-4 text-slate-300 group-hover:text-purple-600 group-hover:translate-x-0.5 transition shrink-0 self-center" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                                     </a>
                                 @endif
 
                                 @if($todayAlertsCount === 0)
-                                    <div class="px-4 py-6 text-center text-xs text-slate-400">
-                                        Hiện tại không có thông báo mới cần xử lý.
+                                    <div class="px-6 py-10 text-center">
+                                        <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto mb-3 text-2xl shadow-xs">
+                                            ✨
+                                        </div>
+                                        <div class="text-xs font-bold text-slate-800">Không có việc tồn đọng</div>
+                                        <p class="text-[11px] text-slate-400 mt-1 leading-relaxed max-w-[260px] mx-auto">
+                                            Tất cả lịch hẹn, hàng đợi khám và thanh toán hiện tại đều đã được xử lý xong.
+                                        </p>
                                     </div>
                                 @endif
                             </div>
 
-                            <div class="p-2 bg-slate-50 border-t border-slate-100">
-                                <a href="{{ route('notifications.index') }}" class="block w-full text-center py-2 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-extrabold transition">
-                                    Mở Trung Tâm Thông Báo Đầy Đủ &rarr;
+                            <!-- Footer -->
+                            <div class="p-3 bg-slate-50/90 border-t border-slate-100">
+                                <a href="{{ route('notifications.index') }}" class="w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-gradient-to-r from-indigo-600 via-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 active:scale-[0.99] text-white text-xs font-bold shadow-xs shadow-indigo-600/20 hover:shadow-md hover:shadow-indigo-600/30 transition-all duration-150">
+                                    <span>Mở trung tâm thông báo đầy đủ</span>
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                                 </a>
                             </div>
                         </x-slot>

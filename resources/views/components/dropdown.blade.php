@@ -11,7 +11,9 @@ $width = match ($width) {
     '48' => 'w-56',
     '56' => 'w-60',
     '64' => 'w-64',
-    default => $width,
+    '80' => 'w-80',
+    '96' => 'w-96',
+    default => (str_starts_with($width, 'w-') || str_starts_with($width, 'max-w-') ? $width : (is_numeric($width) ? 'w-' . $width : $width)),
 };
 @endphp
 
