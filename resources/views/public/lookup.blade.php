@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'Tra Cứu Hồ Sơ & Lịch Hẹn Ưu Tiên - Smile Atelier')
+@section('title', 'Tra Cứu Lịch Hẹn & Hồ Sơ - Nha Khoa Smile')
 
 @section('content')
 <!-- Hero Tra Cứu -->
@@ -36,11 +36,11 @@
                 <div class="w-12 h-12 rounded-2xl bg-[#EBF4F0] text-[#063B30] flex items-center justify-center text-xl mx-auto">📱</div>
                 <h3 class="font-serif-luxury text-xl font-bold text-slate-900">Kiểm Tra Hồ Sơ Nhanh Chóng</h3>
                 <p class="text-xs text-slate-500 leading-relaxed font-light">
-                    Hệ thống tự động hiển thị Bác sĩ Nghệ nhân phụ trách, thời gian hẹn và hóa đơn điện tử bảo hành của quý khách.
+                    Hệ thống tự động hiển thị Bác sĩ phụ trách, thời gian hẹn và hóa đơn điện tử của quý khách tại Nha Khoa Smile.
                 </p>
                 <div class="pt-2">
                     <a href="{{ route('public.booking') }}" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#063B30] text-[#FDFBF7] text-xs font-bold hover:bg-[#042A22] transition">
-                        📅 Chưa có lịch hẹn? Đặt lịch ưu tiên ngay
+                        📅 Chưa có lịch hẹn? Đặt lịch online ngay
                     </a>
                 </div>
             </div>
@@ -49,7 +49,7 @@
                 <div class="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center text-xl mx-auto">⚠️</div>
                 <h3 class="font-serif-luxury text-xl font-bold text-slate-900">Không tìm thấy hồ sơ với SĐT "{{ $phone }}"</h3>
                 <p class="text-xs text-slate-500 font-light">
-                    Vui lòng kiểm tra lại số điện thoại hoặc liên hệ Hotline Concierge 1900 6868 để được hỗ trợ tra cứu trực tiếp.
+                    Vui lòng kiểm tra lại số điện thoại hoặc liên hệ Hotline 1900 1234 để được bộ phận Lễ tân hỗ trợ tra cứu trực tiếp.
                 </p>
                 <div class="pt-2">
                     <a href="{{ route('public.booking') }}" class="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-[#063B30] text-[#FDFBF7] text-xs font-bold hover:bg-[#042A22] transition">

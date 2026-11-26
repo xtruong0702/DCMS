@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'Hội Đồng Bác Sĩ Nghệ Nhân - Smile Atelier')
+@section('title', 'Đội Ngũ Bác Sĩ Chuyên Khoa - Nha Khoa Smile')
 
 @section('content')
 <!-- Hero Đội ngũ Bác sĩ -->
@@ -8,13 +8,13 @@
     <div class="max-w-4xl mx-auto px-4 sm:px-6 text-center relative z-10 space-y-4">
         <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-[#C5A880]/40 text-[#E6D5B8] text-[11px] font-bold uppercase tracking-widest shadow-2xs">
             <span class="text-[#C5A880]">✦</span>
-            <span>Master Doctors & Artists</span>
+            <span>Đội Ngũ Bác Sĩ Chuyên Khoa</span>
         </div>
         <h1 class="font-serif-luxury text-3xl sm:text-5xl font-bold tracking-tight">
-            Hội Đồng Bác Sĩ <span class="italic font-normal text-[#E6D5B8]">Nghệ Nhân</span>
+            Đội Ngũ Bác Sĩ <span class="italic font-normal text-[#E6D5B8]">Nha Khoa Smile</span>
         </h1>
         <p class="text-slate-200 text-xs sm:text-sm max-w-xl mx-auto font-light leading-relaxed">
-            Hội tụ các chuyên gia tu nghiệp Harvard, Geneva, Paris với hơn 15 năm kinh nghiệm, mang triết lý điều trị chuẩn y khoa kết hợp tính thẩm mỹ nghệ thuật đỉnh cao.
+            Hội tụ các chuyên gia giàu kinh nghiệm tốt nghiệp các trường Y khoa uy tín, tu nghiệp chuyên sâu trong và ngoài nước, mang triết lý điều trị chuẩn y khoa và tận tâm vì sức khỏe người bệnh.
         </p>
     </div>
 </section>
@@ -121,7 +121,7 @@
                                 </div>
                                 <div>
                                     <span class="text-slate-400 font-medium block text-[10px]">Phòng khám riêng</span>
-                                    <span class="font-bold text-[#063B30]">Private Lounge 1:1</span>
+                                    <span class="font-bold text-[#063B30]">Thăm khám 1:1 Chu Đáo</span>
                                 </div>
                             </div>
 
@@ -141,24 +141,24 @@
         <div class="bg-white rounded-3xl p-6 sm:p-8 border border-[#EAE5DD] shadow-xs">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
                 <div>
-                    <span class="text-[10px] font-bold uppercase tracking-widest text-[#A37F4E]">Hội Đồng Thẩm Định</span>
-                    <h3 class="font-serif-luxury text-xl sm:text-2xl font-bold text-slate-900 mt-1">Tiêu Chuẩn Khắt Khe Của Bác Sĩ Nghệ Nhân</h3>
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-[#A37F4E]">Hội Đồng Chuyên Môn</span>
+                    <h3 class="font-serif-luxury text-xl sm:text-2xl font-bold text-slate-900 mt-1">Tiêu Chuẩn Chuyên Môn Bác Sĩ Nha Khoa Smile</h3>
                     <p class="text-xs text-slate-500 font-light mt-1.5 leading-relaxed">
-                        Mỗi ca điều trị đều được hội chẩn trước tại phòng VIP, đảm bảo tỷ lệ nụ cười hoàn mỹ và an toàn sinh học tuyệt đối.
+                        Mỗi ca điều trị đều được thăm khám cẩn trọng, đưa ra phác đồ tối ưu giúp bảo tồn răng thật và tiết kiệm chi phí cho người bệnh.
                     </p>
                 </div>
                 <div class="lg:col-span-2 grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div class="p-4 rounded-2xl bg-[#FBF9F5] border border-[#EAE5DD]">
-                        <div class="font-bold text-slate-900 text-xs mb-1">🎓 Đào Tạo Quốc Tế</div>
-                        <p class="text-[11px] text-slate-500 font-light leading-relaxed">Tu nghiệp tại các đại học danh tiếng Thụy Sĩ, Hoa Kỳ, Pháp.</p>
+                        <div class="font-bold text-slate-900 text-xs mb-1">🎓 Đào Tạo Chính Quy</div>
+                        <p class="text-[11px] text-slate-500 font-light leading-relaxed">Tốt nghiệp ĐH Y Dược, tu nghiệp chuyên sâu các kỹ thuật mới.</p>
                     </div>
                     <div class="p-4 rounded-2xl bg-[#FBF9F5] border border-[#EAE5DD]">
-                        <div class="font-bold text-slate-900 text-xs mb-1">🎨 Gu Thẩm Mỹ Tỷ Lệ Vàng</div>
+                        <div class="font-bold text-slate-900 text-xs mb-1">🎨 Thẩm Mỹ Tự Nhiên</div>
                         <p class="text-[11px] text-slate-500 font-light leading-relaxed">Thiết kế form răng hài hòa với đường cười, nhân trung và khuôn mặt.</p>
                     </div>
                     <div class="p-4 rounded-2xl bg-[#FBF9F5] border border-[#EAE5DD]">
-                        <div class="font-bold text-slate-900 text-xs mb-1">👑 Tận Tụy & Bảo Mật</div>
-                        <p class="text-[11px] text-slate-500 font-light leading-relaxed">Tiếp đón 1:1, bảo mật thông tin hồ sơ thượng khách trọn đời.</p>
+                        <div class="font-bold text-slate-900 text-xs mb-1">🛡️ Y Đức & Bảo Mật</div>
+                        <p class="text-[11px] text-slate-500 font-light leading-relaxed">Tiếp đón tận tâm, bảo mật thông tin hồ sơ bệnh án trọn đời.</p>
                     </div>
                 </div>
             </div>

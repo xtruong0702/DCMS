@@ -1,20 +1,20 @@
 @extends('layouts.public')
 
-@section('title', 'Đặt Lịch Hẹn Khám Ưu Tiên - Smile Atelier VIP Concierge')
+@section('title', 'Đặt Lịch Khám Online - Nha Khoa Smile')
 
 @section('content')
-<!-- Hero Đặt Lịch Khám VIP -->
+<!-- Hero Đặt Lịch Khám -->
 <section class="relative overflow-hidden bg-[#063B30] text-white py-16 sm:py-20 border-b border-[#C5A880]/30">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 text-center relative z-10 space-y-4">
         <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-[#C5A880]/40 text-[#E6D5B8] text-[11px] font-bold uppercase tracking-widest shadow-2xs">
             <span class="text-[#C5A880]">✦</span>
-            <span>Smile Atelier VIP Concierge</span>
+            <span>Nha Khoa Smile - Đặt Lịch Khám Trực Tuyến</span>
         </div>
         <h1 class="font-serif-luxury text-3xl sm:text-5xl font-bold tracking-tight">
-            Đặt Lịch Hẹn <span class="italic font-normal text-[#E6D5B8]">Khám Ưu Tiên</span>
+            Đặt Lịch Khám <span class="italic font-normal text-[#E6D5B8]">Nha Khoa Trực Tuyến</span>
         </h1>
         <p class="text-slate-200 text-xs sm:text-sm max-w-xl mx-auto font-light leading-relaxed">
-            Trải nghiệm quy trình thăm khám 1:1 cùng Bác sĩ Nghệ nhân tại Private Lounge riêng tư, thưởng trà thảo mộc thượng hạng và quét 3D tỷ lệ nụ cười.
+            Chủ động lựa chọn Bác sĩ phụ trách, dịch vụ mong muốn và khung giờ khám thuận tiện nhất. Nhận mã số ưu tiên vào khám đúng giờ không chờ đợi.
         </p>
     </div>
 </section>
@@ -38,10 +38,10 @@
                 <!-- Quy định đặt lịch trước -->
                 <div class="p-4 rounded-2xl bg-[#FDF8EE] border border-[#E9DCBF] text-[#785E34] text-xs leading-relaxed space-y-1">
                     <div class="font-bold flex items-center gap-1.5 text-[#5C4520]">
-                        <span>📌</span> <span>Chính sách tiếp đón thượng khách:</span>
+                        <span>📌</span> <span>Quy định tiếp đón & khám bệnh:</span>
                     </div>
                     <p class="font-light">
-                        Hệ thống nhận đặt lịch hẹn <strong>từ ngày mai trở đi</strong> (khung giờ <strong>08:00 – 20:00</strong>) để phòng khám chuẩn bị Private Lounge và trà đón tiếp chu đáo nhất. Nếu quý khách muốn <strong>khám ngay trong ngày hôm nay</strong>, xin vui lòng đến trực tiếp hoặc liên hệ Hotline <strong class="text-[#063B30]">1900 6868</strong> để được đón tiếp ưu tiên.
+                        Hệ thống nhận đặt lịch trực tuyến <strong>từ ngày mai trở đi</strong> (khung giờ <strong>08:00 – 20:00</strong>) để phòng khám sắp xếp ghế khám và hồ sơ bệnh án chu đáo nhất. Nếu quý khách muốn <strong>khám ngay trong ngày hôm nay</strong>, xin vui lòng đến trực tiếp phòng khám hoặc liên hệ Hotline <strong class="text-[#063B30]">1900 1234</strong> để được tiếp đón ngay.
                     </p>
                 </div>
 
@@ -182,73 +182,73 @@
                     <!-- 4. Ghi chú yêu cầu riêng -->
                     <div>
                         <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                            Yêu cầu đặc biệt cho Concierge (Tùy chọn)
+                            Ghi chú tình trạng răng miệng (Tùy chọn)
                         </label>
                         <textarea name="note" rows="3"
-                            placeholder="Ví dụ: Cần xe riêng đưa đón, yêu cầu phòng VIP riêng tư tuyệt đối, sở thích trà hoa cúc hoặc trà sen..."
+                            placeholder="Mô tả triệu chứng hiện tại (ví dụ: đau răng hàm dưới, muốn cạo vôi răng, răng bị mẻ, cần tư vấn niềng răng...)"
                             class="w-full rounded-xl border-[#EAE5DD] focus:border-[#063B30] focus:ring-[#063B30] text-xs py-2.5 px-3 bg-[#FBF9F5] font-medium resize-none">{{ old('note') }}</textarea>
                     </div>
 
                     <button type="submit" class="w-full py-3.5 px-6 rounded-xl bg-[#063B30] hover:bg-[#042A22] text-[#FDFBF7] font-bold text-xs uppercase tracking-wider shadow-sm transition flex items-center justify-center gap-2 border border-[#C5A880]/30">
-                        <span>📅 Xác Nhận Đặt Lịch Hẹn Ưu Tiên</span>
+                        <span>📅 Xác Nhận Đăng Ký Khám</span>
                     </button>
                 </form>
             </div>
 
-            <!-- Cột quy trình & Hotline Thượng khách (5 cột) -->
+            <!-- Cột quy trình & Hotline (5 cột) -->
             <div class="lg:col-span-5 space-y-6">
                 <!-- 4 Đặc quyền tiếp đón -->
                 <div class="bg-white rounded-3xl p-6 sm:p-7 border border-[#EAE5DD] shadow-xs space-y-4">
-                    <span class="text-[10px] font-bold uppercase tracking-widest text-[#A37F4E]">Đặc Quyền Thượng Khách</span>
-                    <h3 class="font-serif-luxury text-lg font-bold text-slate-900">Quy Trình Tiếp Đón Thư Thái</h3>
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-[#A37F4E]">Tiêu Chuẩn Nha Khoa Smile</span>
+                    <h3 class="font-serif-luxury text-lg font-bold text-slate-900">Quy Trình Tiếp Đón Chu Đáo</h3>
                     
                     <div class="space-y-3.5 pt-1">
                         <div class="flex items-start gap-3">
                             <span class="w-6 h-6 rounded-full bg-[#063B30] text-[#E6D5B8] text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">1</span>
                             <div>
-                                <div class="text-xs font-bold text-slate-900">Thưởng trà thảo mộc & Thăm vấn 1:1</div>
-                                <p class="text-[11px] text-slate-500 font-light mt-0.5">Đón tiếp tại Private Lounge riêng biệt, không chờ đợi.</p>
+                                <div class="text-xs font-bold text-slate-900">Tiếp đón & Thăm khám 1:1</div>
+                                <p class="text-[11px] text-slate-500 font-light mt-0.5">Bác sĩ chuyên khoa trực tiếp kiểm tra và tư vấn phác đồ phù hợp.</p>
                             </div>
                         </div>
                         <div class="flex items-start gap-3">
                             <span class="w-6 h-6 rounded-full bg-[#063B30] text-[#E6D5B8] text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">2</span>
                             <div>
-                                <div class="text-xs font-bold text-slate-900">Quét CT 3D & Mô phỏng nụ cười</div>
-                                <p class="text-[11px] text-slate-500 font-light mt-0.5">Xem trước kết quả thẩm mỹ chuẩn tỷ lệ vàng khuôn mặt.</p>
+                                <div class="text-xs font-bold text-slate-900">Chụp phim 3D & Sơ đồ răng DCMS</div>
+                                <p class="text-[11px] text-slate-500 font-light mt-0.5">Lưu trữ hình ảnh và tình trạng 32 răng trên bệnh án điện tử.</p>
                             </div>
                         </div>
                         <div class="flex items-start gap-3">
                             <span class="w-6 h-6 rounded-full bg-[#063B30] text-[#E6D5B8] text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">3</span>
                             <div>
-                                <div class="text-xs font-bold text-slate-900">Điều trị êm ái với âm nhạc sóng não</div>
-                                <p class="text-[11px] text-slate-500 font-light mt-0.5">Phòng vô trùng áp lực dương tuyệt đối chuẩn Thụy Sĩ.</p>
+                                <div class="text-xs font-bold text-slate-900">Điều trị êm ái & Vô trùng tuyệt đối</div>
+                                <p class="text-[11px] text-slate-500 font-light mt-0.5">Công nghệ gây tê hiện đại, phòng thủ thuật vô trùng chuẩn Bộ Y Tế.</p>
                             </div>
                         </div>
                         <div class="flex items-start gap-3">
                             <span class="w-6 h-6 rounded-full bg-[#063B30] text-[#E6D5B8] text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">4</span>
                             <div>
-                                <div class="text-xs font-bold text-slate-900">Bảo hành toàn cầu & Xe riêng đưa về</div>
-                                <p class="text-[11px] text-slate-500 font-light mt-0.5">Chế độ hậu mãi trọn đời, hỗ trợ xe riêng đưa về tận nơi.</p>
+                                <div class="text-xs font-bold text-slate-900">Bảo hành chính hãng & Nhắc hẹn tự động</div>
+                                <p class="text-[11px] text-slate-500 font-light mt-0.5">Thanh toán VietQR minh bạch, hỗ trợ chăm sóc răng định kỳ.</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Hotline VIP Concierge Box -->
+                <!-- Hotline Box -->
                 <div class="bg-[#063B30] rounded-3xl p-6 sm:p-7 text-white border border-[#C5A880]/30 shadow-md space-y-4">
                     <div>
-                        <span class="text-[10px] uppercase font-bold tracking-widest text-[#E6D5B8]">24/7 VIP Concierge</span>
-                        <h4 class="font-serif-luxury text-lg font-bold text-white mt-0.5">Cần Sắp Xếp Lịch Hẹn Khẩn?</h4>
+                        <span class="text-[10px] uppercase font-bold tracking-widest text-[#E6D5B8]">Hỗ Trợ 24/7</span>
+                        <h4 class="font-serif-luxury text-lg font-bold text-white mt-0.5">Cần Khám Ngay Trong Hôm Nay?</h4>
                     </div>
                     <p class="text-xs text-slate-200 font-light leading-relaxed">
-                        Đội ngũ Concierge luôn sẵn sàng hỗ trợ sắp xếp phòng khám riêng trong ngày cho thượng khách có nhu cầu đặc biệt:
+                        Quý khách cần điều trị cấp bách hoặc muốn đến khám trực tiếp ngay hôm nay, vui lòng liên hệ hotline:
                     </p>
                     <div class="p-3.5 rounded-2xl bg-white/10 border border-white/15 flex items-center justify-between">
                         <div>
-                            <div class="text-[10px] uppercase text-[#E6D5B8] font-bold">Hotline Thượng Khách</div>
-                            <div class="font-serif-luxury text-xl font-bold text-white">1900 6868</div>
+                            <div class="text-[10px] uppercase text-[#E6D5B8] font-bold">Hotline Tiếp Nhận</div>
+                            <div class="font-serif-luxury text-xl font-bold text-white">1900 1234</div>
                         </div>
-                        <a href="tel:19006868" class="px-4 py-2 rounded-xl bg-[#E6D5B8] text-[#063B30] text-xs font-bold hover:bg-white transition">
+                        <a href="tel:19001234" class="px-4 py-2 rounded-xl bg-[#E6D5B8] text-[#063B30] text-xs font-bold hover:bg-white transition">
                             Gọi Ngay
                         </a>
                     </div>

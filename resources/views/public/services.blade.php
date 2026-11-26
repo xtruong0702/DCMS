@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'Bộ Sưu Tập Dịch Vụ Mũi Nhọn & Bảng Giá Niêm Yết - Smile Atelier')
+@section('title', 'Dịch Vụ & Bảng Giá Niêm Yết - Nha Khoa Smile')
 
 @section('content')
 <!-- Hero Dịch Vụ & Bảng Giá -->
@@ -8,13 +8,13 @@
     <div class="max-w-4xl mx-auto px-4 sm:px-6 text-center relative z-10 space-y-4">
         <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-[#C5A880]/40 text-[#E6D5B8] text-[11px] font-bold uppercase tracking-widest shadow-2xs">
             <span class="text-[#C5A880]">✦</span>
-            <span>Signature Collection & Bảng Giá Niêm Yết</span>
+            <span>Bảng Giá Niêm Yết Minh Bạch</span>
         </div>
         <h1 class="font-serif-luxury text-3xl sm:text-5xl font-bold tracking-tight">
-            Nghệ Thuật Nha Khoa & <span class="italic font-normal text-[#E6D5B8]">Bảng Giá Thượng Lưu</span>
+            Dịch Vụ Nha Khoa & <span class="italic font-normal text-[#E6D5B8]">Bảng Giá Minh Bạch</span>
         </h1>
         <p class="text-slate-200 text-xs sm:text-sm max-w-xl mx-auto font-light leading-relaxed">
-            100% minh bạch chi phí, sử dụng vật liệu chính hãng Thụy Sĩ, Đức, Hoa Kỳ với thẻ bảo hành điện tử toàn cầu và cam kết đồng hành trọn đời.
+            100% minh bạch chi phí khám chữa bệnh, sử dụng vật liệu và thuốc chính hãng, chế độ bảo hành rõ ràng và hỗ trợ thanh toán VietQR tự động.
         </p>
     </div>
 </section>
@@ -24,10 +24,10 @@
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         <div class="flex flex-col sm:flex-row sm:items-end justify-between border-b border-[#EAE5DD] pb-4 gap-4">
             <div>
-                <span class="text-[10px] font-bold uppercase tracking-widest text-[#A37F4E]">Tuyển Chọn Kỹ Thuật Đỉnh Cao</span>
-                <h2 class="font-serif-luxury text-2xl sm:text-3xl font-bold text-[#1A2421] mt-1">Dịch Vụ Nghệ Nhân Chuyên Sâu</h2>
+                <span class="text-[10px] font-bold uppercase tracking-widest text-[#A37F4E]">Danh Mục Kỹ Thuật Chuyên Sâu</span>
+                <h2 class="font-serif-luxury text-2xl sm:text-3xl font-bold text-[#1A2421] mt-1">Dịch Vụ Chuyên Khoa Nha Khoa Smile</h2>
             </div>
-            <p class="text-xs text-slate-500 font-light">Mỗi dịch vụ được kiến tạo bởi Bác sĩ Trưởng khoa chuyên biệt</p>
+            <p class="text-xs text-slate-500 font-light">Mỗi ca điều trị đều được Bác sĩ Chuyên khoa trực tiếp đảm trách</p>
         </div>
 
         @php
@@ -122,7 +122,7 @@
                             @empty
                                 <tr>
                                     <td colspan="5" class="py-12 text-center text-slate-400 text-xs">
-                                        Danh mục dịch vụ đang được cập nhật. Vui lòng liên hệ Hotline 1900 6868 để được tư vấn trực tiếp.
+                                        Danh mục dịch vụ đang được cập nhật. Vui lòng liên hệ Hotline 1900 1234 để được tư vấn trực tiếp.
                                     </td>
                                 </tr>
                             @endforelse
@@ -132,9 +132,9 @@
 
                 <div class="bg-[#FBF9F5] px-6 py-3.5 border-t border-[#EAE5DD] flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500">
                     <div>
-                        💡 <strong>Lưu ý:</strong> Bảng giá đã bao gồm tư vấn chuyên khoa tại Private Lounge. Thuế VAT 10% áp dụng theo quy định hiện hành.
+                        💡 <strong>Lưu ý:</strong> Bảng giá đã bao gồm thăm khám và tư vấn trực tiếp cùng Bác sĩ Chuyên khoa.
                     </div>
-                    <a href="tel:19006868" class="font-bold text-[#063B30] hover:underline">Cần tư vấn báo giá chi tiết? Gọi Hotline 1900 6868 &rarr;</a>
+                    <a href="tel:19001234" class="font-bold text-[#063B30] hover:underline">Cần tư vấn báo giá chi tiết? Gọi Hotline 1900 1234 &rarr;</a>
                 </div>
             </div>
         </div>

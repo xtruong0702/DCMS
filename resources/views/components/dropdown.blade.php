@@ -1,4 +1,4 @@
-@props(['align' => 'right', 'width' => '56', 'contentClasses' => 'py-2 bg-white/95 backdrop-blur-xl'])
+@props(['align' => 'right', 'width' => '56', 'contentClasses' => 'py-2 bg-white/95 backdrop-blur-xl', 'dropdownStyle' => ''])
 
 @php
 $alignmentClasses = match ($align) {
@@ -30,7 +30,7 @@ $width = match ($width) {
             x-transition:leave-start="opacity-100 translate-y-0 scale-100"
             x-transition:leave-end="opacity-0 translate-y-1 scale-95"
             class="absolute z-50 mt-2.5 {{ $width }} rounded-2xl shadow-xl shadow-slate-900/10 border border-slate-200/80 {{ $alignmentClasses }}"
-            style="display: none;"
+            style="display: none; {{ $dropdownStyle }}"
             @click="open = false">
         <div class="rounded-2xl overflow-hidden {{ $contentClasses }}">
             {{ $content }}

@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'Cẩm Nang Nha Khoa & Nghệ Thuật Nụ Cười - Smile Atelier')
+@section('title', 'Kiến Thức & Cẩm Nang Nha Khoa - Nha Khoa Smile')
 
 @section('content')
 <!-- Hero Cẩm Nang Nha Khoa -->
@@ -8,13 +8,13 @@
     <div class="max-w-4xl mx-auto px-4 sm:px-6 text-center relative z-10 space-y-4">
         <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-[#C5A880]/40 text-[#E6D5B8] text-[11px] font-bold uppercase tracking-widest shadow-2xs">
             <span class="text-[#C5A880]">✦</span>
-            <span>Góc Chuyên Gia & Nghệ Nhân Nha Khoa</span>
+            <span>Góc Chuyên Gia Nha Khoa Smile</span>
         </div>
         <h1 class="font-serif-luxury text-3xl sm:text-5xl font-bold tracking-tight">
-            Kiến Thức <span class="italic font-normal text-[#E6D5B8]">Nụ Cười Hoàng Gia</span>
+            Kiến Thức <span class="italic font-normal text-[#E6D5B8]">Chăm Sóc Răng Miệng</span>
         </h1>
         <p class="text-slate-200 text-xs sm:text-sm max-w-xl mx-auto font-light leading-relaxed">
-            Tổng hợp cẩm nang chăm sóc răng miệng và xu hướng thẩm mỹ nụ cười chuẩn Y khoa quốc tế, được biên soạn bởi Hội đồng Bác sĩ Smile Atelier.
+            Tổng hợp cẩm nang chăm sóc răng miệng và phương pháp thẩm mỹ nụ cười chuẩn Y khoa, được biên soạn bởi Đội ngũ Bác sĩ Nha Khoa Smile.
         </p>
     </div>
 </section>
