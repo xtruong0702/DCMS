@@ -1,55 +1,61 @@
 @extends('layouts.public')
 
+@section('title', 'Đặt Lịch Hẹn Khám Ưu Tiên - Smile Atelier VIP Concierge')
+
 @section('content')
-<!-- Hero Đặt Lịch Khám -->
-<section class="relative overflow-hidden bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 text-white py-16">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-        <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/20 border border-blue-400/30 text-blue-300 text-xs font-extrabold uppercase tracking-wider mb-4">
-            Chủ động thời gian • Chọn Bác sĩ & Dịch vụ
-        </span>
-        <h1 class="text-3xl sm:text-5xl font-black tracking-tight mb-3">
-            Đặt Lịch Hẹn <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">Khám Nha Khoa</span>
+<!-- Hero Đặt Lịch Khám VIP -->
+<section class="relative overflow-hidden bg-[#063B30] text-white py-16 sm:py-20 border-b border-[#C5A880]/30">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 text-center relative z-10 space-y-4">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-[#C5A880]/40 text-[#E6D5B8] text-[11px] font-bold uppercase tracking-widest shadow-2xs">
+            <span class="text-[#C5A880]">✦</span>
+            <span>Smile Atelier VIP Concierge</span>
+        </div>
+        <h1 class="font-serif-luxury text-3xl sm:text-5xl font-bold tracking-tight">
+            Đặt Lịch Hẹn <span class="italic font-normal text-[#E6D5B8]">Khám Ưu Tiên</span>
         </h1>
-        <p class="text-slate-300 text-sm sm:text-base max-w-2xl mx-auto">
-            Đặt lịch hẹn trước từ ngày mai trở đi để chủ động chọn Bác sĩ chuyên khoa mong muốn và được tiếp đón ưu tiên đúng giờ hẹn.
+        <p class="text-slate-200 text-xs sm:text-sm max-w-xl mx-auto font-light leading-relaxed">
+            Trải nghiệm quy trình thăm khám 1:1 cùng Bác sĩ Nghệ nhân tại Private Lounge riêng tư, thưởng trà thảo mộc thượng hạng và quét 3D tỷ lệ nụ cười.
         </p>
     </div>
 </section>
 
-<section class="py-14 bg-slate-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<section class="py-12 sm:py-16 bg-[#FBF9F5]">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            <!-- Form đặt lịch (7 cột) -->
-            <div class="lg:col-span-7 bg-white rounded-3xl p-6 sm:p-10 border border-slate-200/90 shadow-sm">
-                <div class="flex items-center justify-between pb-5 mb-6 border-b border-slate-100">
+            
+            <!-- Form đặt lịch VIP (7 cột) -->
+            <div class="lg:col-span-7 bg-white rounded-3xl p-6 sm:p-8 border border-[#EAE5DD] shadow-xs space-y-6">
+                <div class="flex items-center justify-between pb-4 border-b border-slate-100">
                     <div>
-                        <h2 class="text-xl sm:text-2xl font-black text-slate-900">Thông Tin Đăng Ký Lịch Hẹn</h2>
-                        <p class="text-xs sm:text-sm text-slate-500 mt-0.5">Chọn Bác sĩ, Dịch vụ và Thời gian khám phù hợp với bạn.</p>
+                        <h2 class="font-serif-luxury text-xl sm:text-2xl font-bold text-slate-900">Thông Tin Đăng Ký Thăm Khám</h2>
+                        <p class="text-xs text-slate-500 mt-0.5 font-light">Chọn Bác sĩ chuyên khoa, Dịch vụ và Khung giờ tiếp đón phù hợp.</p>
                     </div>
-                    <a href="{{ route('public.lookup') }}" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-extrabold transition">
+                    <a href="{{ route('public.lookup') }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#EBF4F0] text-[#063B30] text-xs font-bold hover:bg-[#D9ECE4] transition">
                         🔍 Tra cứu lịch đã đặt
                     </a>
                 </div>
 
                 <!-- Quy định đặt lịch trước -->
-                <div class="mb-6 p-4 rounded-2xl bg-amber-50 border border-amber-200/90 text-amber-900 text-xs sm:text-sm leading-relaxed">
-                    <div class="font-extrabold flex items-center gap-1.5 mb-1 text-amber-950">
-                        <span>📌</span> Hướng dẫn đặt lịch khám:
+                <div class="p-4 rounded-2xl bg-[#FDF8EE] border border-[#E9DCBF] text-[#785E34] text-xs leading-relaxed space-y-1">
+                    <div class="font-bold flex items-center gap-1.5 text-[#5C4520]">
+                        <span>📌</span> <span>Chính sách tiếp đón thượng khách:</span>
                     </div>
-                    Hệ thống trực tuyến nhận đặt lịch hẹn <strong>từ ngày mai trở đi</strong> (khung giờ làm việc <strong>08:00 – 20:00</strong>). Nếu quý khách muốn <strong>khám ngay trong ngày hôm nay</strong>, quý khách không cần đặt lịch trên web mà vui lòng đến trực tiếp phòng khám để được tiếp đón ngay.
+                    <p class="font-light">
+                        Hệ thống nhận đặt lịch hẹn <strong>từ ngày mai trở đi</strong> (khung giờ <strong>08:00 – 20:00</strong>) để phòng khám chuẩn bị Private Lounge và trà đón tiếp chu đáo nhất. Nếu quý khách muốn <strong>khám ngay trong ngày hôm nay</strong>, xin vui lòng đến trực tiếp hoặc liên hệ Hotline <strong class="text-[#063B30]">1900 6868</strong> để được đón tiếp ưu tiên.
+                    </p>
                 </div>
 
                 @if(session('success'))
-                    <div class="mb-6 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm font-bold flex items-center gap-3">
-                        <span class="w-7 h-7 rounded-full bg-emerald-600 text-white flex items-center justify-center shrink-0">✓</span>
+                    <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center gap-3">
+                        <span class="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center shrink-0">✓</span>
                         <span>{{ session('success') }}</span>
                     </div>
                 @endif
 
                 @if($errors->any())
-                    <div class="mb-6 p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-sm">
-                        <p class="font-extrabold mb-1">Không thể gửi lịch hẹn:</p>
-                        <ul class="list-disc list-inside text-xs space-y-1">
+                    <div class="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs space-y-1">
+                        <p class="font-bold">Không thể gửi lịch hẹn:</p>
+                        <ul class="list-disc list-inside space-y-0.5">
                             @foreach($errors->all() as $error)
                                 <li>{{ $error }}</li>
                             @endforeach
@@ -64,95 +70,94 @@
                         'https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&w=300&q=80',
                         'https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&w=300&q=80',
                         'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=300&q=80',
-                        'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=300&q=80',
                     ];
                 @endphp
 
-                <form action="{{ route('public.booking.store') }}" method="POST" class="space-y-6" x-data="{ chosenDoctor: '{{ $selectedDoctorId }}' }">
+                <form action="{{ route('public.booking.store') }}" method="POST" class="space-y-5" x-data="{ chosenDoctor: '{{ $selectedDoctorId }}' }">
                     @csrf
 
                     <!-- 1. Thông tin bệnh nhân -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-extrabold uppercase tracking-wider text-slate-700 mb-2">
-                                Họ và tên bệnh nhân <span class="text-rose-500">*</span>
+                            <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                                Quý danh khách hàng <span class="text-rose-500">*</span>
                             </label>
                             <input type="text" name="name" value="{{ old('name', auth()->user()->name ?? '') }}" required
-                                placeholder="Nhập họ và tên..."
-                                class="w-full rounded-xl border-slate-300 focus:border-blue-600 focus:ring-blue-600 text-sm py-3 px-4">
+                                placeholder="Họ và tên quý khách..."
+                                class="w-full rounded-xl border-[#EAE5DD] focus:border-[#063B30] focus:ring-[#063B30] text-xs py-2.5 px-3.5 bg-[#FBF9F5] font-medium">
                         </div>
 
                         <div>
-                            <label class="block text-xs font-extrabold uppercase tracking-wider text-slate-700 mb-2">
+                            <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1.5">
                                 Số điện thoại liên hệ <span class="text-rose-500">*</span>
                             </label>
                             <input type="text" name="phone" value="{{ old('phone') }}" required
-                                placeholder="Ví dụ: 0901 234 567"
-                                class="w-full rounded-xl border-slate-300 focus:border-blue-600 focus:ring-blue-600 text-sm py-3 px-4">
+                                placeholder="Ví dụ: 0986 667 788"
+                                class="w-full rounded-xl border-[#EAE5DD] focus:border-[#063B30] focus:ring-[#063B30] text-xs py-2.5 px-3.5 bg-[#FBF9F5] font-medium">
                         </div>
                     </div>
 
-                    <!-- 2. Chọn Bác sĩ khám -->
+                    <!-- 2. Chọn Bác sĩ Nghệ nhân -->
                     <div>
-                        <div class="flex items-center justify-between mb-2.5">
-                            <label class="block text-xs font-extrabold uppercase tracking-wider text-slate-700">
-                                👨‍⚕️ Chọn Bác Sĩ Khám
+                        <div class="flex items-center justify-between mb-2">
+                            <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-700">
+                                👨‍⚕️ Chọn Bác Sĩ Nghệ Nhân Khám 1:1
                             </label>
-                            <span class="text-[11px] font-semibold text-blue-600">Nhấn vào thẻ để chọn Bác sĩ</span>
+                            <span class="text-[10px] text-[#A37F4E] font-semibold">Nhấn vào thẻ để chỉ định Bác sĩ</span>
                         </div>
 
                         <input type="hidden" name="doctor_id" :value="chosenDoctor">
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <!-- Tùy chọn mặc định: Phòng khám tự sắp xếp -->
+                            <!-- Tùy chọn mặc định: Sắp xếp tự động -->
                             <div @click="chosenDoctor = ''"
-                                :class="chosenDoctor === '' ? 'border-blue-600 bg-blue-50/70 ring-2 ring-blue-600/20' : 'border-slate-200 bg-slate-50/60 hover:border-blue-300 hover:bg-white'"
-                                class="cursor-pointer rounded-2xl p-3.5 border transition flex items-center gap-3.5">
-                                <div class="w-12 h-12 rounded-xl bg-blue-600 text-white flex items-center justify-center text-xl shrink-0 shadow-xs">
-                                    🏥
+                                :class="chosenDoctor === '' ? 'border-[#063B30] bg-[#EBF4F0] ring-1 ring-[#063B30]' : 'border-[#EAE5DD] bg-white hover:border-[#063B30]/40'"
+                                class="cursor-pointer rounded-2xl p-3 border transition flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-[#063B30] text-[#E6D5B8] flex items-center justify-center text-sm shrink-0 shadow-2xs font-bold">
+                                    ✦
                                 </div>
                                 <div class="min-w-0 flex-1">
-                                    <div class="flex items-center justify-between gap-2">
-                                        <p class="text-sm font-extrabold text-slate-900 truncate">Phòng khám sắp xếp</p>
-                                        <span x-show="chosenDoctor === ''" class="w-5 h-5 rounded-full bg-blue-600 text-white text-xs flex items-center justify-center font-bold shrink-0">✓</span>
+                                    <div class="flex items-center justify-between gap-1">
+                                        <p class="text-xs font-bold text-slate-900 truncate">Hội đồng phân bổ</p>
+                                        <span x-show="chosenDoctor === ''" class="w-4 h-4 rounded-full bg-[#063B30] text-white text-[10px] flex items-center justify-center font-bold shrink-0">✓</span>
                                     </div>
-                                    <p class="text-xs text-slate-500 truncate mt-0.5">Phân bổ Bác sĩ chuyên khoa phù hợp nhất</p>
+                                    <p class="text-[10px] text-slate-500 truncate mt-0.5">Bác sĩ chuyên khoa tương ứng với nhu cầu</p>
                                 </div>
                             </div>
 
-                            <!-- Danh sách từng Bác sĩ -->
+                            <!-- Danh sách Bác sĩ -->
                             @foreach($doctors as $idx => $doc)
                                 @php
                                     $docName = $doc->user->name ?? ('Bác sĩ #' . $doc->id);
-                                    $docSpec = $doc->specialty ?: 'Chuyên khoa Răng Hàm Mặt';
-                                    $docExp = $doc->experience_years ?? (8 + $idx * 2);
+                                    $docSpec = $doc->specialty ?: 'Chuyên khoa Thẩm mỹ';
+                                    $docExp = $doc->experience_years ?? (10 + $idx * 2);
                                     $docAvatar = $doctorImages[$idx % count($doctorImages)];
                                 @endphp
                                 <div @click="chosenDoctor = '{{ $doc->id }}'"
-                                    :class="chosenDoctor == '{{ $doc->id }}' ? 'border-blue-600 bg-blue-50/70 ring-2 ring-blue-600/20' : 'border-slate-200 bg-white hover:border-blue-300'"
-                                    class="cursor-pointer rounded-2xl p-3.5 border transition flex items-center gap-3.5">
-                                    <img src="{{ $docAvatar }}" alt="{{ $docName }}" class="w-12 h-12 rounded-xl object-cover object-top shrink-0 border border-slate-200">
+                                    :class="chosenDoctor == '{{ $doc->id }}' ? 'border-[#063B30] bg-[#EBF4F0] ring-1 ring-[#063B30]' : 'border-[#EAE5DD] bg-white hover:border-[#063B30]/40'"
+                                    class="cursor-pointer rounded-2xl p-3 border transition flex items-center gap-3">
+                                    <img src="{{ $docAvatar }}" alt="{{ $docName }}" class="w-10 h-10 rounded-xl object-cover object-top shrink-0 border border-slate-200">
                                     <div class="min-w-0 flex-1">
-                                        <div class="flex items-center justify-between gap-2">
-                                            <p class="text-sm font-extrabold text-slate-900 truncate">BS. {{ $docName }}</p>
-                                            <span x-show="chosenDoctor == '{{ $doc->id }}'" class="w-5 h-5 rounded-full bg-blue-600 text-white text-xs flex items-center justify-center font-bold shrink-0">✓</span>
+                                        <div class="flex items-center justify-between gap-1">
+                                            <p class="text-xs font-bold text-slate-900 truncate">BS. {{ $docName }}</p>
+                                            <span x-show="chosenDoctor == '{{ $doc->id }}'" class="w-4 h-4 rounded-full bg-[#063B30] text-white text-[10px] flex items-center justify-center font-bold shrink-0">✓</span>
                                         </div>
-                                        <p class="text-xs font-bold text-blue-600 truncate mt-0.5">{{ $docSpec }}</p>
-                                        <p class="text-[11px] text-slate-400 font-medium">⭐ {{ $docExp }}+ năm kinh nghiệm</p>
+                                        <p class="text-[10px] font-semibold text-[#063B30] truncate">{{ $docSpec }}</p>
+                                        <p class="text-[9px] text-[#A37F4E] font-medium">{{ $docExp }}+ năm kinh nghiệm</p>
                                     </div>
                                 </div>
                             @endforeach
                         </div>
                     </div>
 
-                    <!-- 3. Chọn Dịch vụ & Thời gian hẹn -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <!-- 3. Chọn Dịch vụ & Thời gian -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-extrabold uppercase tracking-wider text-slate-700 mb-2">
-                                🦷 Dịch vụ quan tâm (Tùy chọn)
+                            <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                                💎 Dịch vụ quan tâm (Tùy chọn)
                             </label>
-                            <select name="service_id" class="w-full rounded-xl border-slate-300 focus:border-blue-600 focus:ring-blue-600 text-sm py-3 px-4">
-                                <option value="">-- Khám & Tư vấn tổng quát --</option>
+                            <select name="service_id" class="w-full rounded-xl border-[#EAE5DD] focus:border-[#063B30] focus:ring-[#063B30] text-xs py-2.5 px-3 bg-[#FBF9F5] font-medium">
+                                <option value="">-- Khám & Thăm dò tỷ lệ nụ cười --</option>
                                 @foreach($services as $service)
                                     <option value="{{ $service->id }}" @selected(old('service_id', request('service_id')) == $service->id)>
                                         {{ $service->name }} ({{ number_format($service->price, 0, ',', '.') }} đ)
@@ -162,86 +167,94 @@
                         </div>
 
                         <div>
-                            <label class="block text-xs font-extrabold uppercase tracking-wider text-slate-700 mb-2">
-                                ⏰ Ngày & Giờ hẹn (08:00 - 20:00) <span class="text-rose-500">*</span>
+                            <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                                ⏰ Ngày & Giờ tiếp đón (08:00 - 20:00) <span class="text-rose-500">*</span>
                             </label>
                             <input type="datetime-local"
                                 name="appointment_time"
                                 min="{{ \Carbon\Carbon::tomorrow()->format('Y-m-d\T08:00') }}"
                                 value="{{ old('appointment_time', \Carbon\Carbon::tomorrow()->format('Y-m-d\T09:00')) }}"
                                 required
-                                class="w-full rounded-xl border-slate-300 focus:border-blue-600 focus:ring-blue-600 text-sm py-3 px-4">
+                                class="w-full rounded-xl border-[#EAE5DD] focus:border-[#063B30] focus:ring-[#063B30] text-xs py-2.5 px-3 bg-[#FBF9F5] font-medium">
                         </div>
                     </div>
 
-                    <!-- 4. Ghi chú triệu chứng -->
+                    <!-- 4. Ghi chú yêu cầu riêng -->
                     <div>
-                        <label class="block text-xs font-extrabold uppercase tracking-wider text-slate-700 mb-2">
-                            Ghi chú triệu chứng hoặc yêu cầu thêm
+                        <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                            Yêu cầu đặc biệt cho Concierge (Tùy chọn)
                         </label>
                         <textarea name="note" rows="3"
-                            placeholder="Ví dụ: Đau răng hàm dưới bên phải, muốn khám ngoài giờ hành chính..."
-                            class="w-full rounded-xl border-slate-300 focus:border-blue-600 focus:ring-blue-600 text-sm py-3 px-4">{{ old('note') }}</textarea>
+                            placeholder="Ví dụ: Cần xe riêng đưa đón, yêu cầu phòng VIP riêng tư tuyệt đối, sở thích trà hoa cúc hoặc trà sen..."
+                            class="w-full rounded-xl border-[#EAE5DD] focus:border-[#063B30] focus:ring-[#063B30] text-xs py-2.5 px-3 bg-[#FBF9F5] font-medium resize-none">{{ old('note') }}</textarea>
                     </div>
 
-                    <button type="submit" class="w-full inline-flex items-center justify-center gap-2 py-4 px-6 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black text-sm shadow-lg shadow-blue-600/25 transition">
-                        📅 Xác Nhận Đặt Lịch Hẹn
+                    <button type="submit" class="w-full py-3.5 px-6 rounded-xl bg-[#063B30] hover:bg-[#042A22] text-[#FDFBF7] font-bold text-xs uppercase tracking-wider shadow-sm transition flex items-center justify-center gap-2 border border-[#C5A880]/30">
+                        <span>📅 Xác Nhận Đặt Lịch Hẹn Ưu Tiên</span>
                     </button>
                 </form>
             </div>
 
-            <!-- Cột quy trình & Hỗ trợ (5 cột) -->
+            <!-- Cột quy trình & Hotline Thượng khách (5 cột) -->
             <div class="lg:col-span-5 space-y-6">
-                <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-sm">
-                    <h3 class="text-lg font-black text-slate-900 mb-4">Quy Trình Tiếp Đón 4 Bước Nhanh Chóng</h3>
-                    <div class="space-y-4">
-                        <div class="flex items-start gap-3.5">
-                            <span class="w-7 h-7 rounded-full bg-blue-600 text-white text-xs font-extrabold flex items-center justify-center shrink-0 mt-0.5">1</span>
+                <!-- 4 Đặc quyền tiếp đón -->
+                <div class="bg-white rounded-3xl p-6 sm:p-7 border border-[#EAE5DD] shadow-xs space-y-4">
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-[#A37F4E]">Đặc Quyền Thượng Khách</span>
+                    <h3 class="font-serif-luxury text-lg font-bold text-slate-900">Quy Trình Tiếp Đón Thư Thái</h3>
+                    
+                    <div class="space-y-3.5 pt-1">
+                        <div class="flex items-start gap-3">
+                            <span class="w-6 h-6 rounded-full bg-[#063B30] text-[#E6D5B8] text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">1</span>
                             <div>
-                                <div class="text-sm font-extrabold text-slate-900">Chọn Bác sĩ, Dịch vụ & Giờ hẹn</div>
-                                <p class="text-xs text-slate-500 mt-0.5">Chủ động chọn Bác sĩ điều trị và khung giờ phù hợp từ ngày mai trở đi.</p>
+                                <div class="text-xs font-bold text-slate-900">Thưởng trà thảo mộc & Thăm vấn 1:1</div>
+                                <p class="text-[11px] text-slate-500 font-light mt-0.5">Đón tiếp tại Private Lounge riêng biệt, không chờ đợi.</p>
                             </div>
                         </div>
-                        <div class="flex items-start gap-3.5">
-                            <span class="w-7 h-7 rounded-full bg-blue-600 text-white text-xs font-extrabold flex items-center justify-center shrink-0 mt-0.5">2</span>
+                        <div class="flex items-start gap-3">
+                            <span class="w-6 h-6 rounded-full bg-[#063B30] text-[#E6D5B8] text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">2</span>
                             <div>
-                                <div class="text-sm font-extrabold text-slate-900">Bác sĩ & Lễ tân xác nhận 1 chạm</div>
-                                <p class="text-xs text-slate-500 mt-0.5">Hệ thống kiểm tra lịch trống của Bác sĩ và giữ chỗ ghế máy ưu tiên cho bạn.</p>
+                                <div class="text-xs font-bold text-slate-900">Quét CT 3D & Mô phỏng nụ cười</div>
+                                <p class="text-[11px] text-slate-500 font-light mt-0.5">Xem trước kết quả thẩm mỹ chuẩn tỷ lệ vàng khuôn mặt.</p>
                             </div>
                         </div>
-                        <div class="flex items-start gap-3.5">
-                            <span class="w-7 h-7 rounded-full bg-blue-600 text-white text-xs font-extrabold flex items-center justify-center shrink-0 mt-0.5">3</span>
+                        <div class="flex items-start gap-3">
+                            <span class="w-6 h-6 rounded-full bg-[#063B30] text-[#E6D5B8] text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">3</span>
                             <div>
-                                <div class="text-sm font-extrabold text-slate-900">Thăm khám & Tư vấn minh bạch</div>
-                                <p class="text-xs text-slate-500 mt-0.5">Bác sĩ chuyên khoa khám, chụp phim và báo giá rõ ràng trước khi điều trị.</p>
+                                <div class="text-xs font-bold text-slate-900">Điều trị êm ái với âm nhạc sóng não</div>
+                                <p class="text-[11px] text-slate-500 font-light mt-0.5">Phòng vô trùng áp lực dương tuyệt đối chuẩn Thụy Sĩ.</p>
                             </div>
                         </div>
-                        <div class="flex items-start gap-3.5">
-                            <span class="w-7 h-7 rounded-full bg-blue-600 text-white text-xs font-extrabold flex items-center justify-center shrink-0 mt-0.5">4</span>
+                        <div class="flex items-start gap-3">
+                            <span class="w-6 h-6 rounded-full bg-[#063B30] text-[#E6D5B8] text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">4</span>
                             <div>
-                                <div class="text-sm font-extrabold text-slate-900">Thanh toán VietQR & Bảo hành</div>
-                                <p class="text-xs text-slate-500 mt-0.5">Hóa đơn tách rõ tiền khám và tiền thuốc kèm theo, hỗ trợ quét mã QR tự động.</p>
+                                <div class="text-xs font-bold text-slate-900">Bảo hành toàn cầu & Xe riêng đưa về</div>
+                                <p class="text-[11px] text-slate-500 font-light mt-0.5">Chế độ hậu mãi trọn đời, hỗ trợ xe riêng đưa về tận nơi.</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-gradient-to-br from-slate-900 to-blue-950 rounded-3xl p-6 sm:p-8 text-white">
-                    <h4 class="text-base font-black mb-2">Cần hỗ trợ khẩn cấp hoặc khám ngay hôm nay?</h4>
-                    <p class="text-xs text-slate-300 leading-relaxed mb-4">
-                        Nếu bạn đang bị đau nhức răng cấp tính hoặc muốn đến khám ngay trong ngày hôm nay, hãy ghé trực tiếp phòng khám hoặc gọi Hotline:
+                <!-- Hotline VIP Concierge Box -->
+                <div class="bg-[#063B30] rounded-3xl p-6 sm:p-7 text-white border border-[#C5A880]/30 shadow-md space-y-4">
+                    <div>
+                        <span class="text-[10px] uppercase font-bold tracking-widest text-[#E6D5B8]">24/7 VIP Concierge</span>
+                        <h4 class="font-serif-luxury text-lg font-bold text-white mt-0.5">Cần Sắp Xếp Lịch Hẹn Khẩn?</h4>
+                    </div>
+                    <p class="text-xs text-slate-200 font-light leading-relaxed">
+                        Đội ngũ Concierge luôn sẵn sàng hỗ trợ sắp xếp phòng khám riêng trong ngày cho thượng khách có nhu cầu đặc biệt:
                     </p>
-                    <div class="p-4 rounded-2xl bg-white/10 border border-white/15 flex items-center justify-between">
+                    <div class="p-3.5 rounded-2xl bg-white/10 border border-white/15 flex items-center justify-between">
                         <div>
-                            <div class="text-[11px] uppercase tracking-wider text-blue-300 font-bold">Hotline Hỗ Trợ</div>
-                            <div class="text-xl font-black text-white">1900 1234</div>
+                            <div class="text-[10px] uppercase text-[#E6D5B8] font-bold">Hotline Thượng Khách</div>
+                            <div class="font-serif-luxury text-xl font-bold text-white">1900 6868</div>
                         </div>
-                        <a href="{{ route('public.contact') }}" class="px-4 py-2 rounded-xl bg-white text-slate-900 text-xs font-extrabold hover:bg-blue-50 transition">
-                            Xem Bản Đồ & Địa Chỉ
+                        <a href="tel:19006868" class="px-4 py-2 rounded-xl bg-[#E6D5B8] text-[#063B30] text-xs font-bold hover:bg-white transition">
+                            Gọi Ngay
                         </a>
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 </section>

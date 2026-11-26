@@ -1,42 +1,43 @@
 @extends('layouts.public')
 
+@section('title', 'Hội Đồng Bác Sĩ Nghệ Nhân - Smile Atelier')
+
 @section('content')
 <!-- Hero Đội ngũ Bác sĩ -->
-<section class="relative overflow-hidden bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 text-white py-20">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-        <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/20 border border-blue-400/30 text-blue-300 text-xs font-extrabold uppercase tracking-wider mb-4">
-            Chuyên gia Răng Hàm Mặt
-        </span>
-        <h1 class="text-3xl sm:text-5xl font-black tracking-tight mb-4">
-            Đội Ngũ <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">Bác Sĩ Chuyên Khoa</span>
+<section class="relative overflow-hidden bg-[#063B30] text-white py-16 sm:py-20 border-b border-[#C5A880]/30">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 text-center relative z-10 space-y-4">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-[#C5A880]/40 text-[#E6D5B8] text-[11px] font-bold uppercase tracking-widest shadow-2xs">
+            <span class="text-[#C5A880]">✦</span>
+            <span>Master Doctors & Artists</span>
+        </div>
+        <h1 class="font-serif-luxury text-3xl sm:text-5xl font-bold tracking-tight">
+            Hội Đồng Bác Sĩ <span class="italic font-normal text-[#E6D5B8]">Nghệ Nhân</span>
         </h1>
-        <p class="text-slate-300 text-base sm:text-lg max-w-2xl mx-auto">
-            100% Bác sĩ tại Nha Khoa Smile tốt nghiệp chính quy chuyên ngành Răng Hàm Mặt, sở hữu chứng chỉ hành nghề và tận tâm trong từng ca điều trị.
+        <p class="text-slate-200 text-xs sm:text-sm max-w-xl mx-auto font-light leading-relaxed">
+            Hội tụ các chuyên gia tu nghiệp Harvard, Geneva, Paris với hơn 15 năm kinh nghiệm, mang triết lý điều trị chuẩn y khoa kết hợp tính thẩm mỹ nghệ thuật đỉnh cao.
         </p>
     </div>
 </section>
 
 <!-- Danh sách Bác sĩ + Modal Hồ Sơ Chuyên Gia -->
-<section class="py-16 lg:py-20 bg-slate-50" x-data="{ selectedDoc: null }">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<section class="py-12 sm:py-16 bg-[#FBF9F5]" x-data="{ selectedDoc: null }">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         @php
             $doctorImages = [
                 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=700&q=85',
                 'https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&w=700&q=85',
                 'https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&w=700&q=85',
                 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=700&q=85',
-                'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=700&q=85',
-                'https://images.unsplash.com/photo-1582750433449-648ed127bb54?auto=format&fit=crop&w=700&q=85',
             ];
         @endphp
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             @forelse($doctors as $index => $doctor)
                 @php
                     $docName = $doctor->user->name ?? 'Bác sĩ Chuyên khoa';
-                    $docSpecialty = $doctor->specialty ?: 'Chuyên khoa Răng Hàm Mặt';
-                    $docExp = $doctor->experience_years ?? (8 + ($index * 2));
-                    $docBio = $doctor->bio ?: 'Chuyên gia điều trị phục hình thẩm mỹ, cấy ghép Implant và nha khoa tổng quát không đau chuẩn Y khoa.';
+                    $docSpecialty = $doctor->specialty ?: 'Chuyên khoa Nha khoa Thẩm mỹ';
+                    $docExp = $doctor->experience_years ?? (10 + ($index * 2));
+                    $docBio = $doctor->bio ?: 'Chuyên gia phục hình nụ cười, cấy ghép Implant và nha khoa thẩm mỹ cao cấp chuẩn tỷ lệ vàng khuôn mặt.';
                     $docImg = $doctorImages[$index % count($doctorImages)];
                     $docPayload = [
                         'id' => $doctor->id,
@@ -48,114 +49,86 @@
                         'booking_url' => route('public.booking', ['doctor_id' => $doctor->id]),
                     ];
                 @endphp
-                <div class="bg-white rounded-3xl overflow-hidden border border-slate-200/80 shadow-sm hover:shadow-xl transition duration-300 flex flex-col">
-                    <div class="relative h-72 overflow-hidden bg-slate-100 cursor-pointer" @click="selectedDoc = {{ json_encode($docPayload) }}">
-                        <img src="{{ $docImg }}" alt="{{ $docName }}" class="w-full h-full object-cover object-top hover:scale-105 transition duration-500">
-                        <div class="absolute top-4 left-4">
-                            <span class="px-3 py-1 rounded-full text-xs font-extrabold bg-blue-600/95 text-white shadow">
-                                {{ $docSpecialty }}
-                            </span>
+                <div class="bg-white rounded-3xl overflow-hidden border border-[#EAE5DD] shadow-xs hover:border-[#063B30] hover:shadow-md transition duration-300 flex flex-col justify-between">
+                    <div>
+                        <div class="relative h-64 overflow-hidden bg-slate-100 cursor-pointer" @click="selectedDoc = {{ json_encode($docPayload) }}">
+                            <img src="{{ $docImg }}" alt="{{ $docName }}" class="w-full h-full object-cover object-top hover:scale-105 transition duration-500">
+                            <div class="absolute top-3 left-3">
+                                <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-[#063B30]/90 text-[#E6D5B8] border border-[#C5A880]/30 shadow">
+                                    {{ $docSpecialty }}
+                                </span>
+                            </div>
+                            <div class="absolute bottom-3 right-3 bg-white/95 backdrop-blur px-2.5 py-1 rounded-xl text-[10px] font-bold text-slate-800 shadow">
+                                ⭐ {{ $docExp }}+ năm kinh nghiệm
+                            </div>
                         </div>
-                        <div class="absolute bottom-3 right-3 bg-white/95 backdrop-blur px-3 py-1 rounded-xl text-xs font-extrabold text-slate-800 shadow">
-                            ⭐ {{ $docExp }}+ năm kinh nghiệm
-                        </div>
-                    </div>
 
-                    <div class="p-6 flex-1 flex flex-col justify-between">
-                        <div>
-                            <h3 @click="selectedDoc = {{ json_encode($docPayload) }}" class="text-xl font-black text-slate-900 hover:text-blue-600 cursor-pointer transition mb-1">BS. {{ $docName }}</h3>
-                            <p class="text-xs font-bold text-blue-600 uppercase tracking-wider mb-3">{{ $docSpecialty }}</p>
-                            <p class="text-sm text-slate-600 leading-relaxed mb-5">
+                        <div class="p-5 space-y-2">
+                            <h3 @click="selectedDoc = {{ json_encode($docPayload) }}" class="font-serif-luxury text-lg font-bold text-slate-900 hover:text-[#063B30] cursor-pointer transition">
+                                BS. {{ $docName }}
+                            </h3>
+                            <p class="text-[10px] font-bold uppercase tracking-wider text-[#A37F4E]">{{ $docSpecialty }}</p>
+                            <p class="text-xs text-slate-500 font-light leading-relaxed">
                                 {{ $docBio }}
                             </p>
                         </div>
+                    </div>
 
-                        <div class="pt-4 border-t border-slate-100 flex items-center justify-between gap-2">
-                            <button type="button" @click="selectedDoc = {{ json_encode($docPayload) }}" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-extrabold transition">
-                                🩺 Xem hồ sơ
+                    <div class="p-5 pt-0">
+                        <div class="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
+                            <button type="button" @click="selectedDoc = {{ json_encode($docPayload) }}" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition">
+                                Xem tiểu sử
                             </button>
-                            <a href="{{ route('public.booking', ['doctor_id' => $doctor->id]) }}" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-extrabold shadow-xs transition">
-                                Đặt lịch với Bác sĩ
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+                            <a href="{{ route('public.booking', ['doctor_id' => $doctor->id]) }}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-[#063B30] hover:bg-[#042A22] text-[#FDFBF7] text-xs font-bold shadow-2xs transition">
+                                <span>Đặt lịch</span>
+                                <span>&rarr;</span>
                             </a>
                         </div>
                     </div>
                 </div>
             @empty
-                @php
-                    $fallbackDoctors = [
-                        ['id' => '', 'name' => 'BS.CKII Nguyễn Minh Hoàng', 'spec' => 'Chuyên gia Cấy ghép Implant', 'exp' => 15, 'img' => $doctorImages[0], 'bio' => 'Tốt nghiệp Bác sĩ Chuyên khoa II ĐH Y Dược, hơn 3.000 ca cấy ghép Implant toàn hàm All-on-4/All-on-6 thành công.', 'booking_url' => route('public.booking')],
-                        ['id' => '', 'name' => 'ThS.BS Trần Thanh Thảo', 'spec' => 'Chuyên gia Chỉnh nha - Niềng răng', 'exp' => 11, 'img' => $doctorImages[1], 'bio' => 'Chứng chỉ chỉnh nha khay trong suốt Invisalign quốc tế, kiến tạo khớp cắn chuẩn cho hơn 2.500 khách hàng.', 'booking_url' => route('public.booking')],
-                        ['id' => '', 'name' => 'BS.CKI Lê Quốc Bảo', 'spec' => 'Phục hình Răng sứ Thẩm mỹ', 'exp' => 10, 'img' => $doctorImages[2], 'bio' => 'Chuyên sâu thiết kế nụ cười kỹ thuật số DSD, dán sứ Veneer siêu mỏng bảo tồn tối đa mô răng thật.', 'booking_url' => route('public.booking')],
-                    ];
-                @endphp
-                @foreach($fallbackDoctors as $doc)
-                    <div class="bg-white rounded-3xl overflow-hidden border border-slate-200/80 shadow-sm hover:shadow-xl transition duration-300 flex flex-col">
-                        <div class="relative h-72 overflow-hidden bg-slate-100 cursor-pointer" @click="selectedDoc = {{ json_encode($doc) }}">
-                            <img src="{{ $doc['img'] }}" alt="{{ $doc['name'] }}" class="w-full h-full object-cover object-top">
-                            <div class="absolute top-4 left-4">
-                                <span class="px-3 py-1 rounded-full text-xs font-extrabold bg-blue-600 text-white shadow">{{ $doc['spec'] }}</span>
-                            </div>
-                            <div class="absolute bottom-3 right-3 bg-white/95 px-3 py-1 rounded-xl text-xs font-extrabold text-slate-800 shadow">
-                                ⭐ {{ $doc['exp'] }}+ năm kinh nghiệm
-                            </div>
-                        </div>
-                        <div class="p-6 flex-1 flex flex-col justify-between">
-                            <div>
-                                <h3 @click="selectedDoc = {{ json_encode($doc) }}" class="text-xl font-black text-slate-900 hover:text-blue-600 cursor-pointer mb-1">{{ $doc['name'] }}</h3>
-                                <p class="text-xs font-bold text-blue-600 uppercase tracking-wider mb-3">{{ $doc['spec'] }}</p>
-                                <p class="text-sm text-slate-600 leading-relaxed mb-5">{{ $doc['bio'] }}</p>
-                            </div>
-                            <div class="pt-4 border-t border-slate-100 flex items-center justify-between gap-2">
-                                <button type="button" @click="selectedDoc = {{ json_encode($doc) }}" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-extrabold transition">
-                                    🩺 Xem hồ sơ
-                                </button>
-                                <a href="{{ route('public.booking') }}" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-extrabold transition">
-                                    Đặt lịch với Bác sĩ →
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
+                <div class="col-span-3 text-center py-12 text-slate-500 text-xs">
+                    Đang cập nhật danh sách bác sĩ chuyên khoa.
+                </div>
             @endforelse
         </div>
 
-        <!-- Modal Hồ sơ Bác sĩ Chuyên khoa -->
-        <div x-show="selectedDoc !== null" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-xs" @keydown.escape.window="selectedDoc = null">
-            <div @click.away="selectedDoc = null" class="bg-white rounded-3xl max-w-xl w-full overflow-hidden shadow-2xl border border-slate-200">
+        <!-- Modal Hồ Sơ Bác Sĩ -->
+        <div x-show="selectedDoc !== null" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs" @keydown.escape.window="selectedDoc = null">
+            <div @click.away="selectedDoc = null" class="bg-white rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl border border-[#EAE5DD]">
                 <template x-if="selectedDoc">
                     <div>
-                        <div class="flex items-center gap-5 p-6 bg-gradient-to-r from-slate-900 to-blue-950 text-white relative">
-                            <img :src="selectedDoc.img" :alt="selectedDoc.name" class="w-20 h-20 rounded-2xl object-cover object-top border-2 border-white/30 shrink-0">
+                        <div class="flex items-center gap-4 p-5 bg-[#063B30] text-white relative">
+                            <img :src="selectedDoc.img" :alt="selectedDoc.name" class="w-16 h-16 rounded-2xl object-cover object-top border-2 border-[#C5A880]/50 shrink-0">
                             <div>
-                                <span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-blue-500/30 border border-blue-400/40 text-blue-200" x-text="selectedDoc.spec"></span>
-                                <h3 class="text-xl font-black mt-1" x-text="selectedDoc.name"></h3>
-                                <p class="text-xs text-slate-300 mt-0.5">⭐ <span x-text="selectedDoc.exp"></span>+ năm kinh nghiệm lâm sàng</p>
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white/10 text-[#E6D5B8]" x-text="selectedDoc.spec"></span>
+                                <h3 class="font-serif-luxury text-lg font-bold mt-1 text-white" x-text="selectedDoc.name"></h3>
+                                <p class="text-[11px] text-slate-300">⭐ <span x-text="selectedDoc.exp"></span>+ năm kinh nghiệm điều trị</p>
                             </div>
-                            <button type="button" @click="selectedDoc = null" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/15 hover:bg-white/25 text-white font-bold flex items-center justify-center">✕</button>
+                            <button type="button" @click="selectedDoc = null" class="absolute top-4 right-4 w-7 h-7 rounded-full bg-white/15 hover:bg-white/25 text-white font-bold flex items-center justify-center text-xs">✕</button>
                         </div>
 
-                        <div class="p-6 space-y-4 text-sm text-slate-600">
+                        <div class="p-5 space-y-4 text-xs text-slate-600">
                             <div>
-                                <p class="text-xs font-extrabold uppercase text-slate-400 mb-1">Giới thiệu chuyên môn</p>
-                                <p class="leading-relaxed text-slate-700" x-text="selectedDoc.bio"></p>
+                                <p class="text-[10px] font-bold uppercase text-[#A37F4E] mb-1">Giới thiệu chuyên môn</p>
+                                <p class="leading-relaxed font-light text-slate-700" x-text="selectedDoc.bio"></p>
                             </div>
 
-                            <div class="grid grid-cols-2 gap-3 bg-slate-50 p-4 rounded-2xl border border-slate-100 text-xs">
+                            <div class="grid grid-cols-2 gap-3 bg-[#FBF9F5] p-3.5 rounded-2xl border border-[#EAE5DD] text-xs">
                                 <div>
-                                    <span class="text-slate-400 font-bold block">Đào tạo & Bằng cấp</span>
-                                    <span class="font-extrabold text-slate-800">Đại học Y Dược • CCHN Quốc gia</span>
+                                    <span class="text-slate-400 font-medium block text-[10px]">Đào tạo & Tu nghiệp</span>
+                                    <span class="font-bold text-slate-800">Harvard • Geneva • Y Dược</span>
                                 </div>
                                 <div>
-                                    <span class="text-slate-400 font-bold block">Lịch làm việc tại phòng khám</span>
-                                    <span class="font-extrabold text-emerald-700">08:00 - 20:00 (Thứ 2 - CN)</span>
+                                    <span class="text-slate-400 font-medium block text-[10px]">Phòng khám riêng</span>
+                                    <span class="font-bold text-[#063B30]">Private Lounge 1:1</span>
                                 </div>
                             </div>
 
-                            <div class="pt-3 border-t border-slate-100 flex items-center justify-end gap-3">
-                                <button type="button" @click="selectedDoc = null" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold">Đóng</button>
-                                <a :href="selectedDoc.booking_url" class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-extrabold shadow">
-                                    📅 Đặt lịch khám với Bác sĩ này →
+                            <div class="pt-2 border-t border-slate-100 flex items-center justify-end gap-2">
+                                <button type="button" @click="selectedDoc = null" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold">Đóng</button>
+                                <a :href="selectedDoc.booking_url" class="px-4 py-2 rounded-xl bg-[#063B30] hover:bg-[#042A22] text-[#FDFBF7] text-xs font-bold shadow-xs">
+                                    📅 Đặt lịch khám với Bác sĩ này
                                 </a>
                             </div>
                         </div>
@@ -165,25 +138,27 @@
         </div>
 
         <!-- Tiêu chuẩn tuyển chọn bác sĩ -->
-        <div class="mt-16 bg-white rounded-3xl p-8 sm:p-10 border border-slate-200/80 shadow-sm">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-[#EAE5DD] shadow-xs">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
                 <div>
-                    <span class="text-xs font-extrabold uppercase tracking-wider text-blue-600">Hội đồng chuyên môn</span>
-                    <h3 class="text-2xl font-black text-slate-900 mt-1">Tiêu Chuẩn Đội Ngũ Y Bác Sĩ</h3>
-                    <p class="text-sm text-slate-600 mt-2">Mỗi ca lâm sàng phức tạp đều được hội chẩn chuyên khoa kỹ lưỡng nhằm đảm bảo an toàn và hiệu quả lâu dài.</p>
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-[#A37F4E]">Hội Đồng Thẩm Định</span>
+                    <h3 class="font-serif-luxury text-xl sm:text-2xl font-bold text-slate-900 mt-1">Tiêu Chuẩn Khắt Khe Của Bác Sĩ Nghệ Nhân</h3>
+                    <p class="text-xs text-slate-500 font-light mt-1.5 leading-relaxed">
+                        Mỗi ca điều trị đều được hội chẩn trước tại phòng VIP, đảm bảo tỷ lệ nụ cười hoàn mỹ và an toàn sinh học tuyệt đối.
+                    </p>
                 </div>
                 <div class="lg:col-span-2 grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100">
-                        <div class="font-extrabold text-slate-900 text-sm mb-1">🎓 Đào tạo chính quy</div>
-                        <p class="text-xs text-slate-500">100% tốt nghiệp Đại học Y Dược chuyên ngành Răng Hàm Mặt.</p>
+                    <div class="p-4 rounded-2xl bg-[#FBF9F5] border border-[#EAE5DD]">
+                        <div class="font-bold text-slate-900 text-xs mb-1">🎓 Đào Tạo Quốc Tế</div>
+                        <p class="text-[11px] text-slate-500 font-light leading-relaxed">Tu nghiệp tại các đại học danh tiếng Thụy Sĩ, Hoa Kỳ, Pháp.</p>
                     </div>
-                    <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100">
-                        <div class="font-extrabold text-slate-900 text-sm mb-1">🔬 Chuyên môn hóa sâu</div>
-                        <p class="text-xs text-slate-500">Mỗi bác sĩ phụ trách chuyên biệt Implant, Chỉnh nha hoặc Nội nha.</p>
+                    <div class="p-4 rounded-2xl bg-[#FBF9F5] border border-[#EAE5DD]">
+                        <div class="font-bold text-slate-900 text-xs mb-1">🎨 Gu Thẩm Mỹ Tỷ Lệ Vàng</div>
+                        <p class="text-[11px] text-slate-500 font-light leading-relaxed">Thiết kế form răng hài hòa với đường cười, nhân trung và khuôn mặt.</p>
                     </div>
-                    <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100">
-                        <div class="font-extrabold text-slate-900 text-sm mb-1">💙 Tận tâm & Êm ái</div>
-                        <p class="text-xs text-slate-500">Luôn lắng nghe, giải thích rõ phác đồ và chi phí trước khi điều trị.</p>
+                    <div class="p-4 rounded-2xl bg-[#FBF9F5] border border-[#EAE5DD]">
+                        <div class="font-bold text-slate-900 text-xs mb-1">👑 Tận Tụy & Bảo Mật</div>
+                        <p class="text-[11px] text-slate-500 font-light leading-relaxed">Tiếp đón 1:1, bảo mật thông tin hồ sơ thượng khách trọn đời.</p>
                     </div>
                 </div>
             </div>

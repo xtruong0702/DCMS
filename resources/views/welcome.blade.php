@@ -1,395 +1,468 @@
 @extends('layouts.public')
 
-@section('title', 'Nha Khoa Smile - Hệ Thống Chăm Sóc Răng Miệng Chuẩn Quốc Tế')
+@section('title', 'Smile Atelier - Tác Phẩm Nụ Cười • Nét Đẹp Vượt Thời Gian')
 
 @section('content')
-<!-- 1. HERO SECTION -->
-<section class="relative bg-gradient-to-b from-slate-50 via-blue-50/40 to-white pt-10 pb-20 lg:pt-16 lg:pb-28 overflow-hidden">
-    <!-- Subtle Background Glows -->
-    <div class="absolute top-0 right-1/4 w-96 h-96 bg-blue-200/40 rounded-full blur-3xl pointer-events-none"></div>
-    <div class="absolute bottom-0 left-1/4 w-96 h-96 bg-cyan-200/40 rounded-full blur-3xl pointer-events-none"></div>
+<div class="space-y-16 lg:space-y-24 pb-16">
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div class="grid lg:grid-cols-12 gap-12 items-center">
-            <!-- Left Column (7/12) -->
-            <div class="lg:col-span-7 space-y-6">
-                <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-indigo-50 border border-indigo-200/80 text-indigo-700 font-extrabold text-xs uppercase tracking-wider shadow-2xs">
-                    <span class="w-2 h-2 rounded-full bg-indigo-600 animate-ping"></span>
-                    Hệ Thống Nha Khoa Số Hóa Toàn Diện (DCMS)
-                </div>
+    <!-- 1. HERO SECTION (100% MATCHING REFERENCE DESIGN) -->
+    <section class="pt-6 sm:pt-10">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 space-y-6">
+            
+            <!-- Eyebrow Badge -->
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EBF4F0] border border-[#D1E6DE] text-[#063B30] text-[11px] font-bold uppercase tracking-widest shadow-2xs">
+                <span class="text-[#A37F4E]">✦</span>
+                <span>Tiêu Chuẩn Nha Khoa Thẩm Mỹ Hoàng Gia</span>
+            </div>
 
-                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 leading-[1.12] tracking-tight">
-                    Kiến Tạo <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500">Nụ Cười Hoàn Mỹ</span> & Chuẩn Y Khoa.
+            <!-- Main Title & Subtitle -->
+            <div class="space-y-3">
+                <h1 class="font-serif-luxury text-3xl sm:text-5xl lg:text-6xl font-bold text-[#1A2421] leading-[1.15] tracking-tight">
+                    Tác Phẩm Nụ Cười • <br class="hidden sm:inline">
+                    <span class="italic font-normal text-[#063B30]">Nét Đẹp Vượt Thời Gian</span>
                 </h1>
-
-                <p class="text-base sm:text-lg text-slate-600 leading-relaxed max-w-2xl">
-                    Trải nghiệm dịch vụ nha khoa hiện đại với hồ sơ bệnh án điện tử, sơ đồ răng 32 răng chuẩn quốc tế FDI, đội ngũ bác sĩ chuyên khoa giàu kinh nghiệm và thanh toán VietQR minh bạch.
+                <p class="text-sm sm:text-base text-slate-600 leading-relaxed max-w-2xl font-light">
+                    Không gian nha khoa mang phong cách boutique 5 sao. Nơi quyền uy hội tụ cùng bàn tay nghệ nhân và công nghệ nụ cười chuẩn tỷ lệ vàng.
                 </p>
+            </div>
 
-                <!-- CTA Buttons -->
-                <div class="flex flex-wrap items-center gap-3.5 pt-2">
-                    <a href="{{ route('public.booking') }}" class="inline-flex items-center gap-2.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white px-7 py-4 rounded-2xl font-extrabold text-sm uppercase tracking-wider shadow-lg shadow-indigo-500/25 transform hover:-translate-y-0.5 transition-all">
-                        <span>📅 Đặt Lịch Khám Trước</span>
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-                    </a>
-                    <a href="{{ route('public.services') }}" class="inline-flex items-center gap-2 bg-white hover:bg-slate-50 text-slate-800 border border-slate-200/90 px-5 py-4 rounded-2xl font-extrabold text-sm shadow-xs transition-all">
-                        <span>📋 Xem Bảng Giá</span>
-                    </a>
-                    <a href="{{ route('public.lookup') }}" class="inline-flex items-center gap-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200/80 px-5 py-4 rounded-2xl font-extrabold text-sm transition-all">
-                        <span>🔍 Tra Cứu Lịch Hẹn</span>
-                    </a>
+            <!-- Social Proof Pill -->
+            <div class="inline-flex items-center gap-3 bg-white px-4 py-2 rounded-2xl border border-[#EAE5DD] shadow-2xs">
+                <div class="w-8 h-8 rounded-xl bg-[#FDF8EE] text-[#A37F4E] flex items-center justify-center font-bold text-xs border border-[#E9DCBF]">
+                    ★
                 </div>
-
-                <!-- Walk-in vs Advance Booking Notice Box -->
-                <div class="bg-white/90 backdrop-blur border border-blue-200/80 rounded-2xl p-4 shadow-xs flex items-start gap-3.5 max-w-2xl">
-                    <div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 font-bold text-base">
-                        💡
+                <div>
+                    <div class="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+                        <span>4.99</span>
+                        <span class="text-[#A37F4E] tracking-tighter">★★★★★</span>
                     </div>
-                    <div class="text-xs text-slate-600 leading-relaxed">
-                        <p class="font-extrabold text-slate-800">Hướng dẫn khám trong ngày & Đặt lịch hẹn trước:</p>
-                        <p class="mt-0.5">
-                            • <strong>Khám ngay trong ngày:</strong> Quý khách không cần đặt lịch online, vui lòng đến trực tiếp phòng khám (<span class="font-bold text-indigo-700">08:00 – 20:00</span>) để Lễ tân tiếp đón ngay.<br>
-                            • <strong>Đặt lịch trực tuyến:</strong> Áp dụng cho các lịch hẹn <strong>từ ngày mai trở đi</strong>, bác sĩ sẽ xác nhận và hệ thống tự động nhắc hẹn khi đến giờ.
-                        </p>
-                    </div>
+                    <div class="text-[11px] text-slate-500 font-medium">Hơn 12.000 khách hàng thượng lưu tin chọn</div>
                 </div>
             </div>
 
-            <!-- Right Column (5/12): Visual Showcase -->
-            <div class="lg:col-span-5 relative">
-                <div class="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white">
-                    <img src="https://images.unsplash.com/photo-1606811841689-23dfddce3e95?auto=format&fit=crop&q=80&w=1000" alt="Nha Khoa Smile" class="w-full h-[420px] sm:h-[460px] object-cover">
-                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-transparent to-transparent"></div>
-                    <div class="absolute bottom-5 left-5 right-5 text-white">
-                        <span class="px-2.5 py-1 rounded-lg bg-emerald-500/90 text-[10px] font-extrabold uppercase tracking-wider">Phòng khám tiêu chuẩn Quốc tế</span>
-                        <p class="text-lg font-extrabold mt-1.5">Trang thiết bị vô trùng chuẩn Bộ Y Tế</p>
-                        <p class="text-xs text-slate-200">123 Nguyễn Văn Cừ, Quận 5, TP.HCM • Hotline: 1900 1234</p>
+            <!-- Hero Showcase Image -->
+            <div class="relative rounded-3xl overflow-hidden shadow-lg border border-[#EAE5DD]">
+                <img src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&q=80&w=1200" alt="Smile Atelier Boutique Lounge" class="w-full h-[280px] sm:h-[420px] object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-[#063B30]/85 via-black/20 to-transparent"></div>
+                <div class="absolute bottom-5 left-5 right-5 text-white">
+                    <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg bg-black/40 backdrop-blur-md text-[10px] font-medium text-[#E6D5B8] mb-1 border border-white/10">
+                        <span>🏛️</span>
+                        <span>Kiến trúc boutique sang trọng giữa lòng thành phố</span>
                     </div>
+                    <p class="font-serif-luxury text-lg sm:text-2xl font-bold tracking-tight">Absolute Smile - Nét Nghệ Thuật</p>
                 </div>
+            </div>
 
-                <!-- Floating Badge Top Left -->
-                <a href="#reviews" class="hidden sm:flex absolute -top-5 -left-6 bg-white hover:bg-amber-50/40 rounded-2xl p-4 shadow-xl border border-slate-100 items-center gap-3.5 transition transform hover:-translate-y-0.5">
-                    <div class="w-11 h-11 rounded-xl bg-amber-50 text-amber-500 flex items-center justify-center font-black text-xl">
-                        ★
+            <!-- CTA Buttons -->
+            <div class="space-y-2.5 pt-1">
+                <a href="{{ route('public.booking') }}" class="w-full py-3.5 px-6 bg-[#063B30] hover:bg-[#042A22] text-[#FDFBF7] font-bold rounded-2xl shadow-sm transition flex items-center justify-center gap-2 border border-[#C5A880]/30 text-sm">
+                    <svg class="w-4 h-4 text-[#E6D5B8]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                    <span>Đặt Lịch Hẹn Khám Ưu Tiên</span>
+                </a>
+                <a href="tel:19006868" class="w-full py-3 px-6 bg-white hover:bg-[#FDFBF7] text-[#063B30] font-bold rounded-2xl border border-[#C5A880]/50 transition flex items-center justify-center gap-2 text-xs shadow-2xs">
+                    <svg class="w-4 h-4 text-[#A37F4E]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                    <span>Tư Vấn Trực Tiếp 1:1 Với Nghệ Nhân</span>
+                </a>
+            </div>
+
+            <!-- VIP Highlights Card (Special Features & Stats Grid) -->
+            <div class="bg-white rounded-3xl p-6 border border-[#EAE5DD] shadow-xs space-y-4">
+                <div class="flex items-center gap-3 pb-3 border-b border-slate-100">
+                    <div class="w-9 h-9 rounded-xl bg-[#063B30] text-[#E6D5B8] flex items-center justify-center font-bold text-sm shadow-xs border border-[#C5A880]/40">
+                        👑
                     </div>
                     <div>
-                        <div class="text-sm font-black text-slate-900">4.9 / 5.0 (2.500+ đánh giá)</div>
-                        <div class="text-xs font-semibold text-indigo-600">Xem phản hồi khách hàng &rarr;</div>
+                        <div class="text-[10px] font-bold uppercase tracking-wider text-[#A37F4E]">Đặc Quyền Thượng Lưu</div>
+                        <div class="text-xs font-bold text-slate-900">Private Lounge & Trà Đón Tiếp 1:1</div>
                     </div>
-                </a>
+                </div>
 
-                <!-- Floating Badge Bottom Right -->
-                <a href="{{ route('public.lookup') }}" class="hidden sm:flex absolute -bottom-5 -right-4 bg-white hover:bg-indigo-50/40 rounded-2xl p-4 shadow-xl border border-slate-100 items-center gap-3.5 transition transform hover:-translate-y-0.5">
-                    <div class="w-11 h-11 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-black text-lg">
-                        🦷
+                <!-- 4 Metrics Grid -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="p-3.5 rounded-2xl bg-[#FBF9F5] border border-[#EAE5DD]">
+                        <div class="font-serif-luxury text-2xl font-bold text-[#063B30]">15+</div>
+                        <div class="text-[11px] text-slate-500 font-medium mt-0.5">Năm kiến tạo nụ cười</div>
                     </div>
-                    <div>
-                        <div class="text-sm font-black text-slate-900">Bệnh Án & VietQR Tự Động</div>
-                        <div class="text-xs font-semibold text-indigo-600">Tra cứu hóa đơn bằng SĐT &rarr;</div>
+                    <div class="p-3.5 rounded-2xl bg-[#FBF9F5] border border-[#EAE5DD]">
+                        <div class="font-serif-luxury text-2xl font-bold text-[#063B30]">12,000+</div>
+                        <div class="text-[11px] text-slate-500 font-medium mt-0.5">Nụ cười hoàng gia</div>
                     </div>
-                </a>
+                    <div class="p-3.5 rounded-2xl bg-[#FBF9F5] border border-[#EAE5DD]">
+                        <div class="font-serif-luxury text-2xl font-bold text-[#063B30]">100%</div>
+                        <div class="text-[11px] text-slate-500 font-medium mt-0.5">Vật liệu Thụy Sĩ</div>
+                    </div>
+                    <div class="p-3.5 rounded-2xl bg-[#FBF9F5] border border-[#EAE5DD]">
+                        <div class="font-serif-luxury text-2xl font-bold text-[#063B30]">Trọn Đời</div>
+                        <div class="text-[11px] text-slate-500 font-medium mt-0.5">Bảo hành tuyệt đối</div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- 2. STATS STRIP -->
-<section class="relative z-20 -mt-8 mb-12">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="bg-white rounded-3xl shadow-lg border border-slate-200/80 p-6 sm:p-8">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center divide-y sm:divide-y-0 sm:divide-x divide-slate-100">
-                <a href="{{ route('public.about') }}" class="pt-2 sm:pt-0 block group hover:bg-slate-50/70 rounded-xl p-2 transition">
-                    <div class="text-3xl sm:text-4xl font-black text-indigo-600 group-hover:scale-105 transition-transform">15+</div>
-                    <div class="text-xs font-extrabold text-slate-500 group-hover:text-indigo-600 uppercase tracking-wider mt-1">Năm Kinh Nghiệm &rarr;</div>
-                </a>
-                <a href="#reviews" class="pt-2 sm:pt-0 block group hover:bg-slate-50/70 rounded-xl p-2 transition">
-                    <div class="text-3xl sm:text-4xl font-black text-blue-600 group-hover:scale-105 transition-transform">10.000+</div>
-                    <div class="text-xs font-extrabold text-slate-500 group-hover:text-blue-600 uppercase tracking-wider mt-1">Ca Điều Trị Thành Công &rarr;</div>
-                </a>
-                <a href="{{ route('public.doctors') }}" class="pt-2 sm:pt-0 block group hover:bg-slate-50/70 rounded-xl p-2 transition">
-                    <div class="text-3xl sm:text-4xl font-black text-cyan-600 group-hover:scale-105 transition-transform">20+</div>
-                    <div class="text-xs font-extrabold text-slate-500 group-hover:text-cyan-600 uppercase tracking-wider mt-1">Bác Sĩ Chuyên Khoa &rarr;</div>
-                </a>
-                <a href="{{ route('public.services') }}" class="pt-2 sm:pt-0 block group hover:bg-slate-50/70 rounded-xl p-2 transition">
-                    <div class="text-3xl sm:text-4xl font-black text-emerald-600 group-hover:scale-105 transition-transform">100%</div>
-                    <div class="text-xs font-extrabold text-slate-500 group-hover:text-emerald-600 uppercase tracking-wider mt-1">Giá Niêm Yết Minh Bạch &rarr;</div>
-                </a>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- 3. FEATURED SERVICES & PRICE LIST -->
-<section id="services" class="py-16 lg:py-20 bg-slate-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+    <!-- 2. SECTION: BỘ SƯU TẬP DỊCH VỤ MŨI NHỌN (SIGNATURE COLLECTION) -->
+    <section class="max-w-4xl mx-auto px-4 sm:px-6 space-y-6">
+        <div class="flex items-end justify-between border-b border-[#EAE5DD] pb-4">
             <div>
-                <span class="text-xs font-extrabold text-indigo-600 uppercase tracking-widest">Dịch Vụ & Bảng Giá Niêm Yết</span>
-                <h2 class="text-3xl sm:text-4xl font-black text-slate-900 mt-1">Dịch Vụ Nha Khoa Mũi Nhọn</h2>
+                <span class="text-[10px] font-bold uppercase tracking-widest text-[#A37F4E]">Signature Collection</span>
+                <h2 class="font-serif-luxury text-2xl sm:text-3xl font-bold text-[#1A2421] mt-1">Bộ Sưu Tập Dịch Vụ Mũi Nhọn</h2>
+                <p class="text-xs text-slate-500 mt-1">Tuyển chọn các dịch vụ kỹ thuật đỉnh cao bởi các chuyên gia nghệ nhân hàng đầu.</p>
             </div>
-            <a href="{{ route('public.services') }}" class="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-indigo-600 hover:text-indigo-800 bg-indigo-50 px-4 py-2.5 rounded-xl border border-indigo-200/80 transition self-start md:self-auto">
-                <span>Xem toàn bộ bảng giá dịch vụ</span>
+            <a href="{{ route('public.services') }}" class="text-xs font-bold text-[#063B30] hover:underline flex items-center gap-1 shrink-0">
+                <span>Xem tất cả</span>
                 <span>&rarr;</span>
             </a>
         </div>
 
-        @php
-            $serviceVisuals = [
-                ['icon' => '🦷', 'slug' => 'lay-cao-rang', 'badge' => 'Chăm sóc định kỳ', 'desc' => 'Thăm khám tổng quát 32 răng, tư vấn phác đồ điều trị và lấy cao răng siêu âm êm ái.'],
-                ['icon' => '✨', 'slug' => 'tay-trang-rang', 'badge' => 'Thẩm mỹ nụ cười', 'desc' => 'Công nghệ Laser Whitening giúp răng trắng sáng bật tông an toàn, không ê buốt.'],
-                ['icon' => '🛡️', 'slug' => 'tram-rang', 'badge' => 'Phục hồi răng', 'desc' => 'Trám răng thẩm mỹ Composite chuẩn màu răng thật, điều trị sâu răng và mẻ răng.'],
-                ['icon' => '🩺', 'slug' => 'nho-rang-khon', 'badge' => 'Tiểu phẫu an toàn', 'desc' => 'Nhổ răng khôn mọc lệch, mọc ngầm bằng máy siêu âm Piezotome lành thương nhanh.'],
-                ['icon' => '👑', 'slug' => 'rang-su-chuyen-sau', 'badge' => 'Bọc sứ cao cấp', 'desc' => 'Thiết kế nụ cười răng sứ toàn sứ chính hãng Đức, Mỹ với độ bền và thẩm mỹ tự nhiên.'],
-                ['icon' => '🔩', 'slug' => 'implant-chuyen-sau', 'badge' => 'Phục hình vĩnh viễn', 'desc' => 'Trồng răng Implant kỹ thuật số phục hồi chân răng độc lập, ăn nhai bền vững trọn đời.'],
-            ];
-        @endphp
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            @forelse($featuredServices as $idx => $service)
-                @php
-                    $vis = $serviceVisuals[$idx % count($serviceVisuals)];
-                @endphp
-                <div class="bg-white rounded-2xl p-6 shadow-xs hover:shadow-lg transition-all duration-200 border border-slate-200/90 flex flex-col justify-between group">
+        <div class="space-y-4">
+            <!-- Service 1: Dán Sứ Veneer Emax -->
+            <div class="bg-white rounded-3xl p-5 sm:p-6 border border-[#EAE5DD] shadow-xs space-y-4">
+                <div class="flex items-start justify-between gap-4">
                     <div>
-                        <div class="flex items-center justify-between gap-2 mb-4">
-                            <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-2xl group-hover:bg-indigo-600 group-hover:text-white transition-colors">
-                                {{ $vis['icon'] }}
-                            </div>
-                            <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-slate-100 text-slate-600">
-                                {{ $vis['badge'] }}
-                            </span>
-                        </div>
+                        <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Nghệ thuật thẩm mỹ nụ cười</div>
+                        <h3 class="font-serif-luxury text-lg sm:text-xl font-bold text-slate-900 mt-0.5">Dán Sứ Veneer Emax Siêu Mỏng</h3>
+                    </div>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#FDF8EE] text-[#9A7B4F] border border-[#E9DCBF] shrink-0">
+                        Bán chạy nhất (30%)
+                    </span>
+                </div>
+                <p class="text-xs text-slate-600 leading-relaxed font-light">
+                    Khôi phục men răng, form răng tự nhiên, không mài nhỏ, bảo tồn răng gốc 100%, bảo hành trọn đời.
+                </p>
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2 border-t border-slate-100">
+                    <div>
+                        <span class="text-[11px] text-slate-400">Giá ưu đãi trọn gói:</span>
+                        <div class="font-serif-luxury text-xl font-bold text-[#063B30]">104.500.000 đ <span class="text-xs font-sans-luxury text-slate-400 font-normal">/ 16 răng</span></div>
+                    </div>
+                    <a href="{{ route('public.booking', ['service' => 'veneer']) }}" class="py-2.5 px-5 bg-[#063B30] hover:bg-[#042A22] text-[#FDFBF7] font-bold text-xs rounded-xl shadow-xs transition text-center">
+                        Trải Nghiệm Ngay
+                    </a>
+                </div>
+            </div>
 
-                        <a href="{{ route('public.service.detail', $vis['slug']) }}" class="block">
-                            <h3 class="text-lg font-extrabold text-slate-900 group-hover:text-indigo-600 transition-colors">
-                                {{ $service->name }}
-                            </h3>
+            <!-- Service 2: Cấy Ghép Implant Straumann -->
+            <div class="bg-white rounded-3xl p-5 sm:p-6 border border-[#EAE5DD] shadow-xs space-y-4">
+                <div class="flex items-start justify-between gap-4">
+                    <div>
+                        <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Phục hình mất răng vĩnh viễn</div>
+                        <h3 class="font-serif-luxury text-lg sm:text-xl font-bold text-slate-900 mt-0.5">Cấy Ghép Implant Straumann</h3>
+                    </div>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#EBF4F0] text-[#063B30] border border-[#D1E6DE] shrink-0">
+                        Thụy Sĩ
+                    </span>
+                </div>
+                <p class="text-xs text-slate-600 leading-relaxed font-light">
+                    Trụ kim cương sinh học số 1 thế giới, tích hợp xương tức thì chỉ sau 3-4 tuần, bảo hành toàn cầu.
+                </p>
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2 border-t border-slate-100">
+                    <div>
+                        <span class="text-[11px] text-slate-400">Giá trọn gói niêm yết:</span>
+                        <div class="font-serif-luxury text-xl font-bold text-[#063B30]">32.180.000 đ <span class="text-xs font-sans-luxury text-slate-400 font-normal">/ 1 trụ</span></div>
+                    </div>
+                    <a href="{{ route('public.booking', ['service' => 'implant']) }}" class="py-2.5 px-5 bg-[#063B30] hover:bg-[#042A22] text-[#FDFBF7] font-bold text-xs rounded-xl shadow-xs transition text-center">
+                        Trải Nghiệm Ngay
+                    </a>
+                </div>
+            </div>
+
+            <!-- Service 3: Tẩy Trắng Laser Whitening -->
+            <div class="bg-white rounded-3xl p-5 sm:p-6 border border-[#EAE5DD] shadow-xs space-y-4">
+                <div class="flex items-start justify-between gap-4">
+                    <div>
+                        <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Ánh sáng lạnh an toàn</div>
+                        <h3 class="font-serif-luxury text-lg sm:text-xl font-bold text-slate-900 mt-0.5">Tẩy Trắng Răng Laser Whitening</h3>
+                    </div>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#FFFBEB] text-[#B45309] border border-[#FDE68A] shrink-0">
+                        Ưu đãi 40%
+                    </span>
+                </div>
+                <p class="text-xs text-slate-600 leading-relaxed font-light">
+                    Bước sóng ánh sáng lạnh hoạt hóa gel nano sinh học, bật 3-5 tone không ê buốt, giữ màu trắng sáng 2-3 năm.
+                </p>
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2 border-t border-slate-100">
+                    <div>
+                        <span class="text-[11px] text-slate-400">Giá ưu đãi đặc biệt:</span>
+                        <div class="font-serif-luxury text-xl font-bold text-[#063B30]">2.000.000 đ <span class="text-xs font-sans-luxury text-slate-400 font-normal">/ liệu trình</span></div>
+                    </div>
+                    <a href="{{ route('public.booking', ['service' => 'whitening']) }}" class="py-2.5 px-5 bg-[#063B30] hover:bg-[#042A22] text-[#FDFBF7] font-bold text-xs rounded-xl shadow-xs transition text-center">
+                        Trải Nghiệm Ngay
+                    </a>
+                </div>
+            </div>
+
+            <!-- Service 4: Niềng Răng Invisalign Diamond -->
+            <div class="bg-white rounded-3xl p-5 sm:p-6 border border-[#EAE5DD] shadow-xs space-y-4">
+                <div class="flex items-start justify-between gap-4">
+                    <div>
+                        <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Chỉnh nha vô hình Hoa Kỳ</div>
+                        <h3 class="font-serif-luxury text-lg sm:text-xl font-bold text-slate-900 mt-0.5">Niềng Răng Invisalign Diamond</h3>
+                    </div>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#EBF4F0] text-[#063B30] border border-[#D1E6DE] shrink-0">
+                        Đặc quyền mùa cưới
+                    </span>
+                </div>
+                <p class="text-xs text-slate-600 leading-relaxed font-light">
+                    Khay niềng trong suốt SmartTrack chính hãng Hoa Kỳ, xem trước nụ cười tương lai bằng phần mềm ClinCheck 3D.
+                </p>
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2 border-t border-slate-100">
+                    <div>
+                        <span class="text-[11px] text-slate-400">Trọn gói điều trị:</span>
+                        <div class="font-serif-luxury text-xl font-bold text-[#063B30]">104.000.000 đ <span class="text-xs font-sans-luxury text-slate-400 font-normal">/ trọn gói</span></div>
+                    </div>
+                    <a href="{{ route('public.booking', ['service' => 'invisalign']) }}" class="py-2.5 px-5 bg-[#063B30] hover:bg-[#042A22] text-[#FDFBF7] font-bold text-xs rounded-xl shadow-xs transition text-center">
+                        Trải Nghiệm Ngay
+                    </a>
+                </div>
+            </div>
+
+            <!-- 2 Mini Quick Services -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                <div class="bg-white rounded-2xl p-4 border border-[#EAE5DD] flex items-center justify-between">
+                    <div>
+                        <div class="text-[10px] font-bold uppercase text-slate-400">Sóng Siêu Âm 0 Đau</div>
+                        <div class="text-xs font-bold text-slate-900 mt-0.5">Nhổ Răng Khôn Piezotome</div>
+                        <div class="font-serif-luxury font-bold text-sm text-[#063B30] mt-1">990.000 đ</div>
+                    </div>
+                    <a href="{{ route('public.booking') }}" class="px-3 py-1.5 bg-[#EBF4F0] hover:bg-[#063B30] text-[#063B30] hover:text-white rounded-xl text-xs font-bold transition">
+                        Đặt Lịch
+                    </a>
+                </div>
+
+                <div class="bg-white rounded-2xl p-4 border border-[#EAE5DD] flex items-center justify-between">
+                    <div>
+                        <div class="text-[10px] font-bold uppercase text-slate-400">Chuẩn Đoán Đa Tầng</div>
+                        <div class="text-xs font-bold text-slate-900 mt-0.5">Khám 3D Chuyên Sâu</div>
+                        <div class="font-serif-luxury font-bold text-sm text-[#063B30] mt-1">350.000 đ</div>
+                    </div>
+                    <a href="{{ route('public.booking') }}" class="px-3 py-1.5 bg-[#EBF4F0] hover:bg-[#063B30] text-[#063B30] hover:text-white rounded-xl text-xs font-bold transition">
+                        Đặt Lịch
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. SECTION: HÀNH TRÌNH 4 BƯỚC THƯ THÁI (LUXURY EXPERIENCE) -->
+    <section class="max-w-4xl mx-auto px-4 sm:px-6 space-y-6">
+        <div class="border-b border-[#EAE5DD] pb-4">
+            <span class="text-[10px] font-bold uppercase tracking-widest text-[#A37F4E]">Luxury Experience</span>
+            <h2 class="font-serif-luxury text-2xl sm:text-3xl font-bold text-[#1A2421] mt-1">Hành Trình 4 Bước Thư Thái</h2>
+            <p class="text-xs text-slate-500 mt-1">Tại Smile Atelier, mỗi ca điều trị là một hành trình tĩnh tâm, giải tỏa âu lo và nâng niu trọn vẹn.</p>
+        </div>
+
+        <div class="space-y-3.5">
+            <!-- Step 1 -->
+            <div class="bg-white rounded-2xl p-4 sm:p-5 border border-[#EAE5DD] flex items-start gap-4">
+                <div class="w-8 h-8 rounded-xl bg-[#063B30] text-[#E6D5B8] flex items-center justify-center font-serif-luxury font-bold text-sm shrink-0">
+                    1
+                </div>
+                <div class="space-y-1">
+                    <h3 class="font-bold text-xs sm:text-sm text-slate-900">Thưởng Trà & Khảo Sát Nụ Cười (1-1)</h3>
+                    <p class="text-xs text-slate-500 leading-relaxed font-light">
+                        Trò chuyện cùng Bác sĩ tại phòng chờ riêng biệt. Thưởng thức trà thảo mộc thượng hạng và lắng nghe tư vấn tỉ lệ nụ cười.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="bg-white rounded-2xl p-4 sm:p-5 border border-[#EAE5DD] flex items-start gap-4">
+                <div class="w-8 h-8 rounded-xl bg-[#063B30] text-[#E6D5B8] flex items-center justify-center font-serif-luxury font-bold text-sm shrink-0">
+                    2
+                </div>
+                <div class="space-y-1">
+                    <h3 class="font-bold text-xs sm:text-sm text-slate-900">Quét 3D CT ConeBeam & Thiết Kế Nụ Cười</h3>
+                    <p class="text-xs text-slate-500 leading-relaxed font-light">
+                        Ghi nhận cấu trúc xương hàm và mô mềm đa tầng, mô phỏng nụ cười chuẩn tỷ lệ vàng hài hòa nhân tướng học.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="bg-white rounded-2xl p-4 sm:p-5 border border-[#EAE5DD] flex items-start gap-4">
+                <div class="w-8 h-8 rounded-xl bg-[#063B30] text-[#E6D5B8] flex items-center justify-center font-serif-luxury font-bold text-sm shrink-0">
+                    3
+                </div>
+                <div class="space-y-1">
+                    <h3 class="font-bold text-xs sm:text-sm text-slate-900">Trị Liệu Êm Ái Với Âm Nhạc Sóng Não</h3>
+                    <p class="text-xs text-slate-500 leading-relaxed font-light">
+                        Phòng vô trùng áp lực dương tuyệt đối. Thư giãn cùng tai nghe chống ồn khử căng thẳng và liệu pháp ánh sáng dịu nhẹ.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="bg-white rounded-2xl p-4 sm:p-5 border border-[#EAE5DD] flex items-start gap-4">
+                <div class="w-8 h-8 rounded-xl bg-[#063B30] text-[#E6D5B8] flex items-center justify-center font-serif-luxury font-bold text-sm shrink-0">
+                    4
+                </div>
+                <div class="space-y-1">
+                    <h3 class="font-bold text-xs sm:text-sm text-slate-900">Hậu Mãi Thượng Hạng & Trà VIP Club</h3>
+                    <p class="text-xs text-slate-500 leading-relaxed font-light">
+                        Nghỉ dưỡng sau trị liệu tại sảnh VIP lounge, trao thẻ bảo hành điện tử chính hãng toàn cầu và xe riêng đưa về tận nơi.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. SECTION: HỘI ĐỒNG BÁC SĨ NGHỆ NHÂN (MASTER DOCTORS) -->
+    <section class="max-w-4xl mx-auto px-4 sm:px-6 space-y-6">
+        <div class="border-b border-[#EAE5DD] pb-4">
+            <span class="text-[10px] font-bold uppercase tracking-widest text-[#A37F4E]">Master Doctors</span>
+            <h2 class="font-serif-luxury text-2xl sm:text-3xl font-bold text-[#1A2421] mt-1">Hội Đồng Bác Sĩ Nghệ Nhân</h2>
+            <p class="text-xs text-slate-500 mt-1">Đội ngũ chuyên gia tu nghiệp Harvard & Geneva, hơn 15 năm kinh nghiệm kiến tạo nụ cười hoàn mỹ.</p>
+        </div>
+
+        <div class="space-y-6">
+            <!-- Doctor 1: TS. BS. Lê Hoàng Nam -->
+            <div class="bg-white rounded-3xl overflow-hidden border border-[#EAE5DD] shadow-xs">
+                <div class="relative h-64 sm:h-80 overflow-hidden bg-slate-100">
+                    <img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=800&q=85" alt="TS. BS. Lê Hoàng Nam" class="w-full h-full object-cover object-top">
+                    <div class="absolute bottom-3 left-3 bg-[#063B30]/90 backdrop-blur-md px-3 py-1 rounded-xl text-[10px] font-bold text-[#E6D5B8] uppercase tracking-wider border border-[#C5A880]/30">
+                        Nha Khoa Thẩm Mỹ & Phẫu Thuật
+                    </div>
+                </div>
+                <div class="p-5 sm:p-6 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-[#A37F4E]">Chuyên Gia Chuyên Khoa</span>
+                        <span class="text-xs text-slate-400 font-medium">18+ Năm Kinh Nghiệm</span>
+                    </div>
+                    <div>
+                        <h3 class="font-serif-luxury text-xl font-bold text-slate-900">TS. BS. Lê Hoàng Nam</h3>
+                        <p class="text-xs text-slate-600 mt-1 font-light leading-relaxed">
+                            Chuyên gia phẫu thuật Implant & phục hình răng sứ thẩm mỹ. Cựu giảng viên ĐH Y Dược, tu nghiệp Implant chuyên sâu tại Harvard & Geneva. Hơn 3.000 ca thành công.
+                        </p>
+                    </div>
+                    <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
+                        <div class="text-[11px] text-slate-500 flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                            <span>Trực tiếp điều trị tại Private Lounge</span>
+                        </div>
+                        <a href="{{ route('public.booking', ['doctor' => 'nam']) }}" class="text-xs font-bold text-[#063B30] hover:underline">
+                            Đặt lịch khám riêng &rarr;
                         </a>
+                    </div>
+                </div>
+            </div>
 
-                        <p class="text-xs text-slate-600 mt-2 leading-relaxed">
-                            {{ $service->description ?: $vis['desc'] }}
+            <!-- Doctor 2: ThS. BS. Mai Phương Uyên -->
+            <div class="bg-white rounded-3xl overflow-hidden border border-[#EAE5DD] shadow-xs">
+                <div class="relative h-64 sm:h-80 overflow-hidden bg-slate-100">
+                    <img src="https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&w=800&q=85" alt="ThS. BS. Mai Phương Uyên" class="w-full h-full object-cover object-top">
+                    <div class="absolute bottom-3 left-3 bg-[#063B30]/90 backdrop-blur-md px-3 py-1 rounded-xl text-[10px] font-bold text-[#E6D5B8] uppercase tracking-wider border border-[#C5A880]/30">
+                        Invisalign Diamond Provider
+                    </div>
+                </div>
+                <div class="p-5 sm:p-6 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-[#A37F4E]">Trưởng Khoa Chỉnh Nha</span>
+                        <span class="text-xs text-slate-400 font-medium">12+ Năm Kinh Nghiệm</span>
+                    </div>
+                    <div>
+                        <h3 class="font-serif-luxury text-xl font-bold text-slate-900">ThS. BS. Mai Phương Uyên</h3>
+                        <p class="text-xs text-slate-600 mt-1 font-light leading-relaxed">
+                            Bác sĩ chuyên gia nẹp vô hình Invisalign Diamond. Đào tạo chỉnh nha chuyên sâu tại Pháp, sở hữu chứng chỉ thẩm mỹ nụ cười chuẩn nhân trắc học.
                         </p>
                     </div>
-
-                    <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between gap-2">
-                        <div>
-                            <span class="text-[10px] font-bold uppercase text-slate-400 block">Giá niêm yết</span>
-                            <span class="text-base font-black text-indigo-600">{{ number_format($service->price, 0, ',', '.') }} đ</span>
+                    <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
+                        <div class="text-[11px] text-slate-500 flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                            <span>Trực tiếp điều trị tại Private Lounge</span>
                         </div>
-                        <div class="flex items-center gap-2">
-                            <a href="{{ route('public.service.detail', $vis['slug']) }}" class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition">
-                                Chi tiết
-                            </a>
-                            <a href="{{ route('public.booking', ['service_id' => $service->id]) }}" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-2xs transition">
-                                Đặt lịch &rarr;
-                            </a>
-                        </div>
+                        <a href="{{ route('public.booking', ['doctor' => 'uyen']) }}" class="text-xs font-bold text-[#063B30] hover:underline">
+                            Đặt lịch khám riêng &rarr;
+                        </a>
                     </div>
                 </div>
-            @empty
-                <div class="col-span-3 text-center py-10 text-slate-500 text-sm">
-                    Đang cập nhật danh mục dịch vụ...
-                </div>
-            @endforelse
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- 4. SMART 4-STEP WORKFLOW SECTION -->
-<section class="py-16 lg:py-20 bg-white border-y border-slate-100">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center max-w-3xl mx-auto mb-12">
-            <span class="text-xs font-extrabold text-indigo-600 uppercase tracking-widest">Quy Trình Khép Kín</span>
-            <h2 class="text-3xl sm:text-4xl font-black text-slate-900 mt-1">4 Bước Khám Chữa Bệnh Thông Minh</h2>
-            <p class="text-sm text-slate-600 mt-2">Đồng bộ từ khâu đặt lịch hẹn, bác sĩ xác nhận, lập bệnh án điện tử đến thanh toán mã QR tự động.</p>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <a href="{{ route('public.booking') }}" class="bg-slate-50 hover:bg-blue-50/50 rounded-2xl p-6 border border-slate-200/80 hover:border-blue-300 relative transition group flex flex-col justify-between">
-                <div>
-                    <span class="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-blue-600 text-white font-black text-sm mb-4 shadow-sm">01</span>
-                    <h3 class="text-base font-extrabold text-slate-900 group-hover:text-blue-600 transition">Đặt Lịch Hoặc Đến Trực Tiếp</h3>
-                    <p class="text-xs text-slate-600 mt-2 leading-relaxed">
-                        Đặt lịch online trước từ ngày mai trở đi, hoặc đến trực tiếp phòng khám nếu cần khám ngay trong ngày.
-                    </p>
-                </div>
-                <span class="text-xs font-extrabold text-blue-600 mt-4 inline-flex items-center gap-1">Đặt lịch hẹn ngay &rarr;</span>
-            </a>
-
-            <a href="{{ route('public.lookup') }}" class="bg-slate-50 hover:bg-indigo-50/50 rounded-2xl p-6 border border-slate-200/80 hover:border-indigo-300 relative transition group flex flex-col justify-between">
-                <div>
-                    <span class="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-indigo-600 text-white font-black text-sm mb-4 shadow-sm">02</span>
-                    <h3 class="text-base font-extrabold text-slate-900 group-hover:text-indigo-600 transition">Bác Sĩ Xác Nhận & Nhắc Hẹn</h3>
-                    <p class="text-xs text-slate-600 mt-2 leading-relaxed">
-                        Bác sĩ xác nhận lịch hẹn trên hệ thống; tự động gửi cảnh báo nhắc hẹn khi đến giờ hoặc quá giờ hẹn.
-                    </p>
-                </div>
-                <span class="text-xs font-extrabold text-indigo-600 mt-4 inline-flex items-center gap-1">Tra cứu trạng thái lịch &rarr;</span>
-            </a>
-
-            <a href="{{ route('public.doctors') }}" class="bg-slate-50 hover:bg-cyan-50/50 rounded-2xl p-6 border border-slate-200/80 hover:border-cyan-300 relative transition group flex flex-col justify-between">
-                <div>
-                    <span class="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-cyan-600 text-white font-black text-sm mb-4 shadow-sm">03</span>
-                    <h3 class="text-base font-extrabold text-slate-900 group-hover:text-cyan-700 transition">Khám & Sơ Đồ Răng Điện Tử</h3>
-                    <p class="text-xs text-slate-600 mt-2 leading-relaxed">
-                        Thăm khám trên Sơ đồ răng 32 răng chuẩn FDI, lưu trữ bệnh án và kê đơn thuốc điện tử minh bạch.
-                    </p>
-                </div>
-                <span class="text-xs font-extrabold text-cyan-700 mt-4 inline-flex items-center gap-1">Xem đội ngũ Bác sĩ &rarr;</span>
-            </a>
-
-            <a href="{{ route('public.lookup') }}" class="bg-slate-50 hover:bg-emerald-50/50 rounded-2xl p-6 border border-slate-200/80 hover:border-emerald-300 relative transition group flex flex-col justify-between">
-                <div>
-                    <span class="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-emerald-600 text-white font-black text-sm mb-4 shadow-sm">04</span>
-                    <h3 class="text-base font-extrabold text-slate-900 group-hover:text-emerald-700 transition">Thanh Toán VietQR Tự Động</h3>
-                    <p class="text-xs text-slate-600 mt-2 leading-relaxed">
-                        Hóa đơn tự động tổng hợp tiền dịch vụ khám, tiền thuốc kèm theo và thuế VAT 10% kèm mã quét VietQR.
-                    </p>
-                </div>
-                <span class="text-xs font-extrabold text-emerald-700 mt-4 inline-flex items-center gap-1">Tra cứu hóa đơn &rarr;</span>
-            </a>
-        </div>
-    </div>
-</section>
-
-<!-- 5. OUR DOCTORS SECTION -->
-<section class="py-16 lg:py-20 bg-slate-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+    <!-- 5. SECTION: CẢM NHẬN TỪ TRÁI TIM (CLIENT TESTIMONIALS - DEEP EMERALD) -->
+    <section class="max-w-4xl mx-auto px-4 sm:px-6">
+        <div class="bg-[#063B30] text-white rounded-3xl p-6 sm:p-10 border border-[#C5A880]/30 shadow-xl space-y-6">
             <div>
-                <span class="text-xs font-extrabold text-indigo-600 uppercase tracking-widest">Đội Ngũ Chuyên Gia</span>
-                <h2 class="text-3xl sm:text-4xl font-black text-slate-900 mt-1">Bác Sĩ Chuyên Khoa Răng Hàm Mặt</h2>
+                <span class="text-[10px] font-bold uppercase tracking-widest text-[#E6D5B8]">Client Testimonials</span>
+                <h2 class="font-serif-luxury text-2xl sm:text-3xl font-bold text-white mt-1">Cảm Nhận Từ Trái Tim</h2>
             </div>
-            <a href="{{ route('public.doctors') }}" class="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-indigo-600 hover:text-indigo-800 bg-white px-4 py-2.5 rounded-xl border border-slate-200 transition self-start md:self-auto">
-                <span>Xem toàn bộ đội ngũ Bác sĩ</span>
-                <span>&rarr;</span>
-            </a>
-        </div>
 
-        @php
-            $doctorPortraits = [
-                'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=600',
-                'https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&q=80&w=600',
-                'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&q=80&w=600',
-                'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=600',
-            ];
-            $fallbackDoctors = [
-                ['name' => 'BS.CKII Trần Văn A', 'specialty' => 'Nha khoa Thẩm mỹ & Phục hình Sứ', 'exp' => '12 năm kinh nghiệm', 'img' => $doctorPortraits[0]],
-                ['name' => 'ThS.BS Nguyễn Thị Minh Anh', 'specialty' => 'Chuyên gia Chỉnh nha Invisalign', 'exp' => '10 năm kinh nghiệm', 'img' => $doctorPortraits[1]],
-                ['name' => 'BS.CKI Lê Hoàng Nam', 'specialty' => 'Cấy ghép Implant & Tiểu phẫu', 'exp' => '15 năm kinh nghiệm', 'img' => $doctorPortraits[2]],
-                ['name' => 'BS. Phạm Thanh Thảo', 'specialty' => 'Nha khoa Tổng quát & Nội nha', 'exp' => '8 năm kinh nghiệm', 'img' => $doctorPortraits[3]],
-            ];
-        @endphp
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            @foreach($fallbackDoctors as $idx => $fbDoc)
-                @php
-                    $dbDoc = isset($doctors[$idx]) ? $doctors[$idx] : null;
-                    $docName = ($dbDoc && $dbDoc->user) ? $dbDoc->user->name : $fbDoc['name'];
-                    $docSpec = ($dbDoc && $dbDoc->specialty) ? (is_object($dbDoc->specialty) ? $dbDoc->specialty->name : $dbDoc->specialty) : $fbDoc['specialty'];
-                    $docExp = ($dbDoc && $dbDoc->experience_years) ? ($dbDoc->experience_years . ' năm kinh nghiệm') : $fbDoc['exp'];
-                @endphp
-                <div class="bg-white rounded-2xl overflow-hidden shadow-xs hover:shadow-lg border border-slate-200/90 transition group flex flex-col">
-                    <div class="relative h-64 overflow-hidden bg-slate-100">
-                        <img src="{{ $fbDoc['img'] }}" alt="{{ $docName }}" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-300">
-                        <span class="absolute top-3 right-3 px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-white/90 backdrop-blur text-indigo-700 shadow-2xs">
-                            {{ $docExp }}
-                        </span>
-                    </div>
-                    <div class="p-5 flex-1 flex flex-col justify-between">
+            <div class="space-y-6">
+                <!-- Testimonial 1 -->
+                <div class="p-5 rounded-2xl bg-white/5 border border-white/10 space-y-3">
+                    <p class="font-serif-luxury text-sm sm:text-base italic text-slate-100 leading-relaxed font-light">
+                        "Không gian nha khoa mang phong cách boutique 5 sao tuyệt mỹ. Bác sĩ Nam điều trị răng sứ mà tôi hoàn toàn không hề có cảm giác ê buốt hay căng thẳng nào. Nụ cười mới tự nhiên giúp tôi tự tin tuyệt đối trên thương trường."
+                    </p>
+                    <div class="flex items-center gap-3 pt-2">
+                        <div class="w-10 h-10 rounded-full bg-[#E6D5B8] text-[#063B30] font-bold flex items-center justify-center text-xs">
+                            TH
+                        </div>
                         <div>
-                            <h3 class="text-base font-extrabold text-slate-900">{{ $docName }}</h3>
-                            <p class="text-xs font-bold text-indigo-600 mt-1">{{ $docSpec }}</p>
-                            <p class="text-[11px] text-slate-500 mt-2">Tốt nghiệp Đại học Y Dược • Chứng chỉ hành nghề Răng Hàm Mặt Quốc gia.</p>
-                        </div>
-                        <div class="mt-4 pt-3 border-t border-slate-100">
-                            <a href="{{ route('public.booking', $dbDoc ? ['doctor_id' => $dbDoc->id] : []) }}" class="w-full inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white text-xs font-extrabold transition">
-                                <span>Đặt lịch với Bác sĩ</span>
-                                <span>&rarr;</span>
-                            </a>
+                            <div class="font-bold text-xs text-white">Bà Trần Thu Hằng</div>
+                            <div class="text-[10px] text-slate-300">Á Hậu Doanh Nhân • Chủ Tịch Tập Đoàn Thời Trang</div>
                         </div>
                     </div>
                 </div>
-            @endforeach
-        </div>
-    </div>
-</section>
 
-<!-- 6. CUSTOMER REVIEWS -->
-<section id="reviews" class="py-16 lg:py-20 bg-slate-900 text-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center max-w-3xl mx-auto mb-12">
-            <span class="text-xs font-extrabold text-cyan-400 uppercase tracking-widest">Khách Hàng Chia Sẻ</span>
-            <h2 class="text-3xl sm:text-4xl font-black mt-1">Hơn 10.000 Khách Hàng Tin Tưởng</h2>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="bg-slate-800/80 p-6 rounded-2xl border border-slate-700/80 flex flex-col justify-between">
-                <div>
-                    <div class="text-amber-400 text-sm tracking-widest mb-3">★★★★★</div>
-                    <p class="text-xs sm:text-sm text-slate-300 leading-relaxed italic">
-                        "Nhổ răng khôn bằng máy siêu âm rất êm, hầu như không sưng đau. Đặc biệt thích phần hóa đơn hiển thị rõ tiền dịch vụ, tiền thuốc và quét mã VietQR cực nhanh."
+                <!-- Testimonial 2 -->
+                <div class="p-5 rounded-2xl bg-white/5 border border-white/10 space-y-3">
+                    <p class="font-serif-luxury text-sm sm:text-base italic text-slate-100 leading-relaxed font-light">
+                        "Cấy 2 trụ Implant Straumann chỉ mất 25 phút trong không gian êm ái như spa. Thưởng thức tách trà thảo mộc tại Private Lounge sau khi hoàn thành là một trải nghiệm thực sự đẳng cấp."
                     </p>
-                </div>
-                <div class="flex items-center gap-3 mt-5 pt-4 border-t border-slate-700/70">
-                    <div class="w-9 h-9 rounded-full bg-indigo-600 text-white font-extrabold text-xs flex items-center justify-center">HN</div>
-                    <div>
-                        <h4 class="text-xs font-extrabold text-white">Anh Hoàng Nam</h4>
-                        <span class="text-[11px] text-slate-400">Dịch vụ Nhổ răng khôn Piezotome</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-slate-800/80 p-6 rounded-2xl border border-indigo-500/40 flex flex-col justify-between">
-                <div>
-                    <div class="text-amber-400 text-sm tracking-widest mb-3">★★★★★</div>
-                    <p class="text-xs sm:text-sm text-slate-300 leading-relaxed italic">
-                        "Đặt lịch khám online từ hôm trước, bác sĩ xác nhận ngay và khi đến giờ hẹn có thông báo nhắc rất chuyên nghiệp. Hồ sơ bệnh án và đơn thuốc tra cứu trực tuyến rất tiện."
-                    </p>
-                </div>
-                <div class="flex items-center gap-3 mt-5 pt-4 border-t border-slate-700/70">
-                    <div class="w-9 h-9 rounded-full bg-cyan-600 text-white font-extrabold text-xs flex items-center justify-center">LC</div>
-                    <div>
-                        <h4 class="text-xs font-extrabold text-white">Chị Linh Chi</h4>
-                        <span class="text-[11px] text-slate-400">Dịch vụ Niềng răng & Chăm sóc định kỳ</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-slate-800/80 p-6 rounded-2xl border border-slate-700/80 flex flex-col justify-between">
-                <div>
-                    <div class="text-amber-400 text-sm tracking-widest mb-3">★★★★★</div>
-                    <p class="text-xs sm:text-sm text-slate-300 leading-relaxed italic">
-                        "Phòng khám sạch đẹp, vô trùng kỹ lưỡng. Bác sĩ giải thích trực tiếp trên sơ đồ răng điện tử nên mình hiểu rất rõ tình trạng từng chiếc răng trước khi làm."
-                    </p>
-                </div>
-                <div class="flex items-center gap-3 mt-5 pt-4 border-t border-slate-700/70">
-                    <div class="w-9 h-9 rounded-full bg-emerald-600 text-white font-extrabold text-xs flex items-center justify-center">MT</div>
-                    <div>
-                        <h4 class="text-xs font-extrabold text-white">Anh Minh Tuấn</h4>
-                        <span class="text-[11px] text-slate-400">Dịch vụ Trồng răng Implant</span>
+                    <div class="flex items-center gap-3 pt-2">
+                        <div class="w-10 h-10 rounded-full bg-white/20 text-white font-bold flex items-center justify-center text-xs border border-white/20">
+                            VT
+                        </div>
+                        <div>
+                            <div class="font-bold text-xs text-white">Ông Vũ Doãn Thành</div>
+                            <div class="text-[10px] text-slate-300">Nhà Sáng Lập Chuỗi Nhà Hàng Cao Cấp</div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- 7. BOTTOM CTA BANNER -->
-<section class="py-16 bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 text-white">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 class="text-3xl sm:text-4xl font-black mb-3">Sẵn Sàng Chăm Sóc Nụ Cười Của Bạn?</h2>
-        <p class="text-sm sm:text-base text-blue-100 mb-8 max-w-2xl mx-auto">
-            Đặt lịch hẹn trước cho các ngày tiếp theo hoặc đến trực tiếp phòng khám nếu bạn muốn thăm khám ngay trong ngày hôm nay.
-        </p>
-        <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="{{ route('public.booking') }}" class="px-8 py-4 bg-white text-indigo-700 hover:bg-slate-50 rounded-2xl font-extrabold text-sm uppercase tracking-wider shadow-lg transition">
-                📅 Đặt Lịch Khám Online Ngay
+    <!-- 6. SECTION: SMILE ATELIER VIP CONCIERGE -->
+    <section class="max-w-4xl mx-auto px-4 sm:px-6">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-[#EAE5DD] shadow-xs text-center space-y-5">
+            <div class="w-10 h-1 bg-[#A37F4E] mx-auto rounded-full"></div>
+            <div class="space-y-1">
+                <span class="text-[10px] font-bold uppercase tracking-widest text-[#A37F4E]">Đặc Quyền Dành Riêng Cho Thượng Khách</span>
+                <h2 class="font-serif-luxury text-2xl sm:text-3xl font-bold text-[#1A2421]">Smile Atelier VIP Concierge</h2>
+                <p class="text-xs text-slate-500 max-w-lg mx-auto font-light leading-relaxed">
+                    Hỗ trợ đặt xe riêng đưa đón tận nơi, chuẩn bị trà đón tiếp theo sở thích và sắp xếp phòng khám VIP riêng tư hoàn toàn.
+                </p>
+            </div>
+
+            <!-- Hotline Box -->
+            <a href="tel:19006868" class="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-[#FBF9F5] border border-[#EAE5DD] hover:border-[#063B30] transition group shadow-2xs">
+                <div class="w-8 h-8 rounded-xl bg-[#063B30] text-[#E6D5B8] flex items-center justify-center font-bold text-xs">
+                    📞
+                </div>
+                <div class="text-left">
+                    <div class="text-[10px] uppercase font-bold text-slate-400">Hotline Thượng Khách 24/7</div>
+                    <div class="font-serif-luxury text-xl font-bold text-[#063B30] group-hover:underline">1900 6868</div>
+                </div>
             </a>
-            <a href="tel:19001234" class="px-8 py-4 bg-indigo-900/40 hover:bg-indigo-900/60 border border-white/30 text-white rounded-2xl font-extrabold text-sm uppercase tracking-wider transition">
-                📞 Gọi Hotline: 1900 1234
-            </a>
+
+            <!-- Action buttons -->
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+                <a href="{{ route('public.contact') }}" class="w-full sm:w-auto px-6 py-2.5 rounded-xl border border-slate-200 text-slate-700 text-xs font-bold hover:bg-slate-50 transition flex items-center justify-center gap-1.5">
+                    <span>🗺️</span>
+                    <span>Chỉ Đường Đi</span>
+                </a>
+                <a href="{{ route('public.booking') }}" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-[#063B30] text-[#FDFBF7] text-xs font-bold hover:bg-[#042A22] transition flex items-center justify-center gap-1.5 shadow-sm">
+                    <span>👑</span>
+                    <span>Đặt Phòng VIP Riêng</span>
+                </a>
+            </div>
+
+            <div class="text-[11px] text-slate-400 pt-2 flex items-center justify-center gap-1.5">
+                <span>📍</span>
+                <span>123 Nguyễn Văn Cừ, Quận 5, TP.HCM • Chỗ đỗ xe ô tô riêng cho thượng khách</span>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
+
+</div>
 @endsection
