@@ -28,11 +28,13 @@
             <div class="flex flex-col md:flex-row justify-between gap-8 relative z-10">
                 <div>
                     <div class="flex items-center gap-3 mb-6">
-                        <div class="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg">
-                            NK
+                        <div class="w-12 h-12 bg-[#0D7A68] rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-xs">
+                            <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
                         </div>
                         <div>
-                            <h2 class="font-black text-2xl tracking-tight text-slate-800">Nha Khoa <span class="text-blue-600">Smile</span></h2>
+                            <h2 class="font-black text-2xl tracking-tight text-slate-800">Nha Khoa <span class="text-[#0D7A68]">Smile</span></h2>
                             <p class="text-xs text-gray-500 font-medium">Hệ thống Nha khoa Tiêu chuẩn Quốc tế</p>
                         </div>
                     </div>
@@ -42,7 +44,7 @@
                     </div>
                 </div>
                 <div class="md:text-right">
-                    <h3 class="text-3xl font-black text-blue-600 tracking-wider uppercase mb-2">Bệnh Án</h3>
+                    <h3 class="text-3xl font-black text-[#0D7A68] tracking-wider uppercase mb-2">Bệnh Án</h3>
                     <p class="text-sm text-gray-500 font-medium mb-1">Mã HS: <span class="text-slate-800 font-bold">#HS-{{ str_pad($record->id, 5, '0', STR_PAD_LEFT) }}</span></p>
                     <p class="text-sm text-gray-500 font-medium">Ngày lập: <span class="text-slate-800">{{ $record->created_at->format('d/m/Y H:i') }}</span></p>
                 </div>
@@ -52,8 +54,8 @@
         <!-- Content -->
         <div class="p-8 md:p-12 relative z-10">
             <!-- Patient Info -->
-            <div class="bg-blue-50/50 border border-blue-100 rounded-2xl p-6 mb-8">
-                <h4 class="text-xs font-bold text-blue-600 uppercase tracking-wider mb-4">Thông tin bệnh nhân</h4>
+            <div class="bg-teal-50/50 border border-teal-100 rounded-2xl p-6 mb-8">
+                <h4 class="text-xs font-bold text-[#0D7A68] uppercase tracking-wider mb-4">Thông tin bệnh nhân</h4>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div class="col-span-2 md:col-span-1">
                         <p class="text-xs text-gray-500 mb-1">Họ và tên</p>
@@ -84,7 +86,7 @@
                         </div>
                         <div class="w-px h-8 bg-gray-200"></div>
                         <div class="flex-1">
-                            <p class="text-sm font-bold text-blue-600">{{ $record->doctor ? $record->doctor->user->name : 'N/A' }}</p>
+                            <p class="text-sm font-bold text-[#0D7A68]">{{ $record->doctor ? $record->doctor->user->name : 'N/A' }}</p>
                             <p class="text-xs text-gray-500">{{ $record->doctor ? $record->doctor->specialty : '' }}</p>
                         </div>
                     </div>
@@ -101,8 +103,8 @@
 
                 <div class="md:col-span-2">
                     <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Chẩn đoán của Bác sĩ</h4>
-                    <div class="bg-blue-50/80 border-l-4 border-blue-500 rounded-r-xl p-5">
-                        <p class="text-blue-900 font-bold text-lg leading-relaxed">
+                    <div class="bg-teal-50/80 border-l-4 border-[#0D7A68] rounded-r-xl p-5">
+                        <p class="text-teal-950 font-bold text-lg leading-relaxed">
                             {!! nl2br(e($record->diagnosis ?: 'Đang chờ chẩn đoán.')) !!}
                         </p>
                     </div>

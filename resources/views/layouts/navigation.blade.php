@@ -1,6 +1,6 @@
 <nav x-data="{ open: false }" class="bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-0 z-40 shadow-xs">
     <!-- Top Accent Gradient Strip -->
-    <div class="h-1 w-full bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500"></div>
+    <div class="h-1 w-full bg-gradient-to-r from-[#0D7A68] via-teal-600 to-emerald-500"></div>
 
     @php
         $role = auth()->check() ? strtolower(auth()->user()->role->name ?? '') : '';

@@ -1,321 +1,306 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Bảng Điều Khiển Bác Sĩ') }} - BS. {{ $doctor->user->name ?? '' }}
-        </h2>
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 py-1">
+            <div>
+                <div class="flex flex-wrap items-center gap-2.5">
+                    <h1 class="text-xl font-bold text-slate-900 tracking-tight">Phòng Khám Chuyên Khoa &amp; Điều Trị</h1>
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 border border-slate-200/60">
+                        <span class="w-1.5 h-1.5 rounded-full bg-teal-600"></span>
+                        BS. {{ $doctor->user->name ?? 'Nha sĩ' }} • {{ date('d/m/Y') }}
+                    </span>
+                </div>
+                <p class="text-xs text-slate-500 mt-1">Khám lâm sàng, chẩn đoán sơ đồ răng Odontogram, điều trị và kê đơn thuốc chuyển Thu ngân</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2.5 shrink-0">
+                <a href="{{ route('doctor.queue.index') }}" class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-xl text-xs font-semibold shadow-xs transition">
+                    <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <span>Hàng đợi phòng khám</span>
+                </a>
+                <a href="{{ route('doctor.prescriptions.index') }}" class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-xl text-xs font-semibold shadow-xs transition">
+                    <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    <span>Đơn thuốc</span>
+                </a>
+                <a href="{{ route('doctor.consultations.index') }}" class="inline-flex items-center gap-1.5 px-4 py-2 bg-[#0D7A68] hover:bg-[#0B6858] text-white rounded-xl text-xs font-bold shadow-xs transition">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                    <span>Tất cả ca khám</span>
+                </a>
+            </div>
+        </div>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <div class="py-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+
             @if(session('success'))
-                <div class="mb-6 bg-green-100 border border-green-400 text-green-800 px-4 py-3 rounded-lg font-medium text-sm">
-                    {{ session('success') }}
+                <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 px-4 py-3 rounded-2xl text-xs font-bold flex items-center gap-2 shadow-xs">
+                    <span class="w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs">✓</span>
+                    <span>{{ session('success') }}</span>
                 </div>
             @endif
             @if(session('error'))
-                <div class="mb-6 bg-red-100 border border-red-400 text-red-800 px-4 py-3 rounded-lg font-medium text-sm">
-                    {{ session('error') }}
+                <div class="bg-rose-50 border border-rose-200 text-rose-800 px-4 py-3 rounded-2xl text-xs font-bold flex items-center gap-2 shadow-xs">
+                    <span class="w-5 h-5 rounded-full bg-rose-600 text-white flex items-center justify-center text-xs">!</span>
+                    <span>{{ session('error') }}</span>
                 </div>
             @endif
 
-            <!-- Thống kê nhanh hôm nay -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-6 flex items-center border-l-4 border-blue-500">
-                    <div class="p-3 rounded-full bg-blue-100 text-blue-600 mr-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
+            <!-- 4 Thẻ KPI Bác sĩ (Stitch UI) -->
+            <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+                <div class="bg-white rounded-2xl border border-slate-200/80 p-4 shadow-xs">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-medium text-slate-600">Ca khám hôm nay</span>
+                        <span class="w-2 h-2 rounded-full bg-teal-600"></span>
                     </div>
-                    <div>
-                        <p class="text-sm text-gray-500 font-medium">Tổng ca khám hôm nay</p>
-                        <p class="text-2xl font-bold text-gray-800">{{ $totalToday }}</p>
+                    <div class="mt-2.5 flex items-baseline gap-1.5">
+                        <span class="text-2xl font-bold text-slate-900 tracking-tight">{{ $totalToday }}</span>
+                        <span class="text-xs text-slate-500 font-medium">ca đã lên lịch</span>
+                    </div>
+                    <div class="text-[11px] text-slate-400 mt-1">Được chỉ định cho bạn</div>
+                </div>
+
+                <div class="bg-white rounded-2xl border border-slate-200/80 p-4 shadow-xs">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-medium text-slate-600">Chờ tại sảnh</span>
+                        <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                    </div>
+                    <div class="mt-2.5 flex items-baseline gap-1.5">
+                        <span class="text-2xl font-bold text-slate-900 tracking-tight">{{ $waitingCount }}</span>
+                        <span class="text-xs text-slate-500 font-medium">bệnh nhân sẵn sàng</span>
+                    </div>
+                    <div class="text-[11px] text-slate-400 mt-1">Đã làm thủ tục Check-in</div>
+                </div>
+
+                <div class="bg-white rounded-2xl border border-slate-200/80 p-4 shadow-xs">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-medium text-slate-600">Đang khám trong phòng</span>
+                        <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                    </div>
+                    <div class="mt-2.5 flex items-baseline gap-1.5">
+                        <span class="text-2xl font-bold text-slate-900 tracking-tight">{{ $inProgress ? 1 : 0 }}</span>
+                        <span class="text-xs text-slate-500 font-medium">ghế đang điều trị</span>
+                    </div>
+                    <div class="text-[11px] text-slate-400 mt-1 truncate">
+                        {{ $inProgress ? $inProgress->patient->name : 'Hiện ghế khám đang trống' }}
                     </div>
                 </div>
-                
-                <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-6 flex items-center border-l-4 border-orange-500">
-                    <div class="p-3 rounded-full bg-orange-100 text-orange-600 mr-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
+
+                <div class="bg-white rounded-2xl border border-slate-200/80 p-4 shadow-xs">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-medium text-slate-600">Đã khám xong</span>
+                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
                     </div>
-                    <div>
-                        <p class="text-sm text-gray-500 font-medium">Đang chờ ngoài sảnh</p>
-                        <p class="text-2xl font-bold text-orange-600">{{ $waitingCount }}</p>
+                    <div class="mt-2.5 flex items-baseline gap-1.5">
+                        <span class="text-2xl font-bold text-slate-900 tracking-tight">{{ $completedCount }}</span>
+                        <span class="text-xs text-slate-500 font-medium">ca hoàn thành</span>
                     </div>
-                </div>
-                
-                <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-6 flex items-center border-l-4 border-green-500">
-                    <div class="p-3 rounded-full bg-green-100 text-green-600 mr-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                    <div>
-                        <p class="text-sm text-gray-500 font-medium">Đã khám xong</p>
-                        <p class="text-2xl font-bold text-green-600">{{ $completedCount }}</p>
-                    </div>
+                    <div class="text-[11px] text-slate-400 mt-1">Đã chuyển sang thu ngân</div>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                
-                <!-- Bệnh nhân đang khám -->
-                <div class="lg:col-span-2 space-y-8">
+            <!-- Bố cục 2 Cột: Trái (8/12) - Phải (4/12) -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+                <!-- Cột trái (8/12): Ca khám hiện tại & Danh sách chờ tại sảnh -->
+                <div class="lg:col-span-8 space-y-6">
+
+                    <!-- KHỐI 1: Ca khám hiện tại (nếu có) -->
                     @if($inProgress)
-                        <div class="bg-white rounded-lg shadow-lg border border-purple-200 overflow-hidden relative">
-                            <div class="absolute top-0 right-0 px-4 py-1 bg-purple-600 text-white text-xs font-bold rounded-bl-lg animate-pulse">
-                                ĐANG KHÁM
+                        <div class="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-xs relative overflow-hidden">
+                            <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-100">
+                                <div class="flex items-center gap-2">
+                                    <h2 class="text-sm font-bold text-slate-900">Ca Khám Hiện Tại</h2>
+                                    <span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-[#EEF2FF] text-[#3730A3] border border-indigo-200/80 animate-pulse">
+                                        ● Đang trên ghế khám
+                                    </span>
+                                </div>
+                                <span class="text-xs font-bold text-slate-500">
+                                    Giờ hẹn: {{ \Carbon\Carbon::parse($inProgress->appointment_time)->format('H:i') }}
+                                </span>
                             </div>
-                            <div class="p-6">
-                                <h3 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">Ca Khám Hiện Tại</h3>
-                                <div class="flex flex-col md:flex-row gap-6">
-                                    <div class="flex-1">
-                                        <p class="text-sm text-gray-500 mb-1">Bệnh nhân:</p>
-                                        <p class="text-2xl font-bold text-indigo-700">{{ $inProgress->patient->name }}</p>
-                                        <div class="mt-2 grid grid-cols-2 gap-2 text-sm">
-                                            <p><span class="text-gray-500">Mã BN:</span> {{ $inProgress->patient->patient_code }}</p>
-                                            <p><span class="text-gray-500">Tuổi:</span> {{ $inProgress->patient->dob ? \Carbon\Carbon::parse($inProgress->patient->dob)->age : 'Chưa rõ' }}</p>
-                                            <p><span class="text-gray-500">Giới tính:</span> {{ $inProgress->patient->gender ?? 'Chưa rõ' }}</p>
-                                            <p><span class="text-gray-500">Giờ hẹn:</span> <span class="font-bold">{{ \Carbon\Carbon::parse($inProgress->appointment_time)->format('H:i') }}</span></p>
-                                        </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="space-y-2">
+                                    <div>
+                                        <div class="text-xs text-slate-400 font-medium">Bệnh nhân:</div>
+                                        <div class="text-lg font-bold text-slate-900">{{ $inProgress->patient->name }}</div>
                                     </div>
-                                    <div class="flex-1 bg-purple-50 p-4 rounded-lg">
-                                        <p class="text-sm text-gray-500 mb-1">Dịch vụ yêu cầu:</p>
-                                        <p class="text-lg font-semibold text-purple-900">{{ $inProgress->service->name ?? 'Khám tổng quát' }}</p>
-                                        
+                                    <div class="grid grid-cols-2 gap-2 text-xs text-slate-600 bg-slate-50/80 p-3 rounded-xl border border-slate-200/60">
+                                        <div>Mã BN: <strong class="text-slate-900">{{ $inProgress->patient->patient_code }}</strong></div>
+                                        <div>Tuổi: <strong class="text-slate-900">{{ $inProgress->patient->dob ? \Carbon\Carbon::parse($inProgress->patient->dob)->age . ' tuổi' : 'Chưa rõ' }}</strong></div>
+                                        <div>Giới tính: <strong class="text-slate-900">{{ $inProgress->patient->gender ?? '---' }}</strong></div>
+                                        <div>SĐT: <strong class="text-slate-900">{{ $inProgress->patient->phone ?? '---' }}</strong></div>
+                                    </div>
+                                </div>
+
+                                <div class="space-y-2">
+                                    <div class="bg-teal-50/60 border border-teal-200/60 rounded-xl p-3.5">
+                                        <div class="text-[11px] text-teal-800 font-bold uppercase tracking-wider">Dịch vụ yêu cầu:</div>
+                                        <div class="text-sm font-bold text-teal-900 mt-0.5">{{ $inProgress->service->name ?? 'Khám tổng quát & Tư vấn' }}</div>
                                         @if($inProgress->note)
-                                            <div class="mt-3">
-                                                <p class="text-xs text-gray-500">Ghi chú từ Lễ tân:</p>
-                                                <p class="text-sm text-gray-800 italic bg-white p-2 rounded mt-1 border border-purple-100">{{ $inProgress->note }}</p>
+                                            <div class="mt-2 pt-2 border-t border-teal-200/60 text-xs text-teal-800">
+                                                <span class="font-semibold">Ghi chú từ Lễ tân:</span> {{ $inProgress->note }}
                                             </div>
                                         @endif
                                     </div>
                                 </div>
-                                <div class="mt-6 pt-4 border-t flex justify-end gap-4">
-                                    <a href="{{ route('doctor.consultations.show', $inProgress) }}" class="px-6 py-3 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 shadow-md transition-colors flex items-center gap-2">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-                                        </svg>
-                                        Ghi Bệnh Án & Kê Đơn
-                                    </a>
-                                </div>
+                            </div>
+
+                            <div class="mt-4 pt-3 border-t border-slate-100 flex justify-end">
+                                <a href="{{ route('doctor.consultations.show', $inProgress->id) }}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#0D7A68] hover:bg-[#0B6858] text-white font-bold text-xs rounded-xl shadow-xs transition">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                                    <span>Ghi Bệnh Án &amp; Kê Đơn Thuốc &rarr;</span>
+                                </a>
                             </div>
                         </div>
                     @else
-                        <div class="bg-gray-50 rounded-lg shadow-inner border border-gray-200 p-8 text-center flex flex-col items-center justify-center h-48">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                            </svg>
-                            <p class="text-lg text-gray-500 font-medium">Không có ca khám nào đang diễn ra.</p>
-                            @if($waitingCount > 0)
-                                <p class="text-sm text-indigo-600 mt-2">Vui lòng gọi bệnh nhân tiếp theo trong hàng đợi vào khám.</p>
-                            @endif
+                        <!-- Khi chưa có ca khám trên ghế -->
+                        <div class="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-xs flex items-center justify-between">
+                            <div>
+                                <div class="text-sm font-bold text-slate-800">Ghế khám hiện đang sẵn sàng</div>
+                                <p class="text-xs text-slate-400 mt-0.5">Chọn bệnh nhân đang chờ dưới danh sách để bấm "Mời vào khám".</p>
+                            </div>
+                            <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                Sẵn sàng đón khách
+                            </span>
                         </div>
                     @endif
 
-                    <!-- Danh sách chờ -->
-                    <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
-                        <div class="flex justify-between items-center mb-4 border-b pb-2">
-                            <h3 class="text-lg font-bold text-gray-700 flex items-center">
-                                Hàng Đợi Bệnh Nhân
-                                <span class="ml-2 bg-orange-100 text-orange-800 text-xs py-1 px-2 rounded-full">{{ $waitingCount }}</span>
-                            </h3>
-                        </div>
-                        
-                        <div class="space-y-3">
-                            @forelse($waitingList as $app)
-                                <div class="flex justify-between items-center p-3 bg-white border border-gray-200 rounded-lg hover:border-orange-300 transition-colors">
-                                    <div class="flex items-center gap-4">
-                                        <div class="bg-orange-100 text-orange-700 font-bold p-2 rounded text-center w-16">
-                                            {{ \Carbon\Carbon::parse($app->appointment_time)->format('H:i') }}
-                                        </div>
-                                        <div>
-                                            <p class="font-bold text-gray-800">{{ $app->patient->name }} <span class="text-xs text-gray-500 font-normal ml-2">({{ $app->patient->gender ?? '-' }}, {{ $app->patient->dob ? \Carbon\Carbon::parse($app->patient->dob)->age : '?' }}T)</span></p>
-                                            <p class="text-sm text-gray-500">{{ $app->service->name ?? 'Khám tổng quát' }}</p>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <!-- Form gọi vào khám (chuyển trạng thái sang in_progress) -->
-                                        @if(!$inProgress)
-                                            <form action="{{ route('doctor.consultations.update', $app->id) }}" method="POST">
-                                                @csrf
-                                                @method('PUT')
-                                                <input type="hidden" name="status" value="in_progress">
-                                                <button type="submit" class="px-4 py-2 bg-orange-500 text-white text-sm font-semibold rounded hover:bg-orange-600 transition-colors shadow-sm">
-                                                    Gọi vào phòng
-                                                </button>
-                                            </form>
-                                        @else
-                                            <button disabled class="px-4 py-2 bg-gray-200 text-gray-400 text-sm font-semibold rounded cursor-not-allowed" title="Vui lòng hoàn thành ca khám hiện tại">
-                                                Đang bận
-                                            </button>
-                                        @endif
-                                    </div>
-                                </div>
-                            @empty
-                                <div class="text-center py-6 text-gray-500 text-sm bg-gray-50 rounded-lg">
-                                    Không có bệnh nhân nào đang chờ.
-                                </div>
-                            @endforelse
-                        </div>
-                    </div>
-
-                    <!-- Lịch hẹn chờ Bác sĩ xác nhận -->
-                    <div class="bg-white rounded-lg shadow-sm border border-blue-200 p-6">
-                        <div class="flex justify-between items-center mb-4 border-b pb-2">
-                            <h3 class="text-lg font-bold text-blue-800 flex items-center">
-                                📋 Lịch Hẹn Chờ Bác Sĩ Xác Nhận
-                                <span class="ml-2 bg-blue-100 text-blue-800 text-xs py-1 px-2.5 rounded-full font-bold">{{ $pendingConfirmList->count() }}</span>
-                            </h3>
+                    <!-- KHỐI 2: Danh sách bệnh nhân chờ khám tại sảnh -->
+                    <div class="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-xs">
+                        <div class="flex items-center justify-between mb-4 pb-2 border-b border-slate-100">
+                            <div class="flex items-center gap-2">
+                                <h2 class="text-sm font-bold text-slate-900">Bệnh nhân đang chờ tại sảnh</h2>
+                                <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-600">
+                                    {{ $waitingList->count() }}
+                                </span>
+                            </div>
+                            <a href="{{ route('doctor.queue.index') }}" class="text-xs font-semibold text-slate-500 hover:text-slate-800 transition">
+                                Mở màn hình hàng đợi &gt;
+                            </a>
                         </div>
 
-                        <div class="space-y-3">
-                            @forelse($pendingConfirmList as $app)
-                                <div class="flex flex-col sm:flex-row justify-between sm:items-center p-3.5 bg-blue-50/40 border border-blue-200 rounded-lg gap-3">
-                                    <div>
-                                        <div class="flex items-center gap-2">
-                                            <span class="font-bold text-blue-700 text-sm">
-                                                {{ \Carbon\Carbon::parse($app->appointment_time)->format('H:i - d/m/Y') }}
-                                            </span>
-                                            @if($app->isOverdue())
-                                                <span class="px-2 py-0.5 bg-red-100 text-red-700 border border-red-300 rounded-full text-xs font-bold">⚠️ Quá thời gian hẹn</span>
-                                            @elseif($app->isDueNow())
-                                                <span class="px-2 py-0.5 bg-amber-100 text-amber-800 border border-amber-300 rounded-full text-xs font-bold animate-pulse">🔔 Đến thời gian hẹn</span>
-                                            @endif
-                                        </div>
-                                        <p class="font-bold text-gray-800 mt-1">{{ $app->patient->name }} <span class="text-xs font-normal text-gray-500">({{ $app->patient->phone }})</span></p>
-                                        <p class="text-xs text-gray-600">Dịch vụ: <span class="font-semibold">{{ $app->service->name ?? 'Khám tổng quát' }}</span></p>
-                                    </div>
-                                    <div class="flex items-center gap-2">
-                                        <form action="{{ route('doctor.consultations.update', $app->id) }}" method="POST">
-                                            @csrf
-                                            @method('PUT')
-                                            <input type="hidden" name="status" value="confirmed">
-                                            <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg shadow-sm transition">
-                                                ✓ Bác sĩ xác nhận lịch
-                                            </button>
-                                        </form>
-                                    </div>
-                                </div>
-                            @empty
-                                <div class="text-center py-4 text-gray-500 text-sm bg-gray-50 rounded-lg">
-                                    Không có lịch hẹn nào đang chờ bác sĩ xác nhận.
-                                </div>
-                            @endforelse
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-slate-100 text-xs">
+                                <thead>
+                                    <tr class="text-left text-[11px] font-bold text-slate-400 tracking-wider">
+                                        <th class="py-2.5 pr-4 uppercase">Giờ hẹn</th>
+                                        <th class="py-2.5 px-4 uppercase">Bệnh nhân</th>
+                                        <th class="py-2.5 px-4 uppercase">Dịch vụ yêu cầu</th>
+                                        <th class="py-2.5 px-4 uppercase">Trạng thái sảnh</th>
+                                        <th class="py-2.5 pl-4 text-right uppercase">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100">
+                                    @forelse($waitingList as $app)
+                                        <tr class="hover:bg-slate-50/70 transition">
+                                            <td class="py-3.5 pr-4 whitespace-nowrap font-bold text-slate-900">
+                                                {{ \Carbon\Carbon::parse($app->appointment_time)->format('H:i') }}
+                                            </td>
+                                            <td class="py-3.5 px-4 whitespace-nowrap">
+                                                <div class="font-bold text-slate-900">{{ $app->patient->name }}</div>
+                                                <div class="text-[11px] text-slate-400 mt-0.5">{{ $app->patient->phone ?? '' }} • Mã: {{ $app->patient->patient_code }}</div>
+                                            </td>
+                                            <td class="py-3.5 px-4 whitespace-nowrap font-medium text-slate-700">
+                                                {{ $app->service->name ?? 'Khám & Tư vấn tổng quát' }}
+                                            </td>
+                                            <td class="py-3.5 px-4 whitespace-nowrap">
+                                                <span class="px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-[#FFFBEB] text-[#B45309]">
+                                                    Đang chờ khám
+                                                </span>
+                                            </td>
+                                            <td class="py-3.5 pl-4 whitespace-nowrap text-right">
+                                                <form action="{{ route('doctor.consultations.update', $app->id) }}" method="POST" class="inline-block">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <input type="hidden" name="status" value="in_progress">
+                                                    <button type="submit" class="px-3 py-1.5 rounded-lg bg-[#0D7A68] hover:bg-[#0B6858] text-white font-bold text-xs transition shadow-xs">
+                                                        🩺 Mời vào khám
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="5" class="py-8 text-center text-slate-400">
+                                                Hiện không có bệnh nhân nào đang chờ tại sảnh.
+                                            </td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
 
-                <!-- Cột phải: Lịch làm việc & Danh sách tổng -->
-                <div class="space-y-6">
-                    
+                <!-- Cột phải (4/12): Lịch trực & Lịch hẹn sắp tới -->
+                <div class="lg:col-span-4 space-y-6">
+
                     <!-- Lịch trực hôm nay -->
-                    <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
-                        <h3 class="text-lg font-bold text-gray-700 mb-4 border-b pb-2">Ca Trực Của Bạn (Hôm Nay)</h3>
-                        @forelse($todaySchedule as $sch)
-                            <div class="mb-3 p-3 {{ $sch->shift == 'morning' ? 'bg-blue-50 border-blue-200' : ($sch->shift == 'afternoon' ? 'bg-orange-50 border-orange-200' : 'bg-indigo-50 border-indigo-200') }} border rounded-lg">
-                                <div class="flex justify-between items-center mb-1">
-                                    <span class="font-bold text-gray-800">
-                                        @if($sch->shift == 'morning') Ca Sáng
-                                        @elseif($sch->shift == 'afternoon') Ca Chiều
-                                        @else Ca Tối
-                                        @endif
-                                    </span>
-                                    <span class="text-xs px-2 py-1 rounded bg-white text-gray-600 font-semibold border">{{ \Carbon\Carbon::parse($sch->start_time)->format('H:i') }} - {{ \Carbon\Carbon::parse($sch->end_time)->format('H:i') }}</span>
-                                </div>
-                                <div class="text-sm">
-                                    @if($sch->status == 'available')
-                                        <span class="text-green-600 font-medium">● Sẵn sàng khám</span>
-                                    @elseif($sch->status == 'time_off')
-                                        <span class="text-red-600 font-medium">● Nghỉ phép</span>
-                                    @endif
-                                </div>
-                            </div>
-                        @empty
-                            <p class="text-sm text-gray-500 text-center py-2">Bạn không có lịch trực hôm nay.</p>
-                        @endforelse
-                    </div>
-
-                    <!-- Danh sách tất cả lịch hẹn hôm nay -->
-                    <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
-                        <div class="flex justify-between items-center mb-4 border-b pb-2">
-                            <h3 class="text-lg font-bold text-gray-700">Tất Cả Cuộc Hẹn Hôm Nay</h3>
-                            <a href="{{ route('doctor.queue.index') }}" class="text-sm text-indigo-600 hover:underline">Xem lịch sử &rarr;</a>
+                    <div class="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-xs">
+                        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                            <h2 class="text-sm font-bold text-slate-900">Lịch làm việc hôm nay</h2>
+                            <span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600">
+                                {{ date('d/m') }}
+                            </span>
                         </div>
-                        <div class="space-y-4 max-h-96 overflow-y-auto pr-2">
-                            @forelse($todayAppointments as $app)
-                                <div class="flex flex-col border-b border-gray-100 pb-2 last:border-0 last:pb-0">
-                                    <div class="flex justify-between items-start mb-1">
-                                        <span class="font-bold text-indigo-600">{{ \Carbon\Carbon::parse($app->appointment_time)->format('H:i') }}</span>
-                                        <div class="flex items-center gap-1">
-                                            @if($app->isOverdue())
-                                                <span class="text-[11px] px-2 py-0.5 rounded-full font-bold bg-red-100 text-red-700 border border-red-300">
-                                                    ⚠️ Quá thời gian hẹn
-                                                </span>
-                                            @elseif($app->isDueNow())
-                                                <span class="text-[11px] px-2 py-0.5 rounded-full font-bold bg-amber-100 text-amber-800 border border-amber-300 animate-pulse">
-                                                    🔔 Đến giờ hẹn
-                                                </span>
+
+                        <div class="mt-3 space-y-2">
+                            @forelse($todaySchedule as $sch)
+                                <div class="p-3 rounded-xl bg-slate-50/80 border border-slate-200/60 flex items-center justify-between text-xs">
+                                    <div>
+                                        <div class="font-bold text-slate-800">
+                                            @if($sch->shift === 'morning')
+                                                🌅 Ca Sáng (08:00 - 12:00)
+                                            @elseif($sch->shift === 'afternoon')
+                                                ☀️ Ca Chiều (13:30 - 17:30)
+                                            @else
+                                                🌙 Ca Tối (18:00 - 20:30)
                                             @endif
-                                            <span class="text-xs px-2 py-0.5 rounded-full font-medium
-                                                @if($app->status == 'pending') bg-yellow-100 text-yellow-800
-                                                @elseif($app->status == 'confirmed') bg-blue-100 text-blue-800
-                                                @elseif($app->status == 'waiting') bg-orange-100 text-orange-800
-                                                @elseif($app->status == 'in_progress') bg-purple-100 text-purple-800
-                                                @elseif($app->status == 'completed') bg-green-100 text-green-800
-                                                @elseif($app->status == 'cancelled' || $app->status == 'no_show') bg-gray-100 text-gray-800
-                                                @endif
-                                            ">
-                                                @if($app->status == 'pending') Chờ BS xác nhận
-                                                @elseif($app->status == 'confirmed') BS đã xác nhận
-                                                @elseif($app->status == 'waiting') Đợi khám
-                                                @elseif($app->status == 'in_progress') Đang khám
-                                                @elseif($app->status == 'completed') Xong
-                                                @else Hủy
-                                                @endif
-                                            </span>
                                         </div>
+                                        <div class="text-slate-400 text-[11px] mt-0.5">Phòng khám chuyên khoa 01</div>
                                     </div>
-                                    <p class="text-sm font-semibold text-gray-800">{{ $app->patient->name }}</p>
-                                    <p class="text-xs text-gray-500">{{ $app->service->name ?? 'Tổng quát' }}</p>
+                                    <span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 font-bold text-[10px]">Đang trực</span>
                                 </div>
                             @empty
-                                <div class="text-center py-4 text-gray-500 text-sm">
-                                    Không có cuộc hẹn nào trong hệ thống hôm nay.
+                                <div class="p-3 rounded-xl bg-slate-50 border border-slate-100 text-xs text-slate-500">
+                                    Đang trực ca hành chính theo lịch khám tổng quát phòng khám.
                                 </div>
                             @endforelse
                         </div>
                     </div>
 
-                    <!-- Lịch hẹn Bác sĩ đã xác nhận (Sắp tới) -->
-                    <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
-                        <div class="flex justify-between items-center mb-4 border-b pb-2">
-                            <h3 class="text-lg font-bold text-gray-700">Lịch Đã Xác Nhận (Sắp tới)</h3>
-                            <span class="bg-blue-100 text-blue-800 text-xs py-0.5 px-2 rounded-full font-bold">{{ $confirmedUpcoming->count() }}</span>
+                    <!-- Lịch khám đã hoàn thành hôm nay -->
+                    <div class="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-xs">
+                        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                            <h2 class="text-sm font-bold text-slate-900">Ca đã hoàn thành hôm nay</h2>
+                            <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-[#D1FAE5] text-[#065F46]">
+                                {{ $completedCount }}
+                            </span>
                         </div>
-                        <div class="space-y-3 max-h-80 overflow-y-auto pr-1">
-                            @forelse($confirmedUpcoming as $app)
-                                <div class="p-3 bg-gray-50 rounded-lg border border-gray-200">
-                                    <div class="flex justify-between items-center mb-1">
-                                        <span class="text-xs font-bold text-blue-700">{{ \Carbon\Carbon::parse($app->appointment_time)->format('H:i - d/m/Y') }}</span>
-                                        @if($app->isOverdue())
-                                            <span class="px-2 py-0.5 bg-red-100 text-red-700 border border-red-300 rounded-full text-[11px] font-bold">⚠️ Quá thời gian hẹn</span>
-                                        @elseif($app->isDueNow())
-                                            <span class="px-2 py-0.5 bg-amber-100 text-amber-800 border border-amber-300 rounded-full text-[11px] font-bold animate-pulse">🔔 Đến thời gian hẹn</span>
-                                        @else
-                                            <span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full text-[11px] font-semibold">✓ Đã xác nhận</span>
-                                        @endif
+
+                        <div class="mt-3 space-y-2.5 max-h-[360px] overflow-y-auto pr-1">
+                            @forelse($todayAppointments->where('status', 'completed') as $cApp)
+                                <div class="p-3 rounded-xl border border-slate-100 hover:border-slate-200 bg-white text-xs space-y-1 transition">
+                                    <div class="flex items-center justify-between font-bold text-slate-900">
+                                        <span>{{ $cApp->patient->name }}</span>
+                                        <span class="text-slate-400 font-normal text-[11px]">{{ \Carbon\Carbon::parse($cApp->appointment_time)->format('H:i') }}</span>
                                     </div>
-                                    <p class="text-sm font-bold text-gray-800">{{ $app->patient->name }}</p>
-                                    <p class="text-xs text-gray-500">DV: {{ $app->service->name ?? 'Khám tổng quát' }}</p>
+                                    <div class="text-slate-500 text-[11px]">{{ $cApp->service->name ?? 'Khám tổng quát' }}</div>
+                                    <div class="flex items-center justify-between pt-1">
+                                        <span class="text-[10px] text-emerald-600 font-bold">✓ Đã chuyển thu ngân</span>
+                                        <a href="{{ route('doctor.consultations.show', $cApp->id) }}" class="text-[11px] text-slate-500 hover:text-teal-700 font-semibold">
+                                            Xem bệnh án &gt;
+                                        </a>
+                                    </div>
                                 </div>
                             @empty
-                                <div class="text-center py-4 text-gray-500 text-sm">
-                                    Chưa có lịch hẹn nào đã xác nhận.
+                                <div class="py-6 text-center text-xs text-slate-400">
+                                    Hôm nay chưa có ca khám nào hoàn thành.
                                 </div>
                             @endforelse
                         </div>
                     </div>
+
                 </div>
 
             </div>

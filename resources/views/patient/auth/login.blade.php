@@ -1,61 +1,73 @@
 @extends('layouts.public')
 
-@section('title', 'Đăng nhập - Nha Khoa Smile')
+@section('title', 'Đăng nhập Cổng Bệnh Nhân - Nha Khoa Smile')
 
 @section('content')
-<div class="min-h-screen flex bg-slate-50">
+<div class="min-h-screen flex bg-[#F8FAFC]">
     <!-- Left: Image & Branding -->
-    <div class="hidden lg:flex lg:w-1/2 relative bg-blue-600 overflow-hidden items-center justify-center">
+    <div class="hidden lg:flex lg:w-1/2 relative bg-[#0D7A68] overflow-hidden items-center justify-center">
         <!-- Abstract Background -->
         <div class="absolute inset-0 z-0">
-            <img src="https://images.unsplash.com/photo-1606811841689-23dfddce3e95?auto=format&fit=crop&q=80&w=1200" alt="Nha Khoa Smile" class="w-full h-full object-cover opacity-40 mix-blend-overlay">
-            <div class="absolute inset-0 bg-gradient-to-br from-blue-700/80 to-cyan-500/80"></div>
+            <img src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&q=80&w=1200" alt="Nha Khoa Smile" class="w-full h-full object-cover opacity-20 mix-blend-overlay">
+            <div class="absolute inset-0 bg-gradient-to-br from-[#0D7A68] via-[#0B6858] to-[#08483d]"></div>
         </div>
         
         <div class="relative z-10 p-12 text-white max-w-lg">
-            <div class="w-16 h-16 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center text-white font-bold text-2xl shadow-xl border border-white/30 mb-8">
-                NK
-            </div>
-            <h1 class="text-4xl font-extrabold tracking-tight mb-4 leading-tight">Chào mừng trở lại với <br><span class="text-cyan-300">Nha Khoa Smile</span></h1>
-            <p class="text-blue-100 text-lg mb-8">Truy cập cổng thông tin để dễ dàng quản lý hồ sơ bệnh án, theo dõi lịch hẹn và hóa đơn của bạn mọi lúc mọi nơi.</p>
-            
-            <div class="flex items-center gap-4">
-                <div class="flex -space-x-3">
-                    <img class="w-10 h-10 rounded-full border-2 border-blue-600" src="https://i.pravatar.cc/100?img=1" alt="User">
-                    <img class="w-10 h-10 rounded-full border-2 border-blue-600" src="https://i.pravatar.cc/100?img=2" alt="User">
-                    <img class="w-10 h-10 rounded-full border-2 border-blue-600" src="https://i.pravatar.cc/100?img=3" alt="User">
+            <div class="flex items-center gap-3 mb-8">
+                <div class="w-12 h-12 bg-white/15 backdrop-blur-md rounded-2xl flex items-center justify-center shadow-lg border border-white/20">
+                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
                 </div>
-                <p class="text-sm text-blue-100 font-medium">+10,000 bệnh nhân tin dùng</p>
+                <div>
+                    <span class="text-xs uppercase tracking-wider font-bold text-teal-200">Cổng Bệnh Nhân</span>
+                    <h2 class="text-xl font-black text-white">Nha Khoa Smile</h2>
+                </div>
+            </div>
+
+            <h1 class="text-3xl font-extrabold tracking-tight mb-4 leading-tight">Quản lý sức khỏe nụ cười <br><span class="text-teal-200">Chủ động & Tiện lợi</span></h1>
+            <p class="text-teal-100/90 text-sm mb-8 leading-relaxed">Truy cập hồ sơ bệnh án điện tử, tra cứu đơn thuốc, theo dõi lịch hẹn và quét mã VietQR thanh toán viện phí tức thì.</p>
+            
+            <div class="flex items-center gap-4 pt-4 border-t border-white/10">
+                <div class="flex -space-x-2">
+                    <img class="w-9 h-9 rounded-full border-2 border-[#0D7A68]" src="https://i.pravatar.cc/100?img=1" alt="User">
+                    <img class="w-9 h-9 rounded-full border-2 border-[#0D7A68]" src="https://i.pravatar.cc/100?img=2" alt="User">
+                    <img class="w-9 h-9 rounded-full border-2 border-[#0D7A68]" src="https://i.pravatar.cc/100?img=3" alt="User">
+                </div>
+                <div>
+                    <p class="text-xs font-bold text-white">+10,000 bệnh nhân tin dùng</p>
+                    <p class="text-[11px] text-teal-200/80">Hệ thống nha khoa tiêu chuẩn số</p>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Right: Login Form -->
-    <div class="w-full lg:w-1/2 flex items-center justify-center p-8 sm:p-12 lg:p-24 relative overflow-hidden">
-        <!-- Decorative blobs -->
-        <div class="absolute top-0 right-0 w-64 h-64 bg-cyan-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 transform translate-x-1/2 -translate-y-1/2"></div>
-        <div class="absolute bottom-0 left-0 w-64 h-64 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 transform -translate-x-1/2 translate-y-1/2"></div>
-        
-        <div class="w-full max-w-md relative z-10 bg-white/70 backdrop-blur-xl p-10 rounded-[2.5rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/50">
-            <div class="text-center mb-10">
-                <h2 class="text-3xl font-extrabold text-slate-800 mb-2">Đăng nhập</h2>
-                <p class="text-gray-500">Hệ thống quản lý Nha Khoa Smile</p>
+    <div class="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-10 lg:p-16">
+        <div class="w-full max-w-md bg-white p-8 sm:p-10 rounded-2xl border border-slate-200/90 shadow-xs">
+            <div class="mb-8">
+                <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 mb-3">
+                    <span class="w-2 h-2 rounded-full bg-[#0D7A68]"></span>
+                    Cổng Tra Cứu Bệnh Nhân • DCMS Pro v2.4
+                </div>
+                <h2 class="text-2xl font-bold text-slate-900 tracking-tight">Đăng nhập tài khoản</h2>
+                <p class="text-xs text-slate-500 mt-1">Dành cho khách hàng tra cứu lịch hẹn, hồ sơ bệnh án & hóa đơn</p>
             </div>
 
             @if (session('success') || session('status'))
-                <div class="bg-emerald-50/90 backdrop-blur-sm border border-emerald-200 text-emerald-800 p-4 rounded-2xl text-sm mb-6 flex items-start gap-3 shadow-sm">
-                    <svg class="w-5 h-5 flex-shrink-0 mt-0.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 p-3.5 rounded-xl text-xs mb-5 flex items-start gap-2.5">
+                    <svg class="w-4 h-4 flex-shrink-0 mt-0.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     <div class="font-medium">{{ session('success') ?? session('status') }}</div>
                 </div>
             @endif
 
-            <form action="{{ route('patient.login.store') }}" method="POST" class="space-y-6">
+            <form action="{{ route('patient.login.store') }}" method="POST" class="space-y-4">
                 @csrf
                 
                 @if ($errors->any())
-                    <div class="bg-red-50/80 backdrop-blur-sm border border-red-100 text-red-600 p-4 rounded-2xl text-sm mb-6 flex items-start gap-3">
-                        <svg class="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        <ul class="list-none m-0 p-0">
+                    <div class="bg-rose-50 border border-rose-200 text-rose-700 p-3.5 rounded-xl text-xs mb-5 flex items-start gap-2.5">
+                        <svg class="w-4 h-4 flex-shrink-0 mt-0.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <ul class="list-none m-0 p-0 space-y-1">
                             @foreach ($errors->all() as $error)
                                 <li>{{ $error }}</li>
                             @endforeach
@@ -63,45 +75,47 @@
                     </div>
                 @endif
 
-                <div class="space-y-5">
-                    <div class="relative group">
-                        <label for="login" class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                        </label>
+                <div>
+                    <label for="login" class="block text-xs font-bold uppercase text-slate-600 mb-1.5">Số điện thoại hoặc Email</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                        </span>
                         <input id="login" name="login" type="text" required 
-                               class="w-full pl-12 pr-4 py-4 bg-gray-50/50 border border-gray-200 rounded-2xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-gray-900 placeholder-gray-400 font-medium" 
-                               placeholder="Email hoặc Số điện thoại" value="{{ old('login') }}">
+                               class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#0D7A68] focus:border-[#0D7A68] transition text-xs text-slate-900 placeholder-slate-400 font-medium" 
+                               placeholder="Ví dụ: 0982223344" value="{{ old('login') }}">
                     </div>
+                </div>
 
-                    <div class="relative group">
-                        <label for="password" class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                        </label>
+                <div>
+                    <div class="flex items-center justify-between mb-1.5">
+                        <label for="password" class="block text-xs font-bold uppercase text-slate-600">Mật khẩu</label>
+                        <a href="{{ route('patient.password.request') }}" class="text-xs font-semibold text-[#0D7A68] hover:underline">Quên mật khẩu?</a>
+                    </div>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                        </span>
                         <input id="password" name="password" type="password" required 
-                               class="w-full pl-12 pr-4 py-4 bg-gray-50/50 border border-gray-200 rounded-2xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-gray-900 placeholder-gray-400 font-medium" 
-                               placeholder="Mật khẩu">
+                               class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#0D7A68] focus:border-[#0D7A68] transition text-xs text-slate-900 placeholder-slate-400 font-medium" 
+                               placeholder="Nhập mật khẩu của bạn">
                     </div>
                 </div>
 
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center">
-                        <input id="remember_me" name="remember" type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                        <label for="remember_me" class="ml-2 block text-sm text-gray-600">Ghi nhớ đăng nhập</label>
-                    </div>
-                    <div class="text-sm">
-                        <a href="{{ route('patient.password.request') }}" class="font-medium text-blue-600 hover:text-blue-500 transition-colors">Quên mật khẩu?</a>
-                    </div>
+                <div class="flex items-center pt-1">
+                    <input id="remember_me" name="remember" type="checkbox" class="h-4 w-4 text-[#0D7A68] focus:ring-[#0D7A68] border-slate-300 rounded">
+                    <label for="remember_me" class="ml-2 block text-xs text-slate-600 font-medium">Ghi nhớ đăng nhập trên thiết bị này</label>
                 </div>
 
-                <button type="submit" class="w-full relative inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white font-bold rounded-2xl shadow-lg shadow-blue-500/30 transform hover:-translate-y-0.5 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                    Đăng nhập hệ thống
-                    <svg class="w-5 h-5 ml-2 -mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                <button type="submit" class="w-full py-3 bg-[#0D7A68] hover:bg-[#0B6858] text-white font-bold rounded-xl text-xs shadow-xs transition flex items-center justify-center gap-2 mt-2">
+                    <span>Đăng nhập Cổng Bệnh Nhân</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                 </button>
             </form>
 
-            <div class="mt-8 text-center text-sm text-gray-600">
-                Chưa có tài khoản? 
-                <a href="{{ route('patient.register') }}" class="font-bold text-blue-600 hover:text-blue-700 transition-colors">Đăng ký ngay</a>
+            <div class="mt-6 pt-5 border-t border-slate-100 text-center text-xs text-slate-500">
+                Chưa có tài khoản bệnh nhân? 
+                <a href="{{ route('patient.register') }}" class="font-bold text-[#0D7A68] hover:underline ml-1">Đăng ký ngay</a>
             </div>
         </div>
     </div>

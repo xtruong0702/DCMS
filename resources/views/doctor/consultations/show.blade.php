@@ -2,36 +2,38 @@
     <x-slot name="header">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
-                <h2 class="font-bold text-xl text-gray-800 leading-tight flex items-center gap-2">
-                    <span class="text-indigo-600 font-extrabold">🏥 Khám Bệnh:</span> {{ $appointment->patient->name }}
-                    <span class="text-xs px-2.5 py-1 rounded-full font-mono font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
+                <div class="flex items-center gap-2.5">
+                    <h2 class="text-xl font-bold text-slate-900 tracking-tight">
+                        Khám bệnh: <span class="text-[#0D7A68]">{{ $appointment->patient->name }}</span>
+                    </h2>
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 border border-slate-200/60 font-mono">
+                        <span class="w-1.5 h-1.5 rounded-full bg-[#0D7A68]"></span>
                         {{ $appointment->patient->patient_code }}
                     </span>
-                </h2>
-                <p class="text-xs text-gray-500 mt-1">
-                    Giờ hẹn: <span class="font-semibold text-gray-800">{{ \Carbon\Carbon::parse($appointment->appointment_time)->format('H:i - d/m/Y') }}</span>
+                </div>
+                <p class="text-xs text-slate-500 mt-1">
+                    Giờ hẹn: <span class="font-semibold text-slate-800">{{ \Carbon\Carbon::parse($appointment->appointment_time)->format('H:i - d/m/Y') }}</span>
                     @if($appointment->service)
-                        | Dịch vụ đăng ký: <span class="font-semibold text-indigo-700">{{ $appointment->service->name }}</span>
+                        • Dịch vụ đăng ký: <span class="font-semibold text-[#0D7A68]">{{ $appointment->service->name }}</span>
                     @endif
                 </p>
             </div>
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2">
+                <a href="{{ route('doctor.dashboard') }}" class="px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-xl text-xs font-semibold shadow-xs transition">
+                    &larr; Tổng quan
+                </a>
                 @if($appointment->status !== 'completed')
                     <form action="{{ route('doctor.consultations.complete', $appointment->id) }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn kết thúc ca khám này và chuyển bệnh nhân sang bước thanh toán?');">
                         @csrf
-                        <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold text-sm transition shadow-sm flex items-center gap-1.5">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                            Hoàn Thành Ca Khám
+                        <button type="submit" class="px-4 py-2 bg-[#0D7A68] hover:bg-[#0B6858] text-white rounded-xl font-bold text-xs shadow-xs transition flex items-center gap-1.5">
+                            <span>✓ Hoàn Thành Ca Khám</span>
                         </button>
                     </form>
                 @else
-                    <span class="px-3 py-1.5 bg-green-100 text-green-800 rounded-lg font-bold text-xs border border-green-300 flex items-center gap-1">
+                    <span class="bg-[#D1FAE5] text-[#065F46] font-bold text-[11px] px-3 py-1.5 rounded-xl border border-emerald-200 flex items-center gap-1">
                         ✓ Ca khám đã hoàn thành
                     </span>
                 @endif
-                <a href="{{ route('doctor.dashboard') }}" class="px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-semibold text-sm transition">
-                    &larr; Về Bảng điều khiển
-                </a>
             </div>
         </div>
     </x-slot>
@@ -53,35 +55,35 @@
             <div class="flex flex-col lg:flex-row gap-6">
                 <!-- Cột trái: Thông tin Bệnh nhân (1/3) -->
                 <div class="w-full lg:w-1/3 space-y-6">
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                        <div class="bg-indigo-600 px-6 py-4 text-white">
-                            <h3 class="text-base font-bold flex items-center gap-2">
-                                <svg class="w-5 h-5 text-indigo-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                    <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden">
+                        <div class="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between bg-white">
+                            <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-[#0D7A68]"></span>
                                 Hồ Sơ Bệnh Nhân
                             </h3>
                         </div>
-                        <div class="p-6 space-y-4 text-sm">
+                        <div class="p-6 space-y-4 text-xs">
                             <div>
-                                <span class="text-gray-400 text-xs uppercase font-bold block">Họ và tên</span>
-                                <span class="font-extrabold text-lg text-indigo-900">{{ $appointment->patient->name }}</span>
+                                <span class="text-slate-400 text-[11px] uppercase font-bold block">Họ và tên</span>
+                                <span class="font-bold text-base text-slate-900">{{ $appointment->patient->name }}</span>
                             </div>
 
-                            <div class="grid grid-cols-2 gap-3 pt-2 border-t border-gray-100">
+                            <div class="grid grid-cols-2 gap-3 pt-2 border-t border-slate-100">
                                 <div>
-                                    <span class="text-gray-400 text-xs block">Mã BN:</span>
-                                    <span class="font-mono font-bold text-gray-800">{{ $appointment->patient->patient_code }}</span>
+                                    <span class="text-slate-400 block">Mã BN:</span>
+                                    <span class="font-mono font-bold text-slate-900">{{ $appointment->patient->patient_code }}</span>
                                 </div>
                                 <div>
-                                    <span class="text-gray-400 text-xs block">Năm sinh:</span>
-                                    <span class="font-semibold text-gray-800">{{ $appointment->patient->dob ? \Carbon\Carbon::parse($appointment->patient->dob)->format('d/m/Y') : 'Chưa rõ' }}</span>
+                                    <span class="text-slate-400 block">Năm sinh:</span>
+                                    <span class="font-medium text-slate-800">{{ $appointment->patient->dob ? \Carbon\Carbon::parse($appointment->patient->dob)->format('d/m/Y') : 'Chưa rõ' }}</span>
                                 </div>
                                 <div>
-                                    <span class="text-gray-400 text-xs block">Giới tính:</span>
-                                    <span class="font-semibold text-gray-800">{{ $appointment->patient->gender ?: 'Chưa rõ' }}</span>
+                                    <span class="text-slate-400 block">Giới tính:</span>
+                                    <span class="font-medium text-slate-800">{{ $appointment->patient->gender ?: 'Chưa rõ' }}</span>
                                 </div>
                                 <div>
-                                    <span class="text-gray-400 text-xs block">Điện thoại:</span>
-                                    <span class="font-semibold text-gray-800">{{ $appointment->patient->phone ?: '---' }}</span>
+                                    <span class="text-slate-400 block">Điện thoại:</span>
+                                    <span class="font-medium text-slate-800">{{ $appointment->patient->phone ?: '---' }}</span>
                                 </div>
                             </div>
 
@@ -157,29 +159,32 @@
                         }
                         $estimatedTotal = $mainServiceCost + $extraServiceCost + $medsCost;
                     @endphp
-                    <div class="bg-white rounded-xl shadow-sm border border-emerald-200 overflow-hidden">
-                        <div class="bg-emerald-600 px-5 py-3 text-white flex items-center justify-between">
-                            <h3 class="text-sm font-bold flex items-center gap-1.5">
-                                💰 Tạm Tính Chi Phí Ca Khám
-                            </h3>
-                            <span class="text-[11px] bg-white/20 px-2 py-0.5 rounded font-semibold">Đồng bộ Thu ngân</span>
+                    <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden">
+                        <div class="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between bg-white">
+                            <div class="flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-[#0D7A68]"></span>
+                                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-900">
+                                    Tạm Tính Chi Phí Ca Khám
+                                </h3>
+                            </div>
+                            <span class="text-[11px] bg-slate-100 text-slate-600 px-2.5 py-0.5 rounded-full font-semibold">Đồng bộ Thu ngân</span>
                         </div>
                         <div class="p-4 space-y-2.5 text-xs">
-                            <div class="flex justify-between items-center text-gray-600">
+                            <div class="flex justify-between items-center text-slate-600">
                                 <span>Dịch vụ đăng ký ban đầu:</span>
-                                <span class="font-bold text-gray-900">{{ number_format($mainServiceCost, 0, ',', '.') }} đ</span>
+                                <span class="font-bold text-slate-900">{{ number_format($mainServiceCost, 0, ',', '.') }} đ</span>
                             </div>
-                            <div class="flex justify-between items-center text-gray-600">
+                            <div class="flex justify-between items-center text-slate-600">
                                 <span>Thủ thuật chỉ định thêm ({{ $medicalRecord->details->count() }}):</span>
-                                <span class="font-bold text-indigo-700">{{ number_format($extraServiceCost, 0, ',', '.') }} đ</span>
+                                <span class="font-bold text-slate-900">{{ number_format($extraServiceCost, 0, ',', '.') }} đ</span>
                             </div>
-                            <div class="flex justify-between items-center text-gray-600">
+                            <div class="flex justify-between items-center text-slate-600">
                                 <span>Đơn thuốc kê kèm ({{ $prescription->details->count() }}):</span>
-                                <span class="font-bold text-teal-700">{{ number_format($medsCost, 0, ',', '.') }} đ</span>
+                                <span class="font-bold text-slate-900">{{ number_format($medsCost, 0, ',', '.') }} đ</span>
                             </div>
-                            <div class="pt-2.5 border-t border-gray-200 flex justify-between items-center">
-                                <span class="font-extrabold uppercase text-gray-800">Tổng tạm tính (chưa VAT):</span>
-                                <span class="font-black text-base text-emerald-700">{{ number_format($estimatedTotal, 0, ',', '.') }} đ</span>
+                            <div class="pt-2.5 border-t border-slate-200 flex justify-between items-center">
+                                <span class="font-bold uppercase text-slate-900">Tổng tạm tính:</span>
+                                <span class="font-bold text-base text-slate-900">{{ number_format($estimatedTotal, 0, ',', '.') }} đ</span>
                             </div>
                         </div>
                     </div>
@@ -187,31 +192,27 @@
 
                 <!-- Cột phải: 4 Tabs (Bệnh án, Sơ đồ răng, Đơn thuốc, Vật tư tiêu hao) (2/3) -->
                 <div class="w-full lg:w-2/3">
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden">
                         
                         <!-- Header Tabs Navigation -->
-                        <div class="border-b border-gray-200 bg-gray-50/50">
-                            <nav class="flex overflow-x-auto text-sm font-semibold" aria-label="Tabs">
-                                <button onclick="switchTab('tab-record')" id="btn-record" class="tab-btn px-5 py-3.5 border-b-2 text-indigo-600 border-indigo-600 bg-white flex items-center gap-2 whitespace-nowrap">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                                    1. Bệnh Án Điện Tử
+                        <div class="border-b border-slate-100 bg-slate-50/50">
+                            <nav class="flex overflow-x-auto text-xs font-semibold" aria-label="Tabs">
+                                <button onclick="switchTab('tab-record')" id="btn-record" class="tab-btn px-5 py-3.5 border-b-2 text-[#0D7A68] border-[#0D7A68] bg-white font-bold flex items-center gap-2 whitespace-nowrap">
+                                    <span>📋</span> 1. Bệnh Án Điện Tử
                                 </button>
-                                <button onclick="switchTab('tab-odontogram')" id="btn-odontogram" class="tab-btn px-5 py-3.5 border-b-2 text-gray-600 border-transparent hover:text-indigo-600 hover:border-gray-300 flex items-center gap-2 whitespace-nowrap">
-                                    <span class="text-base">🦷</span>
-                                    2. Sơ Đồ Răng (Odontogram)
+                                <button onclick="switchTab('tab-odontogram')" id="btn-odontogram" class="tab-btn px-5 py-3.5 border-b-2 text-slate-600 border-transparent hover:text-[#0D7A68] hover:border-slate-300 flex items-center gap-2 whitespace-nowrap">
+                                    <span>🦷</span> 2. Sơ Đồ Răng (Odontogram)
                                 </button>
-                                <button onclick="switchTab('tab-prescription')" id="btn-prescription" class="tab-btn px-5 py-3.5 border-b-2 text-gray-600 border-transparent hover:text-indigo-600 hover:border-gray-300 flex items-center gap-2 whitespace-nowrap">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
-                                    3. Đơn Thuốc
+                                <button onclick="switchTab('tab-prescription')" id="btn-prescription" class="tab-btn px-5 py-3.5 border-b-2 text-slate-600 border-transparent hover:text-[#0D7A68] hover:border-slate-300 flex items-center gap-2 whitespace-nowrap">
+                                    <span>💊</span> 3. Đơn Thuốc
                                     @if($prescription->details->count() > 0)
-                                        <span class="bg-indigo-100 text-indigo-700 text-xs px-2 py-0.5 rounded-full font-bold">({{ $prescription->details->count() }})</span>
+                                        <span class="bg-[#D1FAE5] text-[#065F46] text-[10px] px-2 py-0.5 rounded-full font-bold">({{ $prescription->details->count() }})</span>
                                     @endif
                                 </button>
-                                <button onclick="switchTab('tab-supplies')" id="btn-supplies" class="tab-btn px-5 py-3.5 border-b-2 text-gray-600 border-transparent hover:text-indigo-600 hover:border-gray-300 flex items-center gap-2 whitespace-nowrap">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
-                                    4. Vật Tư Tiêu Hao
+                                <button onclick="switchTab('tab-supplies')" id="btn-supplies" class="tab-btn px-5 py-3.5 border-b-2 text-slate-600 border-transparent hover:text-[#0D7A68] hover:border-slate-300 flex items-center gap-2 whitespace-nowrap">
+                                    <span>📦</span> 4. Vật Tư Tiêu Hao
                                     @if($medicalRecord->materialUsages->count() > 0)
-                                        <span class="bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5 rounded-full font-bold">({{ $medicalRecord->materialUsages->count() }})</span>
+                                        <span class="bg-slate-100 text-slate-700 text-[10px] px-2 py-0.5 rounded-full font-bold">({{ $medicalRecord->materialUsages->count() }})</span>
                                     @endif
                                 </button>
                             </nav>

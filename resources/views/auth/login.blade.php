@@ -2,65 +2,62 @@
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
-    <div class="text-center mb-8">
-        <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-2xl text-white font-bold text-3xl shadow-lg mb-4">
-            NK
+    <div class="text-center mb-6">
+        <div class="inline-flex items-center justify-center w-12 h-12 bg-[#0D7A68] rounded-xl text-white shadow-xs mb-3">
+            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C8.5 2 6 4.5 6 8c0 2 .5 3.5 1 5.5.7 2.8 1.5 6.5 2.5 8.5.4.8 1.4 1 2 .5.7-.6 1.3-2 1.5-3 .2-1 .5-1 .7-1s.5 0 .7 1c.2 1 .8 2.4 1.5 3 .6.5 1.6.3 2-.5 1-2 1.8-5.7 2.5-8.5.5-2 1-3.5 1-5.5 0-3.5-2.5-6-6-6zm0 2c2.5 0 4 1.8 4 4.5 0 1.5-.4 2.8-.8 4.5-.7 2.8-1.5 6-2.2 7.5-.3-.5-.7-1.3-.9-2.2-.4-1.8-1.2-2.3-2.1-2.3s-1.7.5-2.1 2.3c-.2.9-.6 1.7-.9 2.2-.7-1.5-1.5-4.7-2.2-7.5-.4-1.7-.8-3-.8-4.5C8 5.8 9.5 4 12 4z"/>
+            </svg>
         </div>
-        <h2 class="text-2xl font-bold text-slate-800">Đăng nhập Hệ thống</h2>
-        <p class="text-gray-500 mt-2 text-sm">DCMS - Nha Khoa Smile</p>
+        <div class="flex items-center justify-center gap-2">
+            <h2 class="text-xl font-bold text-slate-900 tracking-tight">Đăng nhập Hệ thống</h2>
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#D1FAE5] text-[#065F46] border border-emerald-200">
+                v2.4
+            </span>
+        </div>
+        <p class="text-slate-400 mt-1 text-xs">DCMS Pro • Hệ thống Quản trị Nha khoa Smile</p>
     </div>
 
     <form method="POST" action="{{ route('login') }}">
         @csrf
 
         <!-- Email Address -->
-        <div class="mb-5">
-            <label for="email" class="block font-semibold text-sm text-gray-700 mb-1">Email / Tên đăng nhập</label>
+        <div class="mb-4">
+            <label for="email" class="block font-bold text-xs text-slate-700 mb-1">Email / Tài khoản</label>
             <div class="relative">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
-                    </svg>
-                </div>
-                <input id="email" class="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-shadow" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" placeholder="admin@example.com" />
+                <input id="email" class="block w-full px-3 py-2 border border-slate-200 rounded-xl focus:ring-1 focus:ring-[#0D7A68] focus:border-[#0D7A68] text-xs shadow-xs" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" placeholder="admin@example.com" />
             </div>
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+            <x-input-error :messages="$errors->get('email')" class="mt-1" />
         </div>
 
         <!-- Password -->
-        <div class="mb-5">
-            <label for="password" class="block font-semibold text-sm text-gray-700 mb-1">Mật khẩu</label>
+        <div class="mb-4">
+            <label for="password" class="block font-bold text-xs text-slate-700 mb-1">Mật khẩu</label>
             <div class="relative">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                    </svg>
-                </div>
-                <input id="password" class="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-shadow"
+                <input id="password" class="block w-full px-3 py-2 border border-slate-200 rounded-xl focus:ring-1 focus:ring-[#0D7A68] focus:border-[#0D7A68] text-xs shadow-xs"
                                 type="password"
                                 name="password"
                                 required autocomplete="current-password" placeholder="••••••••" />
             </div>
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+            <x-input-error :messages="$errors->get('password')" class="mt-1" />
         </div>
 
         <!-- Remember Me & Forgot Password -->
-        <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center justify-between mb-5 text-xs">
             <label for="remember_me" class="inline-flex items-center cursor-pointer">
-                <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-blue-600 shadow-sm focus:ring-blue-500" name="remember">
-                <span class="ms-2 text-sm text-gray-600">Nhớ đăng nhập</span>
+                <input id="remember_me" type="checkbox" class="rounded border-slate-300 text-[#0D7A68] shadow-xs focus:ring-[#0D7A68]" name="remember">
+                <span class="ms-2 text-slate-600 font-medium">Nhớ đăng nhập</span>
             </label>
 
             @if (Route::has('password.request'))
-                <a class="text-sm font-semibold text-blue-600 hover:text-blue-500 hover:underline" href="{{ route('password.request') }}">
+                <a class="font-medium text-[#0D7A68] hover:underline" href="{{ route('password.request') }}">
                     Quên mật khẩu?
                 </a>
             @endif
         </div>
 
         <div>
-            <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors cursor-pointer">
-                Đăng Nhập
+            <button type="submit" class="w-full py-2.5 bg-[#0D7A68] hover:bg-[#0B6858] text-white rounded-xl font-bold text-xs shadow-xs transition">
+                Đăng nhập hệ thống
             </button>
         </div>
     </form>

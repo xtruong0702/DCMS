@@ -1,94 +1,107 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Quản lý Dịch vụ Khám chữa bệnh') }}
-        </h2>
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+                <div class="flex items-center gap-2.5">
+                    <h2 class="font-bold text-xl text-slate-900 tracking-tight">Danh Mục Dịch Vụ Khám Chữa Bệnh</h2>
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-600">
+                        <span class="w-2 h-2 rounded-full bg-[#0D7A68]"></span>
+                        Bảng giá niêm yết • Hôm nay: {{ date('d/m/Y') }}
+                    </span>
+                </div>
+                <p class="text-xs text-slate-500 mt-1">Quản lý danh sách dịch vụ, định lượng thời gian khám, bảng giá niêm yết và trạng thái áp dụng</p>
+            </div>
+            <div class="flex items-center gap-2">
+                <a href="{{ route('admin.services.create') }}" class="px-3.5 py-2 bg-[#0D7A68] hover:bg-[#0B6858] text-white rounded-xl text-xs font-bold shadow-xs transition flex items-center gap-1.5">
+                    <span>+ Thêm Dịch Vụ Mới</span>
+                </a>
+            </div>
+        </div>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            @if(session('success'))
-                <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
-                    <span class="block sm:inline">{{ session('success') }}</span>
+    <div class="space-y-6">
+        @if(session('success'))
+            <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 p-3.5 rounded-xl text-xs font-medium flex items-center gap-2">
+                <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                <span>{{ session('success') }}</span>
+            </div>
+        @endif
+
+        <!-- Filter Bar -->
+        <div class="bg-white p-4 rounded-2xl border border-slate-200/90 shadow-xs flex flex-col sm:flex-row justify-between items-center gap-4">
+            <form action="{{ route('admin.services.index') }}" method="GET" class="w-full sm:w-80 relative">
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Tìm mã hoặc tên dịch vụ..." class="w-full rounded-xl border-slate-200 text-xs font-medium focus:border-[#0D7A68] focus:ring-[#0D7A68] pr-10 py-2">
+                <button type="submit" class="absolute right-3 top-2.5 text-slate-400 hover:text-[#0D7A68]">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </button>
+            </form>
+
+            <span class="text-xs text-slate-500 font-medium">
+                Tổng cộng: <strong class="text-slate-900 font-bold">{{ $services->total() }}</strong> dịch vụ
+            </span>
+        </div>
+
+        <!-- Table -->
+        <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                        <tr class="bg-slate-50/70 border-b border-slate-200/90 text-slate-400 font-bold text-[11px] uppercase tracking-wider">
+                            <th class="py-2.5 px-5">Mã Dịch Vụ</th>
+                            <th class="py-2.5 px-5">Tên Dịch Vụ</th>
+                            <th class="py-2.5 px-5">Phân loại</th>
+                            <th class="py-2.5 px-5">Thời gian</th>
+                            <th class="py-2.5 px-5 text-right">Đơn giá niêm yết</th>
+                            <th class="py-2.5 px-5 text-center">Trạng thái</th>
+                            <th class="py-2.5 px-5 text-right">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        @forelse ($services as $service)
+                            <tr class="hover:bg-slate-50/70 transition">
+                                <td class="py-3 px-5 font-mono font-bold text-[#0D7A68]">{{ $service->service_code }}</td>
+                                <td class="py-3 px-5 font-bold text-slate-900 text-xs">{{ $service->name }}</td>
+                                <td class="py-3 px-5 text-slate-500">{{ $service->type ?? 'Nha khoa chung' }}</td>
+                                <td class="py-3 px-5 text-slate-700 font-medium">{{ $service->duration_minutes }} phút</td>
+                                <td class="py-3 px-5 text-right font-bold text-slate-900 text-xs">
+                                    {{ number_format($service->price, 0, ',', '.') }} đ
+                                </td>
+                                <td class="py-3 px-5 text-center">
+                                    <form action="{{ route('admin.services.toggle', $service) }}" method="POST">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" class="px-2.5 py-0.5 inline-flex text-[11px] font-bold rounded-md transition {{ $service->is_active ? 'bg-[#D1FAE5] text-[#065F46]' : 'bg-[#FEE2E2] text-[#991B1B]' }}">
+                                            {{ $service->is_active ? '● Khả dụng' : '○ Tạm ngưng' }}
+                                        </button>
+                                    </form>
+                                </td>
+                                <td class="py-3 px-5 text-right space-x-1.5">
+                                    <a href="{{ route('admin.services.edit', $service) }}" class="px-2.5 py-1 bg-white hover:bg-slate-50 text-[#0D7A68] border border-slate-200 rounded-lg font-bold text-xs shadow-2xs transition">Sửa</a>
+                                    <form action="{{ route('admin.services.destroy', $service) }}" method="POST" class="inline-block" onsubmit="return confirm('Bạn có chắc chắn muốn xóa dịch vụ này?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="px-2.5 py-1 bg-white hover:bg-rose-50 text-rose-600 border border-slate-200 rounded-lg font-bold text-xs shadow-2xs transition">Xóa</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="7" class="py-12 text-center text-slate-400 text-xs">
+                                    Không tìm thấy dịch vụ nào.
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+
+            @if($services->hasPages())
+                <div class="px-5 py-3 border-t border-slate-100 bg-slate-50/50">
+                    {{ $services->withQueryString()->links() }}
                 </div>
             @endif
-
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
-                        <h3 class="text-lg font-bold text-gray-700">Danh sách Dịch vụ</h3>
-                        
-                        <div class="flex items-center gap-4 w-full sm:w-auto">
-                            <form action="{{ route('admin.services.index') }}" method="GET" class="w-full sm:w-64 relative">
-                                <input type="text" name="search" value="{{ request('search') }}" placeholder="Tìm mã hoặc tên dịch vụ..." class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm pr-10">
-                                <button type="submit" class="absolute right-2 top-2 text-gray-400 hover:text-gray-600">
-                                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                    </svg>
-                                </button>
-                            </form>
-
-                            <a href="{{ route('admin.services.create') }}" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 font-semibold text-sm transition-colors whitespace-nowrap">
-                                + Thêm Dịch vụ
-                            </a>
-                        </div>
-                    </div>
-                    
-                    <div class="overflow-x-auto bg-white rounded-lg border border-gray-200">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Mã Dịch vụ</th>
-                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Tên Dịch vụ</th>
-                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Phân loại</th>
-                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Thời gian</th>
-                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Đơn giá</th>
-                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Trạng thái</th>
-                                    <th class="px-6 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">Thao tác</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-200">
-                                @forelse ($services as $service)
-                                    <tr class="hover:bg-gray-50 transition-colors">
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-indigo-600">{{ $service->service_code }}</td>
-                                        <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ $service->name }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $service->type ?? 'Chung' }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $service->duration_minutes }} phút</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-red-600">{{ number_format($service->price, 0, ',', '.') }} đ</td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <form action="{{ route('admin.services.toggle', $service) }}" method="POST">
-                                                @csrf
-                                                @method('PATCH')
-                                                <button type="submit" class="px-2.5 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full border transition {{ $service->is_active ? 'bg-green-100 text-green-800 border-green-200 hover:bg-green-200' : 'bg-red-100 text-red-800 border-red-200 hover:bg-red-200' }}">
-                                                    {{ $service->is_active ? '● Khả dụng' : '○ Tạm ngưng' }}
-                                                </button>
-                                            </form>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                            <a href="{{ route('admin.services.edit', $service) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">Sửa</a>
-                                            <form action="{{ route('admin.services.destroy', $service) }}" method="POST" class="inline-block" onsubmit="return confirm('Bạn có chắc chắn muốn xóa dịch vụ này?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="text-red-600 hover:text-red-900">Xóa</button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="7" class="px-6 py-8 text-center text-sm text-gray-500">
-                                            Không tìm thấy dịch vụ nào.
-                                        </td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-                    
-                    <div class="mt-4">
-                        {{ $services->withQueryString()->links() }}
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </x-app-layout>

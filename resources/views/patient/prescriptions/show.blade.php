@@ -9,11 +9,11 @@
         <p class="text-gray-500 mt-1">Kê ngày: <span class="font-bold text-slate-700">{{ $prescription->created_at->format('d/m/Y') }}</span></p>
     </div>
     <div class="flex items-center gap-3">
-        <button onclick="window.print()" class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-xl font-bold text-sm shadow-lg shadow-blue-500/30 transition-all hover:-translate-y-0.5">
+        <button onclick="window.print()" class="inline-flex items-center gap-2 bg-[#0D7A68] hover:bg-[#0B6858] text-white px-4 py-2 rounded-xl font-bold text-xs shadow-xs transition">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-            In Đơn
+            In Đơn Thuốc
         </button>
-        <a href="{{ route('patient.medical_records.show', $record->id) }}" class="inline-flex items-center gap-2 bg-white/60 hover:bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-xl font-bold text-sm shadow-sm transition-all">
+        <a href="{{ route('patient.medical_records.show', $record->id) }}" class="inline-flex items-center gap-2 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 px-4 py-2 rounded-xl font-bold text-xs shadow-xs transition">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
             Về Bệnh án
         </a>
@@ -34,20 +34,22 @@
     <div class="bg-white rounded-[2rem] shadow-[0_10px_40px_rgba(0,0,0,0.08)] border border-gray-100 overflow-hidden relative">
         
         <!-- Header -->
-        <div class="p-8 md:p-12 border-b-4 border-double border-gray-200 bg-white relative">
+        <div class="p-8 md:p-12 border-b-4 border-double border-slate-200 bg-white relative">
             <div class="flex flex-col md:flex-row justify-between gap-8 relative z-10">
                 <div class="flex items-center gap-4">
-                    <div class="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-bold text-2xl shadow-lg">
-                        NK
+                    <div class="w-16 h-16 bg-[#0D7A68] rounded-2xl flex items-center justify-center text-white font-bold text-2xl shadow-xs">
+                        <svg class="w-9 h-9 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
                     </div>
                     <div>
-                        <h2 class="font-black text-3xl tracking-tight text-slate-800 uppercase">Nha Khoa Smile</h2>
-                        <p class="text-sm text-gray-500 font-medium mt-1">123 Nguyễn Văn Cừ, Quận 5, TP.HCM</p>
-                        <p class="text-sm text-gray-500 font-medium">1900 1234 - nhakhoasmile.com</p>
+                        <h2 class="font-black text-2xl tracking-tight text-slate-800 uppercase">Nha Khoa Smile</h2>
+                        <p class="text-xs text-slate-500 font-medium mt-0.5">123 Nguyễn Văn Cừ, Quận 5, TP.HCM</p>
+                        <p class="text-xs text-slate-500 font-medium">1900 1234 - nhakhoasmile.com</p>
                     </div>
                 </div>
                 <div class="md:text-right flex flex-col justify-center">
-                    <h3 class="text-3xl font-black text-blue-600 tracking-wider uppercase">Đơn Thuốc</h3>
+                    <h3 class="text-3xl font-black text-[#0D7A68] tracking-wider uppercase">Đơn Thuốc</h3>
                 </div>
             </div>
         </div>
@@ -70,7 +72,7 @@
                 </div>
                 <div class="w-full">
                     <span class="text-gray-500 text-sm font-medium mr-2">Chẩn đoán:</span>
-                    <span class="font-bold text-blue-800">{{ $record->diagnosis ?: 'Đang chờ chẩn đoán' }}</span>
+                    <span class="font-bold text-[#0D7A68]">{{ $record->diagnosis ?: 'Đang chờ chẩn đoán' }}</span>
                 </div>
             </div>
 
@@ -99,23 +101,23 @@
                             </div>
                             
                             <div class="pl-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div class="bg-blue-50/50 rounded-xl p-3 border border-blue-100 flex items-center gap-4">
+                                <div class="bg-teal-50/50 rounded-xl p-3 border border-teal-100 flex items-center gap-4">
                                     <div class="flex gap-2">
                                         <div class="flex flex-col items-center">
                                             <span class="text-[10px] text-gray-500 font-bold uppercase">Sáng</span>
-                                            <span class="font-bold text-blue-700">{{ $detail->usage_morning ?: '0' }}</span>
+                                            <span class="font-bold text-[#0D7A68]">{{ $detail->usage_morning ?: '0' }}</span>
                                         </div>
-                                        <div class="flex flex-col items-center border-l border-blue-200 pl-2">
+                                        <div class="flex flex-col items-center border-l border-teal-200 pl-2">
                                             <span class="text-[10px] text-gray-500 font-bold uppercase">Trưa</span>
-                                            <span class="font-bold text-blue-700">{{ $detail->usage_noon ?: '0' }}</span>
+                                            <span class="font-bold text-[#0D7A68]">{{ $detail->usage_noon ?: '0' }}</span>
                                         </div>
-                                        <div class="flex flex-col items-center border-l border-blue-200 pl-2">
+                                        <div class="flex flex-col items-center border-l border-teal-200 pl-2">
                                             <span class="text-[10px] text-gray-500 font-bold uppercase">Chiều</span>
-                                            <span class="font-bold text-blue-700">{{ $detail->usage_evening ?: '0' }}</span>
+                                            <span class="font-bold text-[#0D7A68]">{{ $detail->usage_evening ?: '0' }}</span>
                                         </div>
-                                        <div class="flex flex-col items-center border-l border-blue-200 pl-2">
+                                        <div class="flex flex-col items-center border-l border-teal-200 pl-2">
                                             <span class="text-[10px] text-gray-500 font-bold uppercase">Tối</span>
-                                            <span class="font-bold text-blue-700">{{ $detail->usage_night ?: '0' }}</span>
+                                            <span class="font-bold text-[#0D7A68]">{{ $detail->usage_night ?: '0' }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -143,8 +145,8 @@
                     </p>
                     
                     @if($prescription->follow_up_date)
-                    <div class="mt-6 inline-flex items-center gap-3 bg-blue-50 border border-blue-100 text-blue-800 px-5 py-3 rounded-xl font-bold">
-                        <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    <div class="mt-6 inline-flex items-center gap-3 bg-teal-50 border border-teal-100 text-teal-900 px-5 py-3 rounded-xl font-bold">
+                        <svg class="w-6 h-6 text-[#0D7A68]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                         Tái khám: {{ \Carbon\Carbon::parse($prescription->follow_up_date)->format('d/m/Y H:i') }}
                     </div>
                     @endif
@@ -153,7 +155,7 @@
                 <div class="text-center md:text-right pt-4">
                     <p class="text-sm font-medium text-gray-500 mb-2">Ngày {{ $prescription->created_at->format('d') }} tháng {{ $prescription->created_at->format('m') }} năm {{ $prescription->created_at->format('Y') }}</p>
                     <p class="font-bold text-slate-800 mb-16">Bác sĩ kê đơn</p>
-                    <p class="font-bold text-xl text-blue-800">{{ $record->doctor ? $record->doctor->user->name : '' }}</p>
+                    <p class="font-bold text-xl text-[#0D7A68]">{{ $record->doctor ? $record->doctor->user->name : '' }}</p>
                 </div>
             </div>
         </div>

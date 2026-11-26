@@ -28,14 +28,17 @@
                 font-variant-numeric: tabular-nums;
                 letter-spacing: 0.01em;
             }
-            /* Đồng bộ bảng biểu, thẻ và form trong toàn hệ thống Admin / Lễ tân / Bác sĩ */
+            /* Đồng bộ bảng biểu, thẻ và form trong toàn hệ thống theo chuẩn Stitch UI */
             main table th {
                 font-weight: 700 !important;
-                color: #334155 !important;
-                letter-spacing: 0.02em;
+                color: #64748b !important;
+                letter-spacing: 0.05em;
+                text-transform: uppercase;
+                font-size: 0.6875rem !important;
+                background-color: #f8fafc !important;
             }
             main table td {
-                color: #1e293b;
+                color: #0f172a;
                 line-height: 1.5;
             }
             main input[type="text"],
@@ -47,14 +50,32 @@
             main input[type="datetime-local"],
             main select,
             main textarea {
-                border-radius: 0.5rem !important;
-                border-color: #cbd5e1 !important;
-                font-size: 0.875rem !important;
+                border-radius: 0.75rem !important;
+                border-color: #e2e8f0 !important;
+                font-size: 0.8125rem !important;
                 line-height: 1.4 !important;
+                background-color: #ffffff !important;
             }
             main input:focus, main select:focus, main textarea:focus {
-                border-color: #2563eb !important;
-                box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12) !important;
+                border-color: #0D7A68 !important;
+                box-shadow: 0 0 0 3px rgba(13, 122, 104, 0.14) !important;
+            }
+            /* Stitch UI Buttons & Badges Helper */
+            .btn-teal {
+                background-color: #0D7A68 !important;
+                color: #ffffff !important;
+                border-radius: 0.75rem !important;
+                font-weight: 700 !important;
+                font-size: 0.75rem !important;
+                padding: 0.5rem 1rem !important;
+                display: inline-flex !important;
+                align-items: center !important;
+                gap: 0.375rem !important;
+                box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+                transition: all 150ms ease-in-out !important;
+            }
+            .btn-teal:hover {
+                background-color: #0B6858 !important;
             }
         </style>
     </head>

@@ -5,12 +5,12 @@
 @section('content')
 <div class="max-w-4xl mx-auto">
     <div class="mb-6 flex justify-between items-center">
-        <a href="{{ route('patient.invoices') }}" class="inline-flex items-center text-sm font-semibold text-slate-600 hover:text-blue-600 transition">
-            <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+        <a href="{{ route('patient.invoices') }}" class="inline-flex items-center text-xs font-bold text-slate-600 hover:text-[#0D7A68] transition">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
             Quay lại danh sách hóa đơn
         </a>
-        <button onclick="window.print()" class="px-4 py-2 bg-slate-800 text-white rounded-xl text-sm font-bold hover:bg-slate-900 transition flex items-center gap-2">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+        <button onclick="window.print()" class="px-4 py-2 bg-slate-900 text-white rounded-xl text-xs font-bold hover:bg-slate-800 transition flex items-center gap-1.5 shadow-xs">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
             In hóa đơn
         </button>
     </div>
@@ -29,28 +29,30 @@
         $vietQrUrl = "https://img.vietqr.io/image/{$bankId}-{$accountNo}-compact2.png?amount=" . round($invoice->final_amount) . "&addInfo=" . urlencode($transferContent) . "&accountName=" . urlencode($accountName);
     @endphp
 
-    <div class="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
+    <div class="bg-white rounded-2xl shadow-xs border border-slate-200/90 overflow-hidden">
         <!-- Header -->
-        <div class="bg-gradient-to-r from-blue-700 to-indigo-800 p-8 md:p-12 relative overflow-hidden">
+        <div class="bg-gradient-to-r from-[#0D7A68] via-[#0B6858] to-[#08483d] p-6 md:p-8 relative overflow-hidden">
             <div class="absolute inset-0 opacity-10 pointer-events-none">
                 <svg class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none"><polygon fill="currentColor" points="0,100 100,0 100,100"/></svg>
             </div>
             
-            <div class="flex flex-col md:flex-row justify-between gap-8 relative z-10 text-white">
-                <div class="flex items-start gap-4">
-                    <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-blue-600 font-bold text-2xl shadow-xl">
-                        NK
+            <div class="flex flex-col md:flex-row justify-between gap-6 relative z-10 text-white">
+                <div class="flex items-start gap-3.5">
+                    <div class="w-12 h-12 bg-white/15 backdrop-blur-md rounded-2xl flex items-center justify-center text-white font-bold text-xl shadow-md border border-white/20">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
                     </div>
-                    <div class="mt-1">
-                        <h2 class="font-black text-2xl tracking-tight uppercase mb-1">{{ $settings['clinic_name'] ?? 'Nha Khoa Smile' }}</h2>
-                        <p class="text-blue-200 text-sm font-medium">{{ $settings['clinic_address'] ?? '123 Nguyễn Văn Cừ, Quận 5, TP.HCM' }}</p>
-                        <p class="text-blue-200 text-sm font-medium">Hotline: {{ $settings['clinic_hotline'] ?? '1900 1234' }}</p>
+                    <div>
+                        <h2 class="font-extrabold text-xl tracking-tight uppercase mb-0.5">{{ $settings['clinic_name'] ?? 'Nha Khoa Smile' }}</h2>
+                        <p class="text-teal-100 text-xs font-medium">{{ $settings['clinic_address'] ?? '123 Nguyễn Văn Cừ, Quận 5, TP.HCM' }}</p>
+                        <p class="text-teal-100 text-xs font-medium">Hotline: {{ $settings['clinic_hotline'] ?? '1900 1234' }}</p>
                     </div>
                 </div>
                 <div class="md:text-right flex flex-col justify-end">
-                    <h3 class="text-3xl font-black text-white tracking-wider uppercase mb-1">HÓA ĐƠN ĐIỆN TỬ</h3>
-                    <p class="text-sm text-blue-200 font-medium">Ngày lập: {{ $invoice->created_at->format('d/m/Y H:i') }}</p>
-                    <p class="text-sm text-blue-200 font-mono font-bold">Mã số: #{{ $invoice->invoice_code }}</p>
+                    <h3 class="text-2xl font-black text-white tracking-wider uppercase mb-0.5">HÓA ĐƠN ĐIỆN TỬ</h3>
+                    <p class="text-xs text-teal-100 font-medium">Ngày lập: {{ $invoice->created_at->format('d/m/Y H:i') }}</p>
+                    <p class="text-xs text-teal-100 font-mono font-bold">Mã số: #{{ $invoice->invoice_code }}</p>
                 </div>
             </div>
         </div>
@@ -124,30 +126,30 @@
                 <div class="w-full md:w-1/2 space-y-4">
                     @if($invoice->status !== 'paid' && $invoice->status !== 'cancelled')
                         <!-- Khối quét VietQR trực tuyến cho Bệnh nhân -->
-                        <div class="bg-gradient-to-br from-indigo-900 to-blue-900 p-5 rounded-2xl text-white shadow-lg flex flex-col sm:flex-row items-center gap-5">
+                        <div class="bg-gradient-to-br from-[#0D7A68] via-[#0B6858] to-[#08483d] p-5 rounded-2xl text-white shadow-md flex flex-col sm:flex-row items-center gap-5">
                             <div class="bg-white p-2 rounded-xl shrink-0">
                                 <img src="{{ $vietQrUrl }}" alt="VietQR" class="w-32 h-32 object-contain">
                             </div>
                             <div class="space-y-1 text-xs w-full">
                                 <div class="flex items-center justify-between gap-2">
                                     <span class="bg-amber-400 text-slate-900 font-extrabold px-2 py-0.5 rounded text-[10px] uppercase">Quét QR Thanh Toán</span>
-                                    <span class="inline-flex items-center gap-1.5 text-[11px] text-emerald-300 font-semibold bg-emerald-950/40 px-2 py-0.5 rounded-full border border-emerald-500/30">
+                                    <span class="inline-flex items-center gap-1.5 text-[11px] text-teal-200 font-semibold bg-teal-950/40 px-2 py-0.5 rounded-full border border-teal-500/30">
                                         <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
                                         Tự động nhận diện
                                     </span>
                                 </div>
-                                <p class="text-indigo-200 mt-1">Ngân hàng: <span class="font-bold text-white">{{ $bankDisplayName }}</span></p>
-                                <p class="text-indigo-200">Số TK: <span class="font-mono font-bold text-amber-300 text-sm">{{ $accountNo }}</span></p>
-                                <p class="text-indigo-200">Chủ TK: <span class="font-bold text-white uppercase">{{ $accountName }}</span></p>
-                                <p class="text-indigo-200">Nội dung: <span class="font-mono font-bold text-emerald-300">{{ $transferContent }}</span></p>
-                                <p class="text-[11px] text-indigo-300 italic pt-1">Mở app Ngân hàng quét QR. Hệ thống sẽ tự động chuyển trạng thái khi tiền vào TK.</p>
+                                <p class="text-teal-100 mt-1">Ngân hàng: <span class="font-bold text-white">{{ $bankDisplayName }}</span></p>
+                                <p class="text-teal-100">Số TK: <span class="font-mono font-bold text-amber-300 text-sm">{{ $accountNo }}</span></p>
+                                <p class="text-teal-100">Chủ TK: <span class="font-bold text-white uppercase">{{ $accountName }}</span></p>
+                                <p class="text-teal-100">Nội dung: <span class="font-mono font-bold text-emerald-300">{{ $transferContent }}</span></p>
+                                <p class="text-[11px] text-teal-200 italic pt-1">Mở app Ngân hàng quét QR. Hệ thống sẽ tự động chuyển trạng thái khi tiền vào TK.</p>
                             </div>
                         </div>
 
                         <!-- Các nút tiện ích: Kiểm tra trạng thái & Mô phỏng test -->
                         <div class="flex flex-wrap items-center gap-2 pt-2">
-                            <button id="btn-check-payment" type="button" class="text-xs font-bold text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-xl px-3.5 py-2 flex items-center gap-1.5 transition shadow-2xs">
-                                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                            <button id="btn-check-payment" type="button" class="text-xs font-bold text-[#0D7A68] bg-teal-50 hover:bg-teal-100 border border-teal-200 rounded-xl px-3.5 py-2 flex items-center gap-1.5 transition shadow-2xs">
+                                <svg class="w-4 h-4 text-[#0D7A68]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                                 Tôi đã chuyển khoản xong
                             </button>
                             <button id="btn-simulate-payment" type="button" class="text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-xl px-3.5 py-2 flex items-center gap-1.5 transition shadow-2xs" title="Mô phỏng ngân hàng gửi webhook thanh toán thành công">
@@ -155,7 +157,7 @@
                             </button>
                         </div>
                     @else
-                        <div class="bg-blue-50 border border-blue-100 p-4 rounded-xl text-blue-800 text-sm font-medium">
+                        <div class="bg-teal-50 border border-teal-100 p-4 rounded-xl text-teal-900 text-xs font-medium">
                             Cảm ơn bạn đã tin tưởng và sử dụng dịch vụ tại {{ $settings['clinic_name'] ?? 'Nha Khoa Smile' }}.
                         </div>
                     @endif
@@ -190,7 +192,7 @@
                     @endif
                     <div class="flex justify-between items-center border-t-2 border-slate-200 pt-4 mt-4">
                         <span class="font-black text-base text-slate-800 uppercase">Thành tiền:</span>
-                        <span class="font-black text-2xl text-blue-600 tracking-tight">{{ number_format($invoice->final_amount, 0, ',', '.') }} đ</span>
+                        <span class="font-black text-2xl text-[#0D7A68] tracking-tight">{{ number_format($invoice->final_amount, 0, ',', '.') }} đ</span>
                     </div>
                 </div>
             </div>
