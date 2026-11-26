@@ -85,6 +85,9 @@ class PatientController extends Controller
     public function history()
     {
         $patient = $this->getPatient();
+        if (!$patient) {
+            return redirect()->route('home')->withErrors('Không tìm thấy thông tin bệnh nhân.');
+        }
         $appointments = Appointment::where('patient_id', $patient->id)
             ->orderBy('appointment_time', 'desc')
             ->paginate(10);
@@ -95,6 +98,9 @@ class PatientController extends Controller
     public function cancelAppointment($id)
     {
         $patient = $this->getPatient();
+        if (!$patient) {
+            return redirect()->route('home')->withErrors('Không tìm thấy thông tin bệnh nhân.');
+        }
         $appointment = Appointment::where('patient_id', $patient->id)->findOrFail($id);
 
         if (!in_array($appointment->status, ['pending', 'confirmed'])) {
@@ -109,6 +115,9 @@ class PatientController extends Controller
     public function medicalRecord($id)
     {
         $patient = $this->getPatient();
+        if (!$patient) {
+            return redirect()->route('home')->withErrors('Không tìm thấy thông tin bệnh nhân.');
+        }
         $record = MedicalRecord::where('patient_id', $patient->id)->findOrFail($id);
         return view('patient.medical_records.show', compact('record'));
     }
@@ -116,6 +125,9 @@ class PatientController extends Controller
     public function prescription($id)
     {
         $patient = $this->getPatient();
+        if (!$patient) {
+            return redirect()->route('home')->withErrors('Không tìm thấy thông tin bệnh nhân.');
+        }
         $record = MedicalRecord::where('patient_id', $patient->id)
             ->where(function ($q) use ($id) {
                 $q->where('id', $id)
@@ -134,6 +146,9 @@ class PatientController extends Controller
     public function invoices()
     {
         $patient = $this->getPatient();
+        if (!$patient) {
+            return redirect()->route('home')->withErrors('Không tìm thấy thông tin bệnh nhân.');
+        }
         $invoices = Invoice::where('patient_id', $patient->id)
             ->orderBy('created_at', 'desc')
             ->paginate(10);
@@ -144,6 +159,9 @@ class PatientController extends Controller
     public function invoiceShow($id)
     {
         $patient = $this->getPatient();
+        if (!$patient) {
+            return redirect()->route('home')->withErrors('Không tìm thấy thông tin bệnh nhân.');
+        }
         $invoice = Invoice::with(['details', 'payments', 'appointment.doctor.user'])
             ->where('patient_id', $patient->id)
             ->findOrFail($id);
