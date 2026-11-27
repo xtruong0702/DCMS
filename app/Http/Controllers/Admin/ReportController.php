@@ -13,10 +13,25 @@ use Illuminate\Support\Facades\Response;
 
 class ReportController extends Controller
 {
+    protected function resolvePeriod(Request $request): array
+    {
+        $rawMonth = $request->input('month');
+        $rawYear = $request->input('year');
+
+        $month = (is_numeric($rawMonth) && (int) $rawMonth >= 1 && (int) $rawMonth <= 12)
+            ? (int) $rawMonth
+            : Carbon::now()->month;
+
+        $year = (is_numeric($rawYear) && (int) $rawYear >= 2020 && (int) $rawYear <= 2100)
+            ? (int) $rawYear
+            : Carbon::now()->year;
+
+        return [$month, $year];
+    }
+
     public function index(Request $request)
     {
-        $month = $request->input('month', Carbon::now()->month);
-        $year = $request->input('year', Carbon::now()->year);
+        [$month, $year] = $this->resolvePeriod($request);
 
         $startDate = Carbon::create($year, $month, 1)->startOfMonth();
         $endDate = Carbon::create($year, $month, 1)->endOfMonth();
@@ -159,8 +174,7 @@ class ReportController extends Controller
 
     public function export(Request $request)
     {
-        $month = $request->input('month', Carbon::now()->month);
-        $year = $request->input('year', Carbon::now()->year);
+        [$month, $year] = $this->resolvePeriod($request);
 
         $startDate = Carbon::create($year, $month, 1)->startOfMonth();
         $endDate = Carbon::create($year, $month, 1)->endOfMonth();
@@ -173,32 +187,24 @@ class ReportController extends Controller
             ->get();
 
         $csvFileName = "baocao_doanhthu_{$month}_{$year}.csv";
-        $headers = [
-            "Content-type"        => "text/csv",
-            "Content-Disposition" => "attachment; filename=$csvFileName",
-            "Pragma"              => "no-cache",
-            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
-            "Expires"             => "0"
-        ];
 
-        $handle = fopen('php://output', 'w');
+        return response()->streamDownload(function () use ($dailyRevenue) {
+            $handle = fopen('php://output', 'w');
+            fprintf($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
+            fputcsv($handle, ['Ngày', 'Số hóa đơn', 'Thuế VAT (VNĐ)', 'Tổng doanh thu thực thu (VNĐ)']);
 
-        // Add BOM for UTF-8 Excel compatibility
-        fprintf($handle, chr(0xEF).chr(0xBB).chr(0xBF));
+            foreach ($dailyRevenue as $day) {
+                fputcsv($handle, [
+                    Carbon::parse($day->date)->format('d/m/Y'),
+                    $day->invoice_count,
+                    $day->vat_total,
+                    $day->total,
+                ]);
+            }
 
-        fputcsv($handle, ['Ngày', 'Số hóa đơn', 'Thuế VAT 10% (VNĐ)', 'Tổng doanh thu thực thu (VNĐ)']);
-
-        foreach ($dailyRevenue as $day) {
-            fputcsv($handle, [
-                Carbon::parse($day->date)->format('d/m/Y'),
-                $day->invoice_count,
-                $day->vat_total,
-                $day->total
-            ]);
-        }
-
-        fclose($handle);
-
-        return Response::make('', 200, $headers);
+            fclose($handle);
+        }, $csvFileName, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+        ]);
     }
 }

@@ -68,14 +68,14 @@ class StaffController extends Controller
 
     public function store(Request $request)
     {
-        $this->ensureStaffRoles();
+        $staffRoleIds = $this->ensureStaffRoles()->pluck('id')->all();
 
         $rules = [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email',
             'password' => 'required|string|min:6',
             'phone' => 'nullable|string|max:25',
-            'role_id' => 'required|exists:roles,id',
+            'role_id' => ['required', Rule::in($staffRoleIds)],
             'specialty' => 'nullable|string|max:255',
             'description' => 'nullable|string',
         ];
@@ -155,12 +155,14 @@ class StaffController extends Controller
 
     public function update(Request $request, User $staff)
     {
+        $staffRoleIds = $this->ensureStaffRoles()->pluck('id')->all();
+
         $rules = [
             'name' => 'required|string|max:255',
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users', 'email')->ignore($staff->id)],
             'password' => 'nullable|string|min:6',
             'phone' => 'nullable|string|max:25',
-            'role_id' => 'required|exists:roles,id',
+            'role_id' => ['required', Rule::in($staffRoleIds)],
             'specialty' => 'nullable|string|max:255',
             'description' => 'nullable|string',
         ];
@@ -175,10 +177,17 @@ class StaffController extends Controller
             'email.unique' => 'Email này đã được sử dụng bởi một tài khoản khác.',
             'password.min' => 'Mật khẩu mới phải có ít nhất 6 ký tự.',
             'role_id.required' => 'Vui lòng chọn vai trò phân quyền.',
+            'role_id.in' => 'Vai trò đã chọn không thuộc nhóm nhân sự hợp lệ.',
             'cccd.unique' => 'Số CCCD này đã tồn tại trên hệ thống.',
         ];
 
         $request->validate($rules, $messages);
+
+        if (auth()->id() === $staff->id && (int) $request->role_id !== (int) $staff->role_id) {
+            return back()->withInput()->withErrors([
+                'role_id' => 'Bạn không thể tự thay đổi vai trò của tài khoản Quản trị viên đang đăng nhập!',
+            ]);
+        }
 
         DB::beginTransaction();
         try {

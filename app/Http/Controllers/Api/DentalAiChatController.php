@@ -304,10 +304,13 @@ PROMPT;
             $dateLabel = $tomorrow->format('d/m/Y');
 
             $targetDoc = null;
+            $cleanedForDocMatch = preg_replace('/\b(lich|gio|con|co|nao|khung gio|ngay mai)\s+trong\b/u', ' ', $normalized);
+            $ignoreTokens = ['bs', 'ths', 'cki', 'ckii', 'bac', 'si', 'van', 'thi', 'duc', 'ngoc', 'minh', 'thu', 'hoang', 'phuong', 'nguyen', 'tran', 'le', 'mai', 'vu'];
             foreach ($doctors as $doc) {
                 $docLower = Str::lower(Str::ascii($doc->user->name ?? ''));
-                foreach (explode(' ', $docLower) as $part) {
-                    if (strlen($part) >= 3 && str_contains($normalized, $part)) {
+                $docClean = preg_replace('/[^a-z0-9\s]/', ' ', $docLower);
+                foreach (array_filter(explode(' ', $docClean)) as $part) {
+                    if (strlen($part) >= 3 && !in_array($part, $ignoreTokens, true) && preg_match('/\b' . preg_quote($part, '/') . '\b/', $cleanedForDocMatch)) {
                         $targetDoc = $doc;
                         break 2;
                     }

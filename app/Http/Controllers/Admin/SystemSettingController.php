@@ -16,26 +16,20 @@ class SystemSettingController extends Controller
 
     public function update(Request $request)
     {
-        $request->validate([
-            'vat_percentage' => 'nullable|numeric|min:0|max:100',
+        $validated = $request->validate([
             'clinic_name' => 'nullable|string|max:255',
-            'clinic_phone' => 'nullable|string|max:50',
-            'clinic_email' => 'nullable|email|max:255',
+            'clinic_hotline' => 'nullable|string|max:50',
             'clinic_address' => 'nullable|string|max:500',
-            'bank_name' => 'nullable|string|max:100',
-            'bank_account_number' => 'nullable|string|max:50',
+            'clinic_email' => 'nullable|email|max:255',
+            'clinic_website' => 'nullable|string|max:255',
+            'vat_percentage' => 'nullable|numeric|min:0|max:100',
+            'currency_unit' => 'nullable|string|max:20',
+            'bank_id' => 'nullable|string|max:20',
+            'bank_account_no' => 'nullable|string|max:50',
             'bank_account_name' => 'nullable|string|max:150',
         ]);
 
-        $data = $request->except('_token', '_method');
-
-        foreach ($data as $key => $value) {
-            if (!is_string($key) || !preg_match('/^[a-z0-9_]{1,64}$/', $key)) {
-                continue;
-            }
-            if (is_array($value) || is_object($value)) {
-                continue;
-            }
+        foreach ($validated as $key => $value) {
             SystemSetting::updateOrCreate(
                 ['setting_key' => $key],
                 ['setting_value' => is_null($value) ? '' : trim((string) $value)]

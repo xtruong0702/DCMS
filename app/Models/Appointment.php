@@ -122,7 +122,8 @@ class Appointment extends Model
 
         foreach ($existingAppointments as $existing) {
             $exStart = \Carbon\Carbon::parse($existing->appointment_time);
-            $exDuration = max(15, intval($existing->service->duration_minutes ?? 30));
+            $rawDur = intval($existing->service->duration_minutes ?? 0);
+            $exDuration = $rawDur > 0 ? max(15, $rawDur) : 30;
             $exEnd = $exStart->copy()->addMinutes($exDuration);
 
             if ($startTime->lt($exEnd) && $exStart->lt($newEnd)) {
@@ -153,7 +154,8 @@ class Appointment extends Model
         $slots = [];
         foreach ($appointments as $apt) {
             $start = \Carbon\Carbon::parse($apt->appointment_time);
-            $duration = max(15, intval($apt->service->duration_minutes ?? 30));
+            $rawDur = intval($apt->service->duration_minutes ?? 0);
+            $duration = $rawDur > 0 ? max(15, $rawDur) : 30;
             $end = $start->copy()->addMinutes($duration);
 
             $slots[] = [

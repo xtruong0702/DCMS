@@ -144,6 +144,12 @@ class InvoiceController extends Controller
         }
 
         if ($request->status === 'paid') {
+            \App\Models\Payment::create([
+                'invoice_id' => $invoice->id,
+                'payment_method' => 'Tiền mặt (Admin xác nhận)',
+                'amount' => $final,
+                'status' => 'completed',
+            ]);
             $invoice->deductMedicineStock();
         }
 
@@ -284,6 +290,16 @@ class InvoiceController extends Controller
         }
 
         if ($previousStatus !== 'paid' && $request->status === 'paid') {
+            $alreadyPaid = floatval($invoice->payments()->where('status', 'completed')->sum('amount'));
+            $remaining = max(0, $final - $alreadyPaid);
+            if ($remaining > 0) {
+                \App\Models\Payment::create([
+                    'invoice_id' => $invoice->id,
+                    'payment_method' => 'Tiền mặt (Admin xác nhận)',
+                    'amount' => $remaining,
+                    'status' => 'completed',
+                ]);
+            }
             $invoice->deductMedicineStock();
         }
 

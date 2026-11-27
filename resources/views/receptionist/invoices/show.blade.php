@@ -208,7 +208,7 @@
                                     <span class="font-semibold">- {{ number_format($invoice->discount, 0, ',', '.') }} đ</span>
                                 </div>
                                 <div class="flex justify-between text-xs text-slate-600">
-                                    <span>Thuế VAT ({{ (!empty($settings['vat_percentage']) && floatval($settings['vat_percentage']) > 0) ? $settings['vat_percentage'] : 10 }}%):</span>
+                                    <span>Thuế VAT ({{ (isset($settings['vat_percentage']) && $settings['vat_percentage'] !== '' && is_numeric($settings['vat_percentage'])) ? $settings['vat_percentage'] : 10 }}%):</span>
                                     <span class="font-semibold">+ {{ number_format($invoice->vat_amount, 0, ',', '.') }} đ</span>
                                 </div>
                                 <div class="flex justify-between text-sm font-bold text-slate-900 pt-3 border-t-2 border-slate-900">
@@ -220,7 +220,7 @@
 
                         @if($invoice->status !== 'paid' && $invoice->status !== 'cancelled' && isset($services) && isset($medicines))
                             @php
-                                $vatRateShow = (!empty($settings['vat_percentage']) && floatval($settings['vat_percentage']) > 0) ? floatval($settings['vat_percentage']) : 10;
+                                $vatRateShow = (isset($settings['vat_percentage']) && $settings['vat_percentage'] !== '' && is_numeric($settings['vat_percentage'])) ? max(0, floatval($settings['vat_percentage'])) : 10;
                                 $matchedDetailIds = [];
                             @endphp
                             <!-- Khối Chọn Dịch vụ khám & Chọn Tiền thuốc -->
@@ -607,11 +607,16 @@
                         srvTotal += price * qty;
                     }
 
-                    container.insertAdjacentHTML('beforeend', `
-                        <input type="hidden" name="items[${idx}][name]" value="${name}">
-                        <input type="hidden" name="items[${idx}][price]" value="${price}">
-                        <input type="hidden" name="items[${idx}][quantity]" value="${qty}">
-                    `);
+                    const appendHidden = (field, val) => {
+                        const input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = `items[${idx}][${field}]`;
+                        input.value = val;
+                        container.appendChild(input);
+                    };
+                    appendHidden('name', name);
+                    appendHidden('price', price);
+                    appendHidden('quantity', qty);
                     idx++;
                 }
             });
@@ -620,7 +625,8 @@
             const discount = parseFloat(document.getElementById('showHiddenDiscount')?.value) || 0;
             const afterDiscount = Math.max(0, subtotal - discount);
             const vatEl = document.getElementById('showVatTotal');
-            const vatRate = vatEl ? (parseFloat(vatEl.getAttribute('data-rate')) || 10) : 10;
+            const parsedVat = vatEl ? parseFloat(vatEl.getAttribute('data-rate')) : NaN;
+            const vatRate = !isNaN(parsedVat) && parsedVat >= 0 ? parsedVat : 10;
             const vatAmount = Math.round(afterDiscount * (vatRate / 100));
             const finalAmount = afterDiscount + vatAmount;
 

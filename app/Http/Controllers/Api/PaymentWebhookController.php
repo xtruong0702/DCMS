@@ -52,6 +52,15 @@ class PaymentWebhookController extends Controller
             }
         }
 
+        // 0. Bỏ qua giao dịch tiền RA (transferType = 'out') từ SePay (ví dụ hoàn tiền)
+        $transferType = strtolower(trim((string) ($request->input('transferType') ?? $request->input('data.transferType') ?? 'in')));
+        if ($transferType !== '' && $transferType !== 'in') {
+            return response()->json([
+                'success' => true,
+                'message' => 'Bỏ qua giao dịch tiền ra (transferType: ' . $transferType . ').'
+            ], 200);
+        }
+
         // 1. Trích xuất nội dung chuyển khoản (Content / Description)
         $content = $request->input('content')
             ?? $request->input('description')
@@ -74,11 +83,20 @@ class PaymentWebhookController extends Controller
             ], 422);
         }
 
-        // 3. Trích xuất cổng / ngân hàng thanh toán
+        // 3. Trích xuất cổng / ngân hàng thanh toán & mã tham chiếu chống trùng lặp
         $gateway = $request->input('gateway')
             ?? $request->input('bank')
             ?? $request->input('data.accountNumber')
             ?? 'Chuyển khoản VietQR';
+        $referenceCode = trim((string) (
+            $request->input('referenceCode')
+            ?? $request->input('id')
+            ?? $request->input('data.reference')
+            ?? ''
+        ));
+        $paymentMethodLabel = $referenceCode !== ''
+            ? ($gateway . ' [Ref:' . $referenceCode . ']')
+            : $gateway;
 
         // 4. Tìm mã hóa đơn (invoice_code) trong nội dung chuyển khoản
         $invoiceCode = null;
@@ -97,8 +115,8 @@ class PaymentWebhookController extends Controller
             ], 422);
         }
 
-        // 5-7. Khóa dòng hóa đơn trong Transaction để chống thanh toán trùng lặp (race condition)
-        $result = DB::transaction(function () use ($invoiceCode, $gateway, $amount) {
+        // 5-7. Khóa dòng hóa đơn trong Transaction để chống thanh toán trùng lặp (race condition & webhook retry)
+        $result = DB::transaction(function () use ($invoiceCode, $paymentMethodLabel, $referenceCode, $amount) {
             $invoice = Invoice::where('invoice_code', $invoiceCode)->lockForUpdate()->first();
 
             if (!$invoice) {
@@ -124,9 +142,23 @@ class PaymentWebhookController extends Controller
                 ]];
             }
 
+            if ($referenceCode !== '') {
+                $alreadyProcessed = $invoice->payments()
+                    ->where('payment_method', 'like', '%[Ref:' . $referenceCode . ']%')
+                    ->exists();
+                if ($alreadyProcessed) {
+                    return ['code' => 200, 'payload' => [
+                        'success' => true,
+                        'message' => "Giao dịch Ref:{$referenceCode} đã được ghi nhận trước đó.",
+                        'invoice_code' => $invoice->invoice_code,
+                        'status' => $invoice->status,
+                    ]];
+                }
+            }
+
             Payment::create([
                 'invoice_id' => $invoice->id,
-                'payment_method' => $gateway,
+                'payment_method' => $paymentMethodLabel,
                 'amount' => $amount,
                 'status' => 'completed',
             ]);

@@ -61,7 +61,7 @@ class AppointmentController extends Controller
             ]);
         }
 
-        if ($request->doctor_id) {
+        if ($request->doctor_id && in_array($request->status, ['pending', 'confirmed', 'waiting', 'in_progress'])) {
             $conflict = Appointment::findDoctorConflict(
                 (int) $request->doctor_id,
                 $parsedTime,

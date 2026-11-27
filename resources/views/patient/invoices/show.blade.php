@@ -193,7 +193,7 @@
                         <span class="font-bold">{{ number_format($invoice->total_amount, 0, ',', '.') }} đ</span>
                     </div>
                     <div class="flex justify-between text-slate-600 font-medium text-sm">
-                        <span>Thuế VAT ({{ (!empty($settings['vat_percentage']) && floatval($settings['vat_percentage']) > 0) ? $settings['vat_percentage'] : 10 }}%):</span>
+                        <span>Thuế VAT ({{ (isset($settings['vat_percentage']) && $settings['vat_percentage'] !== '' && is_numeric($settings['vat_percentage'])) ? $settings['vat_percentage'] : 10 }}%):</span>
                         <span>+{{ number_format($invoice->vat_amount, 0, ',', '.') }} đ</span>
                     </div>
                     @if($invoice->discount > 0)

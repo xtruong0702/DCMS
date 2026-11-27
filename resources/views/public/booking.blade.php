@@ -79,13 +79,13 @@
 
                 <form action="{{ route('public.booking.store') }}" method="POST" class="space-y-5"
                     x-data="{
-                        chosenDoctor: '{{ $selectedDoctorId }}',
-                        chosenService: '{{ $selectedServiceId }}',
-                        appointmentTime: '{{ $initialAppointmentTime }}',
+                        chosenDoctor: @js((string) $selectedDoctorId),
+                        chosenService: @js((string) $selectedServiceId),
+                        appointmentTime: @js((string) $initialAppointmentTime),
                         serviceDurations: @js($serviceDurations),
                         busySlots: [],
                         loadingSlots: false,
-                        busySlotsUrl: '{{ route('public.booking.busy-slots') }}',
+                        busySlotsUrl: @js(route('public.booking.busy-slots')),
                         get selectedDate() {
                             return (this.appointmentTime || '').split('T')[0] || '';
                         },

@@ -92,7 +92,7 @@ class AppointmentController extends Controller
             ]);
         }
 
-        if ($request->doctor_id) {
+        if ($request->doctor_id && in_array($status, ['pending', 'confirmed', 'waiting', 'in_progress'])) {
             $conflict = Appointment::findDoctorConflict(
                 (int) $request->doctor_id,
                 $parsedTime,
@@ -165,10 +165,13 @@ class AppointmentController extends Controller
         $rawTargetTime = array_key_exists('appointment_time', $updateData) ? $updateData['appointment_time'] : $appointment->appointment_time;
         $targetTime = $rawTargetTime ? \Carbon\Carbon::parse($rawTargetTime) : null;
 
+        $activeStatuses = ['pending', 'confirmed', 'waiting', 'in_progress'];
+        $isReactivating = !in_array($appointment->status, $activeStatuses) && in_array($request->status, $activeStatuses);
         $isChangingDoctorOrTime = (
             (array_key_exists('doctor_id', $updateData) && (string) $updateData['doctor_id'] !== (string) $appointment->doctor_id)
             || array_key_exists('appointment_time', $updateData)
             || (array_key_exists('service_id', $updateData) && (string) $updateData['service_id'] !== (string) $appointment->service_id)
+            || $isReactivating
         );
 
         if ($isChangingDoctorOrTime && $targetDoctorId && $targetTime && in_array($request->status, ['pending', 'confirmed', 'waiting', 'in_progress'])) {

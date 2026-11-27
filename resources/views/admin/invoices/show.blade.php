@@ -7,7 +7,15 @@
                 </h2>
                 <p class="text-xs text-slate-500 mt-1">Ngày lập: {{ $invoice->created_at->format('d/m/Y H:i') }}</p>
             </div>
-            <div class="flex items-center gap-2.5">
+            <div class="flex flex-wrap items-center gap-2.5">
+                @if($invoice->status !== 'cancelled')
+                    <form action="{{ route('admin.invoices.refund', $invoice) }}" method="POST" onsubmit="return confirm('Xác nhận hủy / hoàn trả hóa đơn #{{ $invoice->invoice_code }}?');">
+                        @csrf
+                        <button type="submit" class="px-3.5 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-xl text-xs font-bold transition">
+                            ↩️ Hoàn trả / Hủy HĐ
+                        </button>
+                    </form>
+                @endif
                 <a href="{{ route('admin.invoices.edit', $invoice) }}" class="px-3.5 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-xl text-xs font-bold transition">
                     ✏️ Cập nhật hóa đơn
                 </a>
@@ -22,7 +30,17 @@
     </x-slot>
 
     <div class="py-8">
-        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8 space-y-4">
+            @if(session('success'))
+                <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 px-4 py-3 rounded-2xl text-xs font-semibold">
+                    ✓ {{ session('success') }}
+                </div>
+            @endif
+            @if(session('error'))
+                <div class="bg-rose-50 border border-rose-200 text-rose-800 px-4 py-3 rounded-2xl text-xs font-semibold">
+                    ⚠️ {{ session('error') }}
+                </div>
+            @endif
             <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden p-8" id="printable-area">
                 <!-- Header -->
                 <div class="flex flex-col sm:flex-row justify-between items-start border-b border-gray-200 pb-6 mb-6 gap-4">

@@ -64,8 +64,8 @@ class Invoice extends Model
                         $qty = max(1, intval($detail->quantity));
                         $med->stock_quantity = max(0, intval($med->stock_quantity) - $qty);
                         $med->save();
+                        $deductedCount++;
                     }
-                    $deductedCount++;
                     break;
                 }
             }

@@ -25,6 +25,17 @@
                 </div>
             @endif
 
+            @if($errors->any())
+                <div class="bg-rose-50 border border-rose-200 text-rose-800 px-4 py-3 rounded-2xl text-xs space-y-1">
+                    <p class="font-bold">Vui lòng kiểm tra lại dữ liệu cấu hình:</p>
+                    <ul class="list-disc list-inside">
+                        @foreach($errors->all() as $err)
+                            <li>{{ $err }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
             <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden p-6 md:p-8">
                 <form method="POST" action="{{ route('admin.settings.update') }}" class="space-y-8">
                     @csrf
@@ -72,17 +83,17 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 mb-1.5">Thuế VAT mặc định (%)</label>
-                                <input type="number" step="0.1" name="vat_percentage" value="{{ (!empty($settings['vat_percentage']) && floatval($settings['vat_percentage']) > 0) ? $settings['vat_percentage'] : '10' }}" class="w-full rounded-xl border-slate-200 text-xs focus:border-[#0D7A68] focus:ring-[#0D7A68]">
+                                <input type="number" step="0.1" min="0" max="100" name="vat_percentage" value="{{ old('vat_percentage', (isset($settings['vat_percentage']) && $settings['vat_percentage'] !== '' && is_numeric($settings['vat_percentage'])) ? $settings['vat_percentage'] : '10') }}" class="w-full rounded-xl border-slate-200 text-xs focus:border-[#0D7A68] focus:ring-[#0D7A68]">
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 mb-1.5">Đơn vị tiền tệ</label>
-                                <input type="text" name="currency_unit" value="{{ $settings['currency_unit'] ?? 'VNĐ' }}" class="w-full rounded-xl border-slate-200 text-xs focus:border-[#0D7A68] focus:ring-[#0D7A68]">
+                                <input type="text" name="currency_unit" value="{{ old('currency_unit', $settings['currency_unit'] ?? 'VNĐ') }}" class="w-full rounded-xl border-slate-200 text-xs focus:border-[#0D7A68] focus:ring-[#0D7A68]">
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 mb-1.5">Ngân hàng thụ hưởng (VietQR NAPAS)</label>
                                 <select name="bank_id" class="w-full rounded-xl border-slate-200 text-xs font-medium focus:border-[#0D7A68] focus:ring-[#0D7A68]">
-                                    <option value="TCB" {{ ($settings['bank_id'] ?? 'TCB') == 'TCB' ? 'selected' : '' }}>Techcombank - Kỹ Thương VN (TCB)</option>
-                                    <option value="MB" {{ ($settings['bank_id'] ?? '') == 'MB' ? 'selected' : '' }}>MBBank - Ngân hàng Quân Đội (MB)</option>
+                                    <option value="MB" {{ ($settings['bank_id'] ?? 'MB') == 'MB' ? 'selected' : '' }}>MBBank - Ngân hàng Quân Đội (MB)</option>
+                                    <option value="TCB" {{ ($settings['bank_id'] ?? '') == 'TCB' ? 'selected' : '' }}>Techcombank - Kỹ Thương VN (TCB)</option>
                                     <option value="VCB" {{ ($settings['bank_id'] ?? '') == 'VCB' ? 'selected' : '' }}>Vietcombank - Ngoại Thương VN (VCB)</option>
                                     <option value="ICB" {{ ($settings['bank_id'] ?? '') == 'ICB' ? 'selected' : '' }}>VietinBank - Công Thương VN (CTG)</option>
                                     <option value="BIDV" {{ ($settings['bank_id'] ?? '') == 'BIDV' ? 'selected' : '' }}>BIDV - Đầu tư & Phát triển VN</option>
@@ -93,11 +104,11 @@
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 mb-1.5">Số tài khoản nhận tiền</label>
-                                <input type="text" name="bank_account_no" value="{{ (!empty($settings['bank_account_no']) && $settings['bank_account_no'] !== '0789169711') ? $settings['bank_account_no'] : '6362566666' }}" placeholder="Ví dụ: 6362566666" class="w-full rounded-xl border-slate-200 text-xs font-mono font-bold focus:border-[#0D7A68] focus:ring-[#0D7A68]">
+                                <input type="text" name="bank_account_no" value="{{ old('bank_account_no', !empty($settings['bank_account_no']) ? $settings['bank_account_no'] : '1626262696969') }}" placeholder="Ví dụ: 1626262696969" class="w-full rounded-xl border-slate-200 text-xs font-mono font-bold focus:border-[#0D7A68] focus:ring-[#0D7A68]">
                             </div>
                             <div class="md:col-span-2">
                                 <label class="block text-xs font-bold text-slate-700 mb-1.5">Tên chủ tài khoản (In hoa không dấu)</label>
-                                <input type="text" name="bank_account_name" value="{{ (!empty($settings['bank_account_name']) && $settings['bank_account_name'] !== 'NHA KHOA SMILE') ? $settings['bank_account_name'] : 'PHAM XUAN TRUONG' }}" placeholder="Ví dụ: PHAM XUAN TRUONG" class="w-full rounded-xl border-slate-200 text-xs font-bold uppercase focus:border-[#0D7A68] focus:ring-[#0D7A68]">
+                                <input type="text" name="bank_account_name" value="{{ old('bank_account_name', !empty($settings['bank_account_name']) ? $settings['bank_account_name'] : 'PHAM XUAN TRUONG') }}" placeholder="Ví dụ: PHAM XUAN TRUONG" class="w-full rounded-xl border-slate-200 text-xs font-bold uppercase focus:border-[#0D7A68] focus:ring-[#0D7A68]">
                             </div>
                         </div>
                     </div>

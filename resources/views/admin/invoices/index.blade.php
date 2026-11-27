@@ -27,6 +27,12 @@
                     <span>{{ session('success') }}</span>
                 </div>
             @endif
+            @if(session('error'))
+                <div class="bg-rose-50 border border-rose-200 text-rose-800 px-4 py-3 rounded-2xl flex items-center gap-2 text-xs font-semibold" role="alert">
+                    <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+                    <span>{{ session('error') }}</span>
+                </div>
+            @endif
 
             <div class="bg-white p-4 rounded-2xl border border-slate-200/90 shadow-xs flex flex-col md:flex-row justify-between items-center gap-4">
                 <form action="{{ route('admin.invoices.index') }}" method="GET" class="w-full md:w-auto flex flex-wrap items-center gap-3">
