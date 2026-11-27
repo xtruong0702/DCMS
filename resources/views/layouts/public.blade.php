@@ -369,8 +369,8 @@
             </div>
         </footer>
 
-        <!-- Floating Quick Action Dock (Desktop/Tablet: Hotline + Back to Top) -->
-        <div class="hidden sm:flex flex-col items-end gap-2.5 fixed bottom-6 right-6 z-40">
+        <!-- Floating Quick Action Dock (Desktop/Tablet: Hotline + Back to Top, stacked cleanly above AI Chat) -->
+        <div class="hidden sm:flex flex-col items-end gap-2.5 fixed z-40" style="bottom: 88px; right: 22px;">
             <a href="tel:0775761388" class="group flex items-center gap-2 bg-white/95 backdrop-blur-md pl-3.5 pr-4 py-2.5 rounded-full shadow-lg shadow-teal-900/10 hover:shadow-xl hover:shadow-teal-700/20 transition-all hover:-translate-y-0.5 clinic-pulse" title="Gọi Hotline Phòng Khám 0775 761 388">
                 <span class="w-8 h-8 rounded-full bg-teal-600 text-white flex items-center justify-center phone-ring-subtle shadow-sm">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>

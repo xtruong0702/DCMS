@@ -2,7 +2,7 @@
     .dcms-ai-root {
         position: fixed;
         right: 22px;
-        bottom: 84px;
+        bottom: 20px;
         z-index: 9999;
         font-family: 'Be Vietnam Pro', system-ui, -apple-system, sans-serif;
     }
