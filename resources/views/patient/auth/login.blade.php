@@ -108,7 +108,7 @@
                 </div>
 
                 <button type="submit" class="btn-press btn-clinic-primary w-full py-3 rounded-xl text-xs flex items-center justify-center gap-2 mt-2">
-                    <span>Đăng nhập Cổng Bệnh Nhân</span>
+                    <span>Đăng Nhập</span>
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                 </button>
             </form>

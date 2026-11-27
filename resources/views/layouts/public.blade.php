@@ -195,9 +195,9 @@
                                 </a>
                             @endif
                         @else
-                            <a href="{{ route('patient.login') }}" class="px-3 py-2 rounded-xl border border-slate-200/40 bg-white text-slate-600 hover:text-teal-700 hover:border-teal-400 transition flex items-center gap-1.5 text-xs font-semibold" title="Cổng Bệnh Nhân">
+                            <a href="{{ route('patient.login') }}" class="px-3 py-2 rounded-xl border border-slate-200/40 bg-white text-slate-600 hover:text-teal-700 hover:border-teal-400 transition flex items-center gap-1.5 text-xs font-semibold whitespace-nowrap" title="Đăng nhập">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                                <span class="hidden xl:inline">Bệnh Nhân</span>
+                                <span>Đăng Nhập</span>
                             </a>
                         @endauth
 
