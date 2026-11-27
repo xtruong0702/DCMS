@@ -86,37 +86,94 @@
                     </div>
                 </div>
 
-                <!-- Cột phải (5 cột): Khung Mô Hình Răng 3D Tương Tác (Three.js) -->
-                <div class="lg:col-span-5" x-data="{ mode3d: 'veneer' }">
-                    <div class="stage-3d-dental rounded-3xl p-5 sm:p-6 h-[360px] sm:h-[430px] flex flex-col justify-between shadow-2xl shadow-[#0f3e36]/20 ring-1 ring-[#d4af37]/30 select-none">
+                <!-- Cột phải (5 cột): Thanh Trượt So Sánh Trước – Sau Điều Trị (Interactive Before/After Slider) -->
+                <div class="lg:col-span-5" x-data="{ pos: 50 }">
+                    <div class="stage-3d-dental rounded-3xl p-4 sm:p-5 flex flex-col justify-between gap-3 shadow-2xl shadow-[#0f3e36]/25 ring-1 ring-[#d4af37]/35 select-none">
 
-                        <!-- Top Bar inside 3D Showcase -->
-                        <div class="flex items-center justify-between relative z-10 pointer-events-auto">
+                        <!-- Top Bar -->
+                        <div class="flex items-center justify-between gap-2 relative z-10">
                             <div>
-                                <div class="text-[10px] font-bold uppercase tracking-widest text-[#d4af37]">CHẨN ĐOÁN SỐ HÓA</div>
-                                <div class="text-xs font-bold text-[#f9f6ee]">Mô Hình Răng 3D DCMS</div>
+                                <div class="text-[10px] font-bold uppercase tracking-widest text-[#d4af37]">KẾT QUẢ LÂM SÀNG THỰC TẾ</div>
+                                <div class="text-xs sm:text-sm font-bold text-[#f9f6ee]">So Sánh Trước &amp; Sau Điều Trị</div>
                             </div>
-                            <div class="flex items-center gap-1 bg-black/35 backdrop-blur-md p-1 rounded-full border border-[#d4af37]/25">
-                                <button type="button" @click="mode3d = 'veneer'; window.dispatchEvent(new CustomEvent('dental3d:mode', { detail: 'veneer' }))"
-                                    :class="mode3d === 'veneer' ? 'bg-[#d4af37] text-[#081412]' : 'text-[#b0c4be] hover:text-white'"
-                                    class="px-2.5 py-0.5 rounded-full text-[10px] font-bold transition">Răng Sứ</button>
-                                <button type="button" @click="mode3d = 'diamond'; window.dispatchEvent(new CustomEvent('dental3d:mode', { detail: 'diamond' }))"
-                                    :class="mode3d === 'diamond' ? 'bg-[#d4af37] text-[#081412]' : 'text-[#b0c4be] hover:text-white'"
-                                    class="px-2.5 py-0.5 rounded-full text-[10px] font-bold transition">Phục Hình</button>
+                            <div class="flex items-center gap-1 bg-black/40 backdrop-blur-md p-1 rounded-full border border-[#d4af37]/25">
+                                <button type="button" @click="pos = 90"
+                                    :class="pos >= 75 ? 'bg-[#d4af37] text-[#081412]' : 'text-[#b0c4be] hover:text-white'"
+                                    class="px-2.5 py-0.5 rounded-full text-[10px] font-bold transition">Trước</button>
+                                <button type="button" @click="pos = 50"
+                                    :class="pos > 25 && pos < 75 ? 'bg-[#d4af37] text-[#081412]' : 'text-[#b0c4be] hover:text-white'"
+                                    class="px-2.5 py-0.5 rounded-full text-[10px] font-bold transition">50/50</button>
+                                <button type="button" @click="pos = 10"
+                                    :class="pos <= 25 ? 'bg-[#d4af37] text-[#081412]' : 'text-[#b0c4be] hover:text-white'"
+                                    class="px-2.5 py-0.5 rounded-full text-[10px] font-bold transition">Sau</button>
                             </div>
                         </div>
 
-                        <!-- Three.js Interactive Canvas -->
-                        <div id="dental-3d-container" class="absolute inset-0 z-[2] cursor-grab active:cursor-grabbing"></div>
+                        <!-- Interactive Before / After Comparison Viewport -->
+                        <div class="relative w-full rounded-2xl overflow-hidden border border-[#d4af37]/30 bg-[#071412]" style="aspect-ratio: 4 / 3; min-height: 290px;">
+                            <!-- Ảnh SAU điều trị (nền full) -->
+                            <img
+                                src="{{ asset('images/before-after/veneer-after.jpg') }}"
+                                alt="Sau khi dán sứ Veneer Emax tại Nha Khoa Smile"
+                                draggable="false"
+                                style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; pointer-events: none;"
+                            >
+
+                            <!-- Ảnh TRƯỚC điều trị (cắt theo vị trí thanh trượt) -->
+                            <img
+                                src="{{ asset('images/before-after/veneer-before.jpg') }}"
+                                alt="Trước khi dán sứ Veneer Emax tại Nha Khoa Smile"
+                                draggable="false"
+                                :style="`position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; pointer-events: none; clip-path: inset(0 ${100 - pos}% 0 0);`"
+                            >
+
+                            <!-- Nhãn Trước / Sau -->
+                            <span
+                                x-show="pos > 18"
+                                style="position: absolute; top: 12px; left: 12px; z-index: 10; pointer-events: none;"
+                                class="px-2.5 py-1 rounded-full bg-black/65 backdrop-blur-md text-[10px] font-bold uppercase tracking-wider text-slate-200 border border-white/15"
+                            >
+                                Trước điều trị
+                            </span>
+                            <span
+                                x-show="pos < 82"
+                                style="position: absolute; top: 12px; right: 12px; z-index: 10; pointer-events: none;"
+                                class="px-2.5 py-1 rounded-full bg-[#0D7A68]/90 backdrop-blur-md text-[10px] font-bold uppercase tracking-wider text-[#f3e5ab] border border-[#d4af37]/45"
+                            >
+                                ✓ Sau Veneer Emax
+                            </span>
+
+                            <!-- Đường chia dọc & Núm kéo vàng Gold -->
+                            <div
+                                :style="`position: absolute; top: 0; bottom: 0; left: ${pos}%; z-index: 10; width: 2px; background: #d4af37; box-shadow: 0 0 14px rgba(212,175,55,0.9); pointer-events: none;`"
+                            >
+                                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; border-radius: 9999px; background: rgba(9, 61, 53, 0.95); border: 2px solid #f3e5ab; color: #f3e5ab; box-shadow: 0 8px 20px rgba(0,0,0,0.45); display: flex; align-items: center; justify-content: center;">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" d="M8 9l-3 3 3 3m8-6l3 3-3 3"/>
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <!-- Range Input trong suốt phủ toàn khung để kéo mượt trên cả chuột & cảm ứng -->
+                            <input
+                                type="range"
+                                min="0"
+                                max="100"
+                                step="0.5"
+                                x-model.number="pos"
+                                aria-label="Kéo để so sánh trước và sau điều trị"
+                                style="position: absolute; inset: 0; z-index: 20; width: 100%; height: 100%; opacity: 0; cursor: ew-resize; margin: 0;"
+                            >
+                        </div>
 
                         <!-- Bottom Info Bar -->
-                        <div class="flex items-center justify-between gap-2 relative z-10 pt-3 border-t border-white/10 pointer-events-none">
+                        <div class="flex items-center justify-between gap-2 relative z-10 pt-2 border-t border-white/10">
                             <span class="text-[11px] text-[#b0c4be] flex items-center gap-1.5">
-                                <span class="text-[#d4af37]">↻</span>
-                                <span>Chạm & kéo để xoay 360°</span>
+                                <span class="text-[#d4af37] font-bold">↔</span>
+                                <span>Kéo thanh trượt để so sánh</span>
                             </span>
-                            <span class="px-2.5 py-0.5 rounded-lg bg-[#d4af37]/20 text-[#f3e5ab] text-[10px] font-bold uppercase tracking-wider border border-[#d4af37]/30"
-                                x-text="mode3d === 'veneer' ? 'Sứ Emax 0.2mm' : 'Chuẩn Khớp Cắn'">
+                            <span class="px-2.5 py-0.5 rounded-lg bg-[#d4af37]/20 text-[#f3e5ab] text-[10px] font-bold uppercase tracking-wider border border-[#d4af37]/30">
+                                Sứ Emax 0.2mm • 2 Buổi
                             </span>
                         </div>
                     </div>
@@ -279,6 +336,58 @@
         </div>
     </section>
 
+    <!-- 3.5. KHÔNG GIAN PHÒNG KHÁM & TRANG THIẾT BỊ CHUẨN 5 SAO -->
+    <section class="py-16 lg:py-20 bg-white border-b border-slate-100/70">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 reveal-item">
+                <div class="space-y-1">
+                    <span class="block text-[11px] font-bold uppercase tracking-[0.18em] text-[#0f3e36] opacity-75">CƠ SỞ VẬT CHẤT CHUẨN QUỐC TẾ</span>
+                    <h2 class="font-heading-clinic !text-2xl sm:!text-3xl font-bold text-[#0f3e36]">Không Gian &amp; Công Nghệ Nha Khoa 5 Sao</h2>
+                    <p class="text-xs sm:text-sm text-slate-600">Trải nghiệm thăm khám riêng tư, vô trùng tuyệt đối chuẩn Bộ Y Tế tại 204 Trần Duy Hưng, Hà Nội.</p>
+                </div>
+                <a href="{{ route('public.about') }}" class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#0f3e36] hover:opacity-80 shrink-0 group">
+                    <span>Khám phá Nha Khoa Smile</span>
+                    <span class="group-hover:translate-x-1 transition-transform">&rarr;</span>
+                </a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="clinic-card rounded-2xl overflow-hidden img-zoom-container reveal-item">
+                    <div class="relative overflow-hidden bg-slate-100" style="height: 230px;">
+                        <img src="{{ asset('images/clinic/clinic-vip-room.jpg') }}" alt="Phòng điều trị VIP Nha Khoa Smile" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                        <div class="absolute bottom-3 left-3 right-3">
+                            <span class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#d4af37] text-[#081412] uppercase tracking-wider mb-1">1 BS : 1 Ghế Riêng Biệt</span>
+                            <h3 class="font-heading-clinic !text-base font-bold text-white">Phòng Điều Trị VIP Vô Trùng</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="clinic-card rounded-2xl overflow-hidden img-zoom-container reveal-item">
+                    <div class="relative overflow-hidden bg-slate-100" style="height: 230px;">
+                        <img src="{{ asset('images/clinic/clinic-ct-3d.jpg') }}" alt="Phòng chụp phim CT ConeBeam 3D" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                        <div class="absolute bottom-3 left-3 right-3">
+                            <span class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#0f3e36]/90 text-[#f3e5ab] border border-[#d4af37]/30 uppercase tracking-wider mb-1">Chẩn Đoán Số Hóa DCMS</span>
+                            <h3 class="font-heading-clinic !text-base font-bold text-white">Hệ Thống Chụp CT 3D &amp; Scan iTero</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="clinic-card rounded-2xl overflow-hidden img-zoom-container reveal-item">
+                    <div class="relative overflow-hidden bg-slate-100" style="height: 230px;">
+                        <img src="{{ asset('images/clinic/clinic-lounge.jpg') }}" alt="Sảnh tiếp đón khách hàng Nha Khoa Smile" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                        <div class="absolute bottom-3 left-3 right-3">
+                            <span class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#0f3e36]/90 text-[#f3e5ab] border border-[#d4af37]/30 uppercase tracking-wider mb-1">Tiêu Chuẩn Thụy Sĩ</span>
+                            <h3 class="font-heading-clinic !text-base font-bold text-white">Sảnh Đón Tiếp &amp; Chăm Sóc Chu Đáo</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- 4. ĐỘI NGŨ BÁC SĨ CHUYÊN KHOA (4 CỘT NGANG CHUẨN MẪU DESKTOP) -->
     <section class="py-16 lg:py-20 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
@@ -294,15 +403,6 @@
                 </a>
             </div>
 
-            @php
-                $homeDoctorImages = [
-                    'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=600&q=85',
-                    'https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&w=600&q=85',
-                    'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=600&q=85',
-                    'https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&w=600&q=85',
-                ];
-            @endphp
-
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                 @foreach($doctors as $idx => $doc)
                     @php
@@ -315,7 +415,7 @@
                     <div class="clinic-card doctor-card rounded-2xl overflow-hidden flex flex-col justify-between img-zoom-container reveal-item">
                         <div>
                             <div class="relative h-56 overflow-hidden bg-slate-100">
-                                <img src="{{ $homeDoctorImages[$idx % count($homeDoctorImages)] }}" alt="{{ $docName }}" class="w-full h-full object-cover object-top">
+                                <img src="{{ $doc->avatar_url }}" alt="{{ $docName }}" class="w-full h-full object-cover object-top">
                                 <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
                                 <div class="absolute bottom-2.5 left-3">
                                     <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#0f3e36]/90 backdrop-blur-md text-[#f3e5ab] tabular-nums">
@@ -435,175 +535,3 @@
 
 </div>
 @endsection
-
-@push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const container = document.getElementById('dental-3d-container');
-        if (!container || typeof THREE === 'undefined') return;
-
-        try {
-            const width = container.clientWidth || 400;
-            const height = container.clientHeight || 380;
-
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(42, width / height, 0.1, 100);
-            camera.position.set(0, 0.12, 5.1);
-
-            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-            renderer.setSize(width, height);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            container.appendChild(renderer.domElement);
-
-            scene.add(new THREE.AmbientLight(0xffffff, 0.95));
-            const keyLight = new THREE.DirectionalLight(0xfff7d6, 2.2);
-            keyLight.position.set(4, 5, 5);
-            scene.add(keyLight);
-
-            const rimLight = new THREE.PointLight(0x5eead4, 2.0, 18);
-            rimLight.position.set(-4, -2, 3);
-            scene.add(rimLight);
-
-            const goldLight = new THREE.PointLight(0xd4af37, 2.0, 16);
-            goldLight.position.set(3, -3, 2);
-            scene.add(goldLight);
-
-            const gemGroup = new THREE.Group();
-            scene.add(gemGroup);
-
-            const veneerMat = new THREE.MeshPhysicalMaterial({
-                color: 0xffffff,
-                emissive: 0x0f3e36,
-                emissiveIntensity: 0.08,
-                metalness: 0.05,
-                roughness: 0.08,
-                clearcoat: 1.0,
-                clearcoatRoughness: 0.04,
-                reflectivity: 1.0,
-            });
-            const goldToothMat = new THREE.MeshPhysicalMaterial({
-                color: 0xf3e5ab,
-                emissive: 0xb89028,
-                emissiveIntensity: 0.16,
-                metalness: 0.85,
-                roughness: 0.14,
-                clearcoat: 1.0,
-                clearcoatRoughness: 0.06,
-            });
-
-            const toothShape = new THREE.Shape();
-            toothShape.moveTo(0, 0.82);
-            toothShape.bezierCurveTo(0.28, 1.04, 0.78, 1.02, 0.88, 0.56);
-            toothShape.bezierCurveTo(0.95, 0.22, 0.78, -0.06, 0.72, -0.32);
-            toothShape.bezierCurveTo(0.66, -0.68, 0.56, -1.12, 0.36, -1.16);
-            toothShape.bezierCurveTo(0.18, -1.18, 0.14, -0.72, 0.06, -0.52);
-            toothShape.bezierCurveTo(0.02, -0.44, -0.02, -0.44, -0.06, -0.52);
-            toothShape.bezierCurveTo(-0.14, -0.72, -0.18, -1.18, -0.36, -1.16);
-            toothShape.bezierCurveTo(-0.56, -1.12, -0.66, -0.68, -0.72, -0.32);
-            toothShape.bezierCurveTo(-0.78, -0.06, -0.95, 0.22, -0.88, 0.56);
-            toothShape.bezierCurveTo(-0.78, 1.02, -0.28, 1.04, 0, 0.82);
-
-            const toothGeo = new THREE.ExtrudeGeometry(toothShape, {
-                depth: 0.34,
-                bevelEnabled: true,
-                bevelSegments: 16,
-                steps: 2,
-                bevelSize: 0.24,
-                bevelThickness: 0.30,
-                curveSegments: 36,
-            });
-            toothGeo.center();
-
-            const toothMesh = new THREE.Mesh(toothGeo, veneerMat);
-            toothMesh.scale.set(0.95, 0.95, 0.95);
-            gemGroup.add(toothMesh);
-
-            window.addEventListener('dental3d:mode', (e) => {
-                toothMesh.material = e.detail === 'diamond' ? goldToothMat : veneerMat;
-            });
-
-            const goldRingMat = new THREE.MeshStandardMaterial({
-                color: 0xd4af37,
-                emissive: 0xb89028,
-                emissiveIntensity: 0.25,
-                metalness: 0.92,
-                roughness: 0.18,
-            });
-            const ring1 = new THREE.Mesh(new THREE.TorusGeometry(1.75, 0.028, 16, 100), goldRingMat);
-            ring1.rotation.x = Math.PI / 2.6;
-            ring1.rotation.y = 0.25;
-            gemGroup.add(ring1);
-
-            const ring2 = new THREE.Mesh(new THREE.TorusGeometry(2.05, 0.015, 12, 100), goldRingMat);
-            ring2.rotation.x = -Math.PI / 3.2;
-            ring2.rotation.z = 0.4;
-            gemGroup.add(ring2);
-
-            const particleCount = 65;
-            const positions = new Float32Array(particleCount * 3);
-            for (let i = 0; i < particleCount; i++) {
-                const r = 1.9 + Math.random() * 1.8;
-                const theta = Math.random() * Math.PI * 2;
-                const phi = Math.acos(2 * Math.random() - 1);
-                positions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
-                positions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
-                positions[i * 3 + 2] = r * Math.cos(phi);
-            }
-            const particleGeo = new THREE.BufferGeometry();
-            particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-            const particles = new THREE.Points(particleGeo, new THREE.PointsMaterial({
-                color: 0xf3e5ab,
-                size: 0.055,
-                transparent: true,
-                opacity: 0.85,
-            }));
-            scene.add(particles);
-
-            let isDragging = false, prevX = 0, prevY = 0, targetRotX = 0.18, targetRotY = 0;
-            const onDown = (x, y) => { isDragging = true; prevX = x; prevY = y; };
-            const onMove = (x, y) => {
-                if (!isDragging) return;
-                targetRotY += (x - prevX) * 0.012;
-                targetRotX = Math.max(-1.1, Math.min(1.1, targetRotX + (y - prevY) * 0.012));
-                prevX = x; prevY = y;
-            };
-            const onUp = () => { isDragging = false; };
-
-            const canvas = renderer.domElement;
-            canvas.addEventListener('mousedown', (e) => onDown(e.clientX, e.clientY));
-            window.addEventListener('mousemove', (e) => onMove(e.clientX, e.clientY));
-            window.addEventListener('mouseup', onUp);
-            canvas.addEventListener('touchstart', (e) => { if (e.touches[0]) onDown(e.touches[0].clientX, e.touches[0].clientY); }, { passive: true });
-            canvas.addEventListener('touchmove', (e) => { if (e.touches[0]) onMove(e.touches[0].clientX, e.touches[0].clientY); }, { passive: true });
-            window.addEventListener('touchend', onUp);
-
-            window.addEventListener('resize', () => {
-                const w = container.clientWidth || 400;
-                const h = container.clientHeight || 380;
-                camera.aspect = w / h;
-                camera.updateProjectionMatrix();
-                renderer.setSize(w, h);
-            });
-
-            const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-            let clock = 0;
-            const animate = () => {
-                requestAnimationFrame(animate);
-                if (!reducedMotion) {
-                    clock += 0.014;
-                    if (!isDragging) targetRotY += 0.0055;
-                    gemGroup.position.y = Math.sin(clock * 1.4) * 0.1;
-                    ring1.rotation.z += 0.006;
-                    ring2.rotation.y -= 0.004;
-                    particles.rotation.y += 0.0018;
-                }
-                gemGroup.rotation.y += (targetRotY - gemGroup.rotation.y) * 0.08;
-                gemGroup.rotation.x += (targetRotX - gemGroup.rotation.x) * 0.08;
-                renderer.render(scene, camera);
-            };
-            animate();
-        } catch (err) {}
-    });
-</script>
-@endpush

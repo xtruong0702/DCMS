@@ -69,12 +69,6 @@
                     $selectedServiceId = old('service_id', request('service_id', ''));
                     $initialAppointmentTime = old('appointment_time', \Carbon\Carbon::tomorrow()->format('Y-m-d\T09:00'));
                     $serviceDurations = $services->mapWithKeys(fn($s) => [(string) $s->id => max(15, intval($s->duration_minutes ?? 30))])->toArray();
-                    $doctorImages = [
-                        'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=300&q=80',
-                        'https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&w=300&q=80',
-                        'https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&w=300&q=80',
-                        'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=300&q=80',
-                    ];
                 @endphp
 
                 <form action="{{ route('public.booking.store') }}" method="POST" class="space-y-5"
@@ -178,7 +172,7 @@
                                     $docName = preg_match('/^(BS|TS|ThS|PGS|GS)\b/iu', $rawDocName) ? $rawDocName : 'BS. ' . $rawDocName;
                                     $docSpec = $doc->specialty ?: 'Chuyên khoa Răng Hàm Mặt';
                                     $docExp = $doc->experience_years ?? (10 + ($idx % 4) * 2);
-                                    $docAvatar = $doctorImages[$idx % count($doctorImages)];
+                                    $docAvatar = $doc->avatar_url;
                                 @endphp
                                 <div @click="chosenDoctor = '{{ $doc->id }}'"
                                     :class="chosenDoctor == '{{ $doc->id }}' ? 'border-teal-600 bg-teal-50/70 ring-2 ring-teal-500/20' : 'border-slate-200/45 bg-white hover:border-teal-500/25'"

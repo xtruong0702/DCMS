@@ -33,7 +33,7 @@
                 <!-- Cột ảnh phòng khám + Thẻ nổi 15+ góc dưới trái -->
                 <div class="lg:col-span-6 relative reveal-item">
                     <div class="relative rounded-3xl overflow-hidden shadow-2xl ring-1 ring-[#d4af37]/25 img-zoom-container bg-white">
-                        <img src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=1000&q=85" alt="Không gian Nha Khoa Smile" class="w-full h-[340px] sm:h-[400px] object-cover">
+                        <img src="{{ asset('images/clinic/clinic-vip-room.jpg') }}" alt="Không gian Nha Khoa Smile" class="w-full object-cover" style="height: 380px;">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent"></div>
 
                         <!-- Floating 15+ Years Badge inside bottom-left (Matching Stitch Screen) -->

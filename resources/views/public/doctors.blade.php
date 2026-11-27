@@ -59,13 +59,6 @@
     <section class="py-10 sm:py-14 bg-[#effcf9]">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
             @php
-                $doctorImages = [
-                    'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=700&q=85',
-                    'https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&w=700&q=85',
-                    'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=700&q=85',
-                    'https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&w=700&q=85',
-                    'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=700&q=85',
-                ];
                 $doctorCredentials = [
                     ['edu' => 'ĐH Y Dược', 'tags' => ['Veneer 0.2mm', 'Toàn sứ Cercon', 'Phục hình 3D']],
                     ['edu' => 'ĐH Geneva, Thụy Sĩ', 'tags' => ['Implant Straumann', 'All-on-4/6', 'CT ConeBeam']],
@@ -83,7 +76,7 @@
                         $docSpecialty = $doctor->specialty ?: 'Chuyên khoa Răng Hàm Mặt';
                         $docExp = $doctor->experience_years ?? (10 + (($index % 4) * 2));
                         $docBio = $doctor->description ?: ($doctor->bio ?: 'Chuyên gia điều trị răng hàm mặt chuẩn y khoa, ưu tiên bảo tồn răng thật và tư vấn tận tâm.');
-                        $docImg = $doctorImages[$index % count($doctorImages)];
+                        $docImg = $doctor->avatar_url;
                         $cred = $doctorCredentials[$index % count($doctorCredentials)];
                         $docPayload = [
                             'id' => $doctor->id,
