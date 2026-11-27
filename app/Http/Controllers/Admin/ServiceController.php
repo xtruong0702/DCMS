@@ -95,6 +95,13 @@ class ServiceController extends Controller
 
     public function destroy(Service $service)
     {
+        $inAppointments = \App\Models\Appointment::where('service_id', $service->id)->exists();
+        $inMedicalRecords = \App\Models\MedicalRecordDetail::where('service_id', $service->id)->exists();
+
+        if ($inAppointments || $inMedicalRecords) {
+            return redirect()->route('admin.services.index')->with('error', 'Không thể xóa dịch vụ đã được sử dụng trong lịch hẹn hoặc bệnh án. Vui lòng chuyển sang trạng thái Tạm ngừng.');
+        }
+
         $service->delete();
         return redirect()->route('admin.services.index')->with('success', 'Đã xóa dịch vụ!');
     }

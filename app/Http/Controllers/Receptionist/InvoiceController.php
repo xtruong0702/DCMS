@@ -12,9 +12,18 @@ use App\Models\Service;
 use App\Models\Medicine;
 use App\Models\SystemSetting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class InvoiceController extends Controller
 {
+    private function getVatRate(): float
+    {
+        $vatSetting = SystemSetting::where('setting_key', 'vat_percentage')->first();
+        if ($vatSetting && $vatSetting->setting_value !== '' && is_numeric($vatSetting->setting_value)) {
+            return max(0, floatval($vatSetting->setting_value));
+        }
+        return 10.0;
+    }
     public function index(Request $request)
     {
         $query = Invoice::with(['patient', 'appointment']);
@@ -102,11 +111,7 @@ class InvoiceController extends Controller
             ->limit(50)
             ->get();
 
-        $vatSetting = SystemSetting::where('setting_key', 'vat_percentage')->first();
-        $vatRate = ($vatSetting && $vatSetting->setting_value !== '') ? floatval($vatSetting->setting_value) : 10;
-        if ($vatRate <= 0) {
-            $vatRate = 10;
-        }
+        $vatRate = $this->getVatRate();
         
         return view('receptionist.invoices.create', compact('appointment', 'patients', 'services', 'medicines', 'appointments', 'vatRate'));
     }
@@ -125,11 +130,7 @@ class InvoiceController extends Controller
             'items.min' => 'Vui lòng tích chọn ít nhất 1 Dịch vụ khám hoặc Thuốc để lập hóa đơn.',
         ]);
 
-        $vatSetting = SystemSetting::where('setting_key', 'vat_percentage')->first();
-        $vatRate = ($vatSetting && $vatSetting->setting_value !== '') ? floatval($vatSetting->setting_value) : 10;
-        if ($vatRate <= 0) {
-            $vatRate = 10;
-        }
+        $vatRate = $this->getVatRate();
 
         $totalAmount = 0;
         foreach ($request->items as $item) {
@@ -142,7 +143,7 @@ class InvoiceController extends Controller
         $finalAmount = $amountAfterDiscount + $vatAmount;
 
         $invoice = Invoice::create([
-            'invoice_code' => 'HD' . date('YmdHis'),
+            'invoice_code' => 'HD' . date('YmdHis') . random_int(100, 999),
             'patient_id' => $request->patient_id,
             'appointment_id' => $request->appointment_id,
             'total_amount' => $totalAmount,
@@ -170,8 +171,8 @@ class InvoiceController extends Controller
         $this->ensureDefaultMedicinesAndServices();
         $invoice->load(['patient', 'details', 'payments', 'appointment.doctor.user', 'appointment.medicalRecord.prescription.details.medicine']);
 
-        // Tự động đồng bộ Dịch vụ và Thuốc từ ca khám Bác sĩ vào Hóa đơn (cộng dồn đầy đủ cả hai)
-        if ($invoice->status === 'unpaid' && $invoice->appointment && $invoice->appointment->medicalRecord) {
+        // Chỉ tự động đồng bộ từ ca khám Bác sĩ nếu hóa đơn chưa có dòng chi tiết nào (tránh ghi đè chỉnh sửa của lễ tân)
+        if ($invoice->status === 'unpaid' && $invoice->details->isEmpty() && $invoice->appointment && $invoice->appointment->medicalRecord) {
             $medRec = $invoice->appointment->medicalRecord;
             $hasAnyChange = false;
 
@@ -230,8 +231,7 @@ class InvoiceController extends Controller
                 $totalAmount = $invoice->details->sum('total_price');
                 $discount = floatval($invoice->discount ?? 0);
                 $afterDiscount = max(0, $totalAmount - $discount);
-                $vatSetting = SystemSetting::where('setting_key', 'vat_percentage')->first();
-                $vatRate = ($vatSetting && floatval($vatSetting->setting_value) > 0) ? floatval($vatSetting->setting_value) : 10;
+                $vatRate = $this->getVatRate();
                 $vatAmount = $afterDiscount * ($vatRate / 100);
                 $invoice->update([
                     'total_amount' => $totalAmount,
@@ -250,6 +250,10 @@ class InvoiceController extends Controller
 
     public function update(Request $request, Invoice $invoice)
     {
+        if ($invoice->status !== 'unpaid') {
+            return back()->with('error', 'Không thể chỉnh sửa hóa đơn đã thanh toán hoặc đã hủy.');
+        }
+
         $request->validate([
             'items' => 'required|array|min:1',
             'items.*.name' => 'required|string',
@@ -261,11 +265,7 @@ class InvoiceController extends Controller
             'items.min' => 'Vui lòng chọn ít nhất 1 Dịch vụ khám hoặc Thuốc.',
         ]);
 
-        $vatSetting = SystemSetting::where('setting_key', 'vat_percentage')->first();
-        $vatRate = ($vatSetting && $vatSetting->setting_value !== '') ? floatval($vatSetting->setting_value) : 10;
-        if ($vatRate <= 0) {
-            $vatRate = 10;
-        }
+        $vatRate = $this->getVatRate();
 
         $totalAmount = 0;
         foreach ($request->items as $item) {
@@ -362,8 +362,7 @@ class InvoiceController extends Controller
             $totalAmount += $it['unit_price'] * $it['quantity'];
         }
 
-        $vatSetting = SystemSetting::where('setting_key', 'vat_percentage')->first();
-        $vatRate = ($vatSetting && floatval($vatSetting->setting_value) > 0) ? floatval($vatSetting->setting_value) : 10;
+        $vatRate = $this->getVatRate();
         $vatAmount = $totalAmount * ($vatRate / 100);
         $finalAmount = $totalAmount + $vatAmount;
 
@@ -403,28 +402,42 @@ class InvoiceController extends Controller
             'amount' => 'required|numeric|min:1'
         ]);
 
-        $wasAlreadyPaid = ($invoice->status === 'paid');
+        $result = DB::transaction(function () use ($request, $invoice) {
+            $lockedInvoice = Invoice::where('id', $invoice->id)->lockForUpdate()->firstOrFail();
 
-        Payment::create([
-            'invoice_id' => $invoice->id,
-            'payment_method' => $request->payment_method,
-            'amount' => $request->amount,
-            'status' => 'completed'
-        ]);
+            if ($lockedInvoice->status !== 'unpaid') {
+                return [
+                    'error' => $lockedInvoice->status === 'paid'
+                        ? 'Hóa đơn này đã được thanh toán đầy đủ trước đó.'
+                        : 'Không thể thanh toán hóa đơn đã hủy.'
+                ];
+            }
 
-        // Check if fully paid
-        $totalPaid = $invoice->payments()->sum('amount');
-        $stockMsg = '';
-        if ($totalPaid >= $invoice->final_amount) {
-            $invoice->update(['status' => 'paid']);
-            if (!$wasAlreadyPaid) {
-                $deducted = $invoice->deductMedicineStock();
+            Payment::create([
+                'invoice_id' => $lockedInvoice->id,
+                'payment_method' => $request->payment_method,
+                'amount' => $request->amount,
+                'status' => 'completed'
+            ]);
+
+            $totalPaid = floatval($lockedInvoice->payments()->where('status', 'completed')->sum('amount'));
+            $stockMsg = '';
+
+            if ($totalPaid >= floatval($lockedInvoice->final_amount)) {
+                $lockedInvoice->update(['status' => 'paid']);
+                $deducted = $lockedInvoice->deductMedicineStock();
                 if ($deducted > 0) {
                     $stockMsg = " Đã tự động trừ tồn kho {$deducted} mặt hàng thuốc.";
                 }
             }
+
+            return ['success' => 'Thanh toán thành công.' . $stockMsg];
+        });
+
+        if (isset($result['error'])) {
+            return redirect()->route('receptionist.invoices.show', $invoice)->with('error', $result['error']);
         }
 
-        return redirect()->route('receptionist.invoices.show', $invoice)->with('success', 'Thanh toán thành công.' . $stockMsg);
+        return redirect()->route('receptionist.invoices.show', $invoice)->with('success', $result['success']);
     }
 }

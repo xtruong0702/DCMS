@@ -12,6 +12,12 @@ use App\Models\SystemSetting;
 
 class MedicalRecordController extends Controller
 {
+    protected function ownsMedicalRecord(MedicalRecord $record): bool
+    {
+        $doctorId = auth()->user()->doctor->id ?? null;
+        return $doctorId !== null && (!$record->doctor_id || $record->doctor_id === $doctorId);
+    }
+
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -26,6 +32,13 @@ class MedicalRecordController extends Controller
         ]);
 
         $record = MedicalRecord::with('patient')->findOrFail($id);
+
+        if (!$this->ownsMedicalRecord($record)) {
+            if ($request->ajax()) {
+                return response()->json(['success' => false, 'message' => 'Bạn không có quyền chỉnh sửa bệnh án này.'], 403);
+            }
+            return back()->with('error', 'Bạn không có quyền chỉnh sửa bệnh án này.');
+        }
 
         if ($record->patient && ($request->has('allergy_history') || $request->has('medical_history'))) {
             $record->patient->update([
@@ -67,6 +80,10 @@ class MedicalRecordController extends Controller
 
         $record = MedicalRecord::findOrFail($id);
 
+        if (!$this->ownsMedicalRecord($record)) {
+            return back()->with('error', 'Bạn không có quyền chỉ định dịch vụ cho bệnh án này.');
+        }
+
         MedicalRecordDetail::create([
             'medical_record_id' => $record->id,
             'service_id' => $request->service_id,
@@ -86,6 +103,11 @@ class MedicalRecordController extends Controller
     {
         $detail = MedicalRecordDetail::findOrFail($detailId);
         $record = MedicalRecord::find($detail->medical_record_id);
+
+        if ($record && !$this->ownsMedicalRecord($record)) {
+            return back()->with('error', 'Bạn không có quyền xóa dịch vụ khỏi bệnh án này.');
+        }
+
         $detail->delete();
 
         if ($record) {
@@ -139,10 +161,9 @@ class MedicalRecordController extends Controller
         $taxable = max(0, $totalAmount - $discount);
 
         $vatSetting = SystemSetting::where('setting_key', 'vat_percentage')->first();
-        $vatRate = ($vatSetting && $vatSetting->setting_value !== '') ? floatval($vatSetting->setting_value) : 10;
-        if ($vatRate <= 0) {
-            $vatRate = 10;
-        }
+        $vatRate = ($vatSetting && $vatSetting->setting_value !== '' && is_numeric($vatSetting->setting_value))
+            ? max(0, floatval($vatSetting->setting_value))
+            : 10;
         $vatAmount = $taxable * ($vatRate / 100);
         $finalAmount = $taxable + $vatAmount;
 

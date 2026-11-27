@@ -19,15 +19,21 @@ class PatientController extends Controller
 
         $patient = $user->patient;
         if (!$patient) {
-            // Tự động liên kết qua số điện thoại hoặc tạo mới bản ghi Patient nếu tài khoản chưa có
-            $patient = \App\Models\Patient::where('phone', $user->phone)->first();
+            // Chỉ tự động liên kết nếu SĐT hợp lệ và hồ sơ chưa gắn tài khoản nào
+            $cleanPhone = trim((string) $user->phone);
+            if ($cleanPhone !== '') {
+                $patient = \App\Models\Patient::where('phone', $cleanPhone)
+                    ->whereNull('user_id')
+                    ->first();
+            }
+
             if ($patient) {
                 $patient->update(['user_id' => $user->id]);
             } else {
                 $patient = \App\Models\Patient::create([
-                    'patient_code' => 'BN' . date('YmdHis'),
+                    'patient_code' => 'BN' . date('YmdHis') . random_int(100, 999),
                     'name' => $user->name,
-                    'phone' => $user->phone ?: '0000000000',
+                    'phone' => $cleanPhone !== '' ? $cleanPhone : null,
                     'email' => $user->email,
                     'address' => $user->address,
                     'user_id' => $user->id,
@@ -90,6 +96,10 @@ class PatientController extends Controller
             return back()->with('error', 'Chỉ có thể hủy lịch hẹn khi đang ở trạng thái chờ xác nhận hoặc đã xác nhận.');
         }
 
+        if ($appointment->appointment_time && $appointment->appointment_time->isPast()) {
+            return back()->with('error', 'Không thể hủy lịch hẹn đã quá thời gian khám.');
+        }
+
         $appointment->update(['status' => 'cancelled']);
 
         return back()->with('success', 'Đã hủy lịch hẹn thành công.');
@@ -111,17 +121,24 @@ class PatientController extends Controller
         if (!$patient) {
             return redirect()->route('home')->withErrors('Không tìm thấy thông tin bệnh nhân.');
         }
-        $record = MedicalRecord::where('patient_id', $patient->id)
-            ->where(function ($q) use ($id) {
-                $q->where('id', $id)
-                  ->orWhereHas('prescription', function ($pq) use ($id) {
-                      $pq->where('id', $id);
-                  });
-            })
-            ->whereHas('prescription')
-            ->firstOrFail();
 
-        $prescription = $record->prescription;
+        $prescription = \App\Models\Prescription::with('medicalRecord')
+            ->where('id', $id)
+            ->whereHas('medicalRecord', function ($q) use ($patient) {
+                $q->where('patient_id', $patient->id);
+            })
+            ->first();
+
+        if ($prescription) {
+            $record = $prescription->medicalRecord;
+        } else {
+            $record = MedicalRecord::with('prescription')
+                ->where('patient_id', $patient->id)
+                ->where('id', $id)
+                ->whereHas('prescription')
+                ->firstOrFail();
+            $prescription = $record->prescription;
+        }
         
         return view('patient.prescriptions.show', compact('prescription', 'record'));
     }

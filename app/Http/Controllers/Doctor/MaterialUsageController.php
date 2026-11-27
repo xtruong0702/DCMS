@@ -19,6 +19,12 @@ class MaterialUsageController extends Controller
         $query = MaterialUsage::with(['supply', 'doctor.user', 'appointment.patient', 'medicalRecord'])
             ->latest();
 
+        if ($doctor) {
+            $query->where('doctor_id', $doctor->id);
+        } else {
+            $query->whereRaw('1 = 0');
+        }
+
         if ($request->filled('supply_id')) {
             $query->where('supply_id', $request->supply_id);
         }
@@ -43,19 +49,37 @@ class MaterialUsageController extends Controller
             'note' => 'nullable|string',
         ]);
 
+        $doctorId = auth()->user()->doctor ? auth()->user()->doctor->id : null;
+        if (!$doctorId) {
+            return back()->with('error', 'Không xác định được hồ sơ bác sĩ.');
+        }
+
+        if ($request->filled('appointment_id')) {
+            $appointment = Appointment::find($request->appointment_id);
+            if ($appointment && $appointment->doctor_id && $appointment->doctor_id !== $doctorId) {
+                return back()->with('error', 'Bạn không có quyền ghi nhận vật tư cho cuộc hẹn của bác sĩ khác.');
+            }
+        }
+
+        if ($request->filled('medical_record_id')) {
+            $medicalRecord = MedicalRecord::find($request->medical_record_id);
+            if ($medicalRecord && $medicalRecord->doctor_id && $medicalRecord->doctor_id !== $doctorId) {
+                return back()->with('error', 'Bạn không có quyền ghi nhận vật tư cho bệnh án của bác sĩ khác.');
+            }
+        }
+
         try {
             DB::beginTransaction();
 
-            $supply = Supply::findOrFail($request->supply_id);
+            $supply = Supply::where('id', $request->supply_id)->lockForUpdate()->firstOrFail();
 
             if ($supply->stock_quantity < $request->quantity) {
+                DB::rollBack();
                 return back()->with('error', 'Vật tư [' . $supply->name . '] không đủ tồn kho! Tồn hiện tại: ' . $supply->stock_quantity . ' ' . $supply->unit);
             }
 
             // Trừ kho vật tư
             $supply->decrement('stock_quantity', $request->quantity);
-
-            $doctorId = auth()->user()->doctor ? auth()->user()->doctor->id : null;
 
             MaterialUsage::create([
                 'supply_id' => $request->supply_id,
@@ -77,11 +101,18 @@ class MaterialUsageController extends Controller
 
     public function destroy($id)
     {
+        $doctorId = auth()->user()->doctor ? auth()->user()->doctor->id : null;
+
         try {
             DB::beginTransaction();
 
             $usage = MaterialUsage::findOrFail($id);
-            $supply = Supply::find($usage->supply_id);
+            if (!$doctorId || ($usage->doctor_id && $usage->doctor_id !== $doctorId)) {
+                DB::rollBack();
+                return back()->with('error', 'Bạn không có quyền xóa bản ghi tiêu hao vật tư này.');
+            }
+
+            $supply = Supply::where('id', $usage->supply_id)->lockForUpdate()->first();
 
             // Hoàn lại kho
             if ($supply) {

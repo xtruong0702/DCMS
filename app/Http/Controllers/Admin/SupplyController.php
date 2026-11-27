@@ -28,7 +28,7 @@ class SupplyController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'unit' => 'required|string|max:50',
             'import_price' => 'nullable|numeric|min:0',
@@ -38,7 +38,7 @@ class SupplyController extends Controller
             'description' => 'nullable|string',
         ]);
 
-        Supply::create($request->all());
+        Supply::create($validated);
 
         return redirect()->route('admin.supplies.index')->with('success', 'Thêm vật tư thành công!');
     }
@@ -50,7 +50,7 @@ class SupplyController extends Controller
 
     public function update(Request $request, Supply $supply)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'unit' => 'required|string|max:50',
             'import_price' => 'nullable|numeric|min:0',
@@ -60,13 +60,17 @@ class SupplyController extends Controller
             'description' => 'nullable|string',
         ]);
 
-        $supply->update($request->all());
+        $supply->update($validated);
 
         return redirect()->route('admin.supplies.index')->with('success', 'Cập nhật thông tin vật tư thành công!');
     }
 
     public function destroy(Supply $supply)
     {
+        if (\App\Models\MaterialUsage::where('supply_id', $supply->id)->exists()) {
+            return redirect()->route('admin.supplies.index')->with('error', 'Không thể xóa vật tư đã có lịch sử tiêu hao trong ca khám.');
+        }
+
         $supply->delete();
         return redirect()->route('admin.supplies.index')->with('success', 'Đã xóa vật tư!');
     }

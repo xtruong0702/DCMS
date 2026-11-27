@@ -141,13 +141,14 @@ class PublicController extends Controller
             'name' => 'required|string|max:255',
             'phone' => 'required|string|max:20',
             'appointment_time' => 'required|date|after_or_equal:tomorrow',
-            'service_id' => 'nullable|exists:services,id',
+            'service_id' => ['nullable', \Illuminate\Validation\Rule::exists('services', 'id')->where('is_active', true)],
             'doctor_id' => 'nullable|exists:doctors,id',
             'note' => 'nullable|string'
         ], [
             'appointment_time.after_or_equal' => 'Chỉ nhận đặt lịch hẹn từ ngày hôm sau trở đi. Nếu khám trong ngày, quý khách không cần đặt lịch mà vui lòng đến trực tiếp phòng khám.',
             'appointment_time.required' => 'Vui lòng chọn thời gian đặt lịch khám.',
             'appointment_time.date' => 'Thời gian đặt lịch không hợp lệ.',
+            'service_id.exists' => 'Dịch vụ đã chọn hiện không khả dụng.',
             'doctor_id.exists' => 'Bác sĩ đã chọn không hợp lệ.',
         ]);
 
@@ -175,19 +176,21 @@ class PublicController extends Controller
             }
         }
 
-        // Kiểm tra xem bệnh nhân đã tồn tại qua số điện thoại chưa
-        $patient = Patient::where('phone', $request->phone)->first();
+        // Kiểm tra xem bệnh nhân đã tồn tại qua số điện thoại chưa (không ghi đè tên hồ sơ gốc)
+        $cleanPhone = trim($request->phone);
+        $cleanName = trim($request->name);
+        $patient = Patient::where('phone', $cleanPhone)->first();
+        $bookingNote = $request->note;
 
-        // Nếu chưa có, tạo bệnh nhân mới
         if (!$patient) {
             $patient = Patient::create([
-                'patient_code' => 'BN' . date('YmdHis'),
-                'name' => $request->name,
-                'phone' => $request->phone,
+                'patient_code' => 'BN' . date('YmdHis') . random_int(100, 999),
+                'name' => $cleanName,
+                'phone' => $cleanPhone,
             ]);
-        } else {
-            // Cập nhật lại tên nếu họ dùng tên mới cho sđt cũ
-            $patient->update(['name' => $request->name]);
+        } elseif (mb_strtolower($patient->name) !== mb_strtolower($cleanName)) {
+            $nameNote = '[Tên khi đặt lịch: ' . $cleanName . ']';
+            $bookingNote = $bookingNote ? ($nameNote . ' ' . $bookingNote) : $nameNote;
         }
 
         // Tạo lịch hẹn trạng thái 'pending'
@@ -196,7 +199,7 @@ class PublicController extends Controller
             'doctor_id' => $request->doctor_id ?: null,
             'service_id' => $request->service_id ?: null,
             'appointment_time' => $request->appointment_time,
-            'note' => $request->note,
+            'note' => $bookingNote,
             'status' => 'pending' // Chờ duyệt
         ]);
 
@@ -206,15 +209,28 @@ class PublicController extends Controller
     public function lookup(Request $request)
     {
         $phone = trim((string) $request->input('phone', ''));
+        $patientCode = strtoupper(trim((string) $request->input('patient_code', '')));
         $patient = null;
         $appointments = collect();
         $invoices = collect();
         $settings = \App\Models\SystemSetting::pluck('setting_value', 'setting_key')->toArray();
 
-        if ($phone !== '') {
-            $patient = Patient::where('phone', $phone)
-                ->orWhere('patient_code', $phone)
-                ->first();
+        if ($phone !== '' || $patientCode !== '') {
+            $query = Patient::query();
+
+            if ($phone !== '' && $patientCode !== '') {
+                $query->where('phone', $phone)
+                    ->where('patient_code', $patientCode);
+            } elseif ($phone !== '') {
+                $query->where(function ($q) use ($phone) {
+                    $q->where('phone', $phone)
+                      ->orWhere('patient_code', strtoupper($phone));
+                });
+            } else {
+                $query->where('patient_code', $patientCode);
+            }
+
+            $patient = $query->first();
 
             if ($patient) {
                 $appointments = Appointment::with(['doctor.user', 'service', 'invoice'])
@@ -229,6 +245,6 @@ class PublicController extends Controller
             }
         }
 
-        return view('public.lookup', compact('phone', 'patient', 'appointments', 'invoices', 'settings'));
+        return view('public.lookup', compact('phone', 'patientCode', 'patient', 'appointments', 'invoices', 'settings'));
     }
 }

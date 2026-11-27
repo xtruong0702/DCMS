@@ -48,6 +48,10 @@ class ConsultationController extends Controller
 
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'status' => 'nullable|in:confirmed,waiting,in_progress,completed,cancelled',
+        ]);
+
         $appointment = Appointment::findOrFail($id);
         
         // Ensure this doctor owns the appointment (or assign this doctor if unassigned)
@@ -60,7 +64,7 @@ class ConsultationController extends Controller
         if (!$appointment->doctor_id && $doctorId) {
             $updateData['doctor_id'] = $doctorId;
         }
-        if ($request->has('status')) {
+        if ($request->filled('status')) {
             $updateData['status'] = $request->status;
         }
 
@@ -134,8 +138,17 @@ class ConsultationController extends Controller
     {
         $appointment = Appointment::with(['patient', 'service'])->findOrFail($id);
 
-        DB::transaction(function () use ($appointment) {
-            $appointment->update(['status' => 'completed']);
+        $doctorId = auth()->user()->doctor->id ?? null;
+        if (!$doctorId || ($appointment->doctor_id && $appointment->doctor_id !== $doctorId)) {
+            return back()->with('error', 'Bạn không có quyền hoàn thành ca khám này.');
+        }
+
+        DB::transaction(function () use ($appointment, $doctorId) {
+            $updateData = ['status' => 'completed'];
+            if (!$appointment->doctor_id) {
+                $updateData['doctor_id'] = $doctorId;
+            }
+            $appointment->update($updateData);
 
             // Kiểm tra nếu chưa có hóa đơn cho ca khám này thì tự động khởi tạo
             $existingInvoice = Invoice::where('appointment_id', $appointment->id)->first();
@@ -207,15 +220,14 @@ class ConsultationController extends Controller
                 }
 
                 $vatSetting = SystemSetting::where('setting_key', 'vat_percentage')->first();
-                $vatRate = ($vatSetting && $vatSetting->setting_value !== '') ? floatval($vatSetting->setting_value) : 10;
-                if ($vatRate <= 0) {
-                    $vatRate = 10;
-                }
+                $vatRate = ($vatSetting && $vatSetting->setting_value !== '' && is_numeric($vatSetting->setting_value))
+                    ? max(0, floatval($vatSetting->setting_value))
+                    : 10;
                 $vatAmount = $totalAmount * ($vatRate / 100);
                 $finalAmount = $totalAmount + $vatAmount;
 
                 $invoice = Invoice::create([
-                    'invoice_code' => 'HD' . date('YmdHis') . rand(10, 99),
+                    'invoice_code' => 'HD' . date('YmdHis') . random_int(100, 999),
                     'patient_id' => $appointment->patient_id,
                     'appointment_id' => $appointment->id,
                     'total_amount' => $totalAmount,

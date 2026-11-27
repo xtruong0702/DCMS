@@ -110,6 +110,30 @@ class AppointmentController extends Controller
         ]);
 
         $dateTime = $request->appointment_date . ' ' . $request->appointment_time . ':00';
+        $parsedTime = \Carbon\Carbon::parse($dateTime);
+
+        if (in_array($request->status, ['pending', 'confirmed']) && ($request->appointment_time < '08:00' || $request->appointment_time > '20:00')) {
+            return back()->withInput()->withErrors([
+                'appointment_time' => 'Giờ hẹn phải nằm trong khung giờ làm việc của phòng khám (08:00 - 20:00).'
+            ]);
+        }
+
+        if ($request->doctor_id && in_array($request->status, ['pending', 'confirmed', 'waiting', 'in_progress'])) {
+            $conflict = Appointment::where('doctor_id', $request->doctor_id)
+                ->where('id', '!=', $appointment->id)
+                ->whereIn('status', ['pending', 'confirmed', 'waiting', 'in_progress'])
+                ->whereBetween('appointment_time', [
+                    $parsedTime->copy()->subMinutes(29),
+                    $parsedTime->copy()->addMinutes(29),
+                ])
+                ->exists();
+
+            if ($conflict) {
+                return back()->withInput()->withErrors([
+                    'doctor_id' => 'Bác sĩ đã có lịch hẹn khác trong khung giờ này (cách nhau dưới 30 phút).'
+                ]);
+            }
+        }
 
         $appointment->update([
             'patient_id' => $request->patient_id,

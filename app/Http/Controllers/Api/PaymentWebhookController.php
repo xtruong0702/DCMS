@@ -7,6 +7,7 @@ use App\Models\Invoice;
 use App\Models\Payment;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class PaymentWebhookController extends Controller
@@ -16,21 +17,34 @@ class PaymentWebhookController extends Controller
      */
     public function handleWebhook(Request $request): JsonResponse
     {
-        Log::info('Payment Webhook Received:', $request->all());
+        Log::info('Payment Webhook Received:', $request->except(['api_key']));
 
-        // Kiểm tra API Key / Token nếu được cấu hình trong .env (tùy chọn bảo mật)
+        // Kiểm tra API Key / Token (bắt buộc trên môi trường không phải local)
         $configuredApiKey = config('services.sepay.api_key') ?? env('SEPAY_API_KEY');
+        if (empty($configuredApiKey) && !app()->isLocal()) {
+            Log::error('Payment Webhook rejected: SEPAY_API_KEY is not configured.');
+            return response()->json([
+                'success' => false,
+                'message' => 'Webhook authentication is not configured.'
+            ], 503);
+        }
+
         if (!empty($configuredApiKey)) {
-            $receivedToken = $request->header('Authorization') 
-                ?? $request->header('X-Api-Key') 
-                ?? $request->input('api_key');
-            
-            // Xử lý tiền tố "Apikey " nếu có
-            if (str_starts_with($receivedToken ?? '', 'Apikey ')) {
+            $receivedToken = (string) (
+                $request->header('Authorization')
+                ?? $request->header('X-Api-Key')
+                ?? $request->input('api_key')
+                ?? ''
+            );
+
+            // Xử lý tiền tố "Apikey " hoặc "Bearer " nếu có
+            if (str_starts_with($receivedToken, 'Apikey ')) {
+                $receivedToken = substr($receivedToken, 7);
+            } elseif (str_starts_with($receivedToken, 'Bearer ')) {
                 $receivedToken = substr($receivedToken, 7);
             }
 
-            if ($receivedToken !== $configuredApiKey) {
+            if (!hash_equals((string) $configuredApiKey, trim($receivedToken))) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Unauthorized: Invalid Webhook API Key'
@@ -39,100 +53,106 @@ class PaymentWebhookController extends Controller
         }
 
         // 1. Trích xuất nội dung chuyển khoản (Content / Description)
-        $content = $request->input('content') 
-            ?? $request->input('description') 
-            ?? $request->input('data.description') 
-            ?? $request->input('orderCode') 
+        $content = $request->input('content')
+            ?? $request->input('description')
+            ?? $request->input('data.description')
+            ?? $request->input('orderCode')
             ?? '';
 
-        // 2. Trích xuất số tiền chuyển
+        // 2. Trích xuất số tiền chuyển (bắt buộc > 0)
         $amount = floatval(
-            $request->input('transferAmount') 
-            ?? $request->input('amount') 
-            ?? $request->input('data.amount') 
+            $request->input('transferAmount')
+            ?? $request->input('amount')
+            ?? $request->input('data.amount')
             ?? 0
         );
 
+        if ($amount <= 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Số tiền giao dịch không hợp lệ (phải lớn hơn 0).'
+            ], 422);
+        }
+
         // 3. Trích xuất cổng / ngân hàng thanh toán
-        $gateway = $request->input('gateway') 
-            ?? $request->input('bank') 
-            ?? $request->input('data.accountNumber') 
+        $gateway = $request->input('gateway')
+            ?? $request->input('bank')
+            ?? $request->input('data.accountNumber')
             ?? 'Chuyển khoản VietQR';
 
         // 4. Tìm mã hóa đơn (invoice_code) trong nội dung chuyển khoản
-        // Mẫu mã hóa đơn thường là HD + chuỗi số (ví dụ HD20261118123000)
         $invoiceCode = null;
-        if (preg_match('/(HD\d+)/i', (string) $content, $matches)) {
+        if (preg_match('/(HD[A-Z0-9]+)/i', (string) $content, $matches)) {
             $invoiceCode = strtoupper($matches[1]);
         } elseif ($request->filled('invoice_code')) {
-            $invoiceCode = strtoupper($request->input('invoice_code'));
+            $invoiceCode = strtoupper(trim((string) $request->input('invoice_code')));
         } elseif ($request->filled('data.orderCode')) {
-            $invoiceCode = 'HD' . $request->input('data.orderCode');
+            $invoiceCode = 'HD' . trim((string) $request->input('data.orderCode'));
         }
 
         if (!$invoiceCode) {
             return response()->json([
                 'success' => false,
-                'message' => 'Không tìm thấy mã hóa đơn (HD...) trong nội dung thanh toán: ' . $content
+                'message' => 'Không tìm thấy mã hóa đơn (HD...) trong nội dung thanh toán.'
             ], 422);
         }
 
-        // 5. Tìm hóa đơn trong cơ sở dữ liệu
-        $invoice = Invoice::where('invoice_code', $invoiceCode)->first();
+        // 5-7. Khóa dòng hóa đơn trong Transaction để chống thanh toán trùng lặp (race condition)
+        $result = DB::transaction(function () use ($invoiceCode, $gateway, $amount) {
+            $invoice = Invoice::where('invoice_code', $invoiceCode)->lockForUpdate()->first();
 
-        // Nếu không khớp mã dạng text, thử tìm theo ID
-        if (!$invoice && is_numeric(str_replace('HD', '', $invoiceCode))) {
-            $invoice = Invoice::find(intval(str_replace('HD', '', $invoiceCode)));
-        }
+            if (!$invoice) {
+                return ['code' => 404, 'payload' => [
+                    'success' => false,
+                    'message' => "Không tìm thấy hóa đơn {$invoiceCode} trong hệ thống."
+                ]];
+            }
 
-        if (!$invoice) {
-            return response()->json([
-                'success' => false,
-                'message' => "Không tìm thấy hóa đơn {$invoiceCode} trong hệ thống."
-            ], 404);
-        }
+            if ($invoice->status === 'paid') {
+                return ['code' => 200, 'payload' => [
+                    'success' => true,
+                    'message' => "Hóa đơn #{$invoice->invoice_code} đã hoàn tất thanh toán trước đó.",
+                    'invoice_code' => $invoice->invoice_code,
+                    'status' => 'paid'
+                ]];
+            }
 
-        // Nếu hóa đơn đã được thanh toán từ trước
-        if ($invoice->status === 'paid') {
-            return response()->json([
-                'success' => true,
-                'message' => "Hóa đơn #{$invoice->invoice_code} đã hoàn tất thanh toán trước đó.",
-                'invoice_code' => $invoice->invoice_code,
-                'status' => 'paid'
+            if ($invoice->status !== 'unpaid') {
+                return ['code' => 409, 'payload' => [
+                    'success' => false,
+                    'message' => "Hóa đơn #{$invoice->invoice_code} đang ở trạng thái '{$invoice->status}', không thể tiếp nhận thanh toán."
+                ]];
+            }
+
+            Payment::create([
+                'invoice_id' => $invoice->id,
+                'payment_method' => $gateway,
+                'amount' => $amount,
+                'status' => 'completed',
             ]);
-        }
 
-        // 6. Ghi nhận giao dịch Payment
-        $actualPaymentAmount = ($amount > 0) ? $amount : floatval($invoice->final_amount);
-        Payment::create([
-            'invoice_id' => $invoice->id,
-            'payment_method' => $gateway,
-            'amount' => $actualPaymentAmount,
-            'status' => 'completed',
-        ]);
+            $totalPaid = floatval($invoice->payments()->where('status', 'completed')->sum('amount'));
+            $deductedCount = 0;
 
-        // 7. Kiểm tra tổng tiền đã thanh toán và cập nhật trạng thái hóa đơn
-        $totalPaid = floatval($invoice->payments()->where('status', 'completed')->sum('amount'));
-        $deductedCount = 0;
+            if ($totalPaid >= floatval($invoice->final_amount)) {
+                $invoice->update(['status' => 'paid']);
+                $deductedCount = $invoice->deductMedicineStock();
+            }
 
-        if ($totalPaid >= floatval($invoice->final_amount)) {
-            $invoice->update(['status' => 'paid']);
+            Log::info("Invoice #{$invoice->invoice_code} processed via Webhook. Paid: {$totalPaid}/{$invoice->final_amount}, Status: {$invoice->status}, Deducted: {$deductedCount}");
 
-            // Tự động trừ tồn kho dược
-            $deductedCount = $invoice->deductMedicineStock();
-        }
+            return ['code' => 200, 'payload' => [
+                'success' => true,
+                'message' => 'Xác nhận thanh toán tự động thành công!',
+                'invoice_code' => $invoice->invoice_code,
+                'status' => $invoice->status,
+                'final_amount' => floatval($invoice->final_amount),
+                'total_paid' => $totalPaid,
+                'deducted_medicines' => $deductedCount
+            ]];
+        });
 
-        Log::info("Invoice #{$invoice->invoice_code} auto-updated to paid via Webhook. Deducted: {$deductedCount} items.");
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Xác nhận thanh toán tự động thành công!',
-            'invoice_code' => $invoice->invoice_code,
-            'status' => $invoice->status,
-            'final_amount' => floatval($invoice->final_amount),
-            'total_paid' => $totalPaid,
-            'deducted_medicines' => $deductedCount
-        ]);
+        return response()->json($result['payload'], $result['code']);
     }
 
     /**
@@ -140,11 +160,7 @@ class PaymentWebhookController extends Controller
      */
     public function checkStatus(string $code): JsonResponse
     {
-        $invoice = Invoice::where('invoice_code', $code)->first();
-
-        if (!$invoice && is_numeric($code)) {
-            $invoice = Invoice::find(intval($code));
-        }
+        $invoice = Invoice::where('invoice_code', strtoupper(trim($code)))->first();
 
         if (!$invoice) {
             return response()->json([
@@ -167,11 +183,18 @@ class PaymentWebhookController extends Controller
     }
 
     /**
-     * API mô phỏng thanh toán nhanh (Dành cho việc kiểm thử / demo trên môi trường cục bộ)
+     * API mô phỏng thanh toán nhanh (Chỉ dành cho kiểm thử / demo trên môi trường cục bộ)
      */
     public function simulate(Request $request): JsonResponse
     {
-        $code = $request->input('invoice_code') ?? $request->input('code');
+        if (!app()->isLocal()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Chức năng mô phỏng thanh toán chỉ khả dụng trên môi trường cục bộ.'
+            ], 403);
+        }
+
+        $code = strtoupper(trim((string) ($request->input('invoice_code') ?? $request->input('code') ?? '')));
 
         if (!$code) {
             return response()->json([
@@ -181,9 +204,6 @@ class PaymentWebhookController extends Controller
         }
 
         $invoice = Invoice::where('invoice_code', $code)->first();
-        if (!$invoice && is_numeric($code)) {
-            $invoice = Invoice::find(intval($code));
-        }
 
         if (!$invoice) {
             return response()->json([
@@ -192,13 +212,19 @@ class PaymentWebhookController extends Controller
             ], 404);
         }
 
-        // Tạo request giả lập gọi vào handleWebhook
-        $fakeRequest = new Request([
+        $payload = [
             'gateway' => 'VietQR Techcombank (Mô phỏng)',
             'content' => 'THANH TOAN ' . $invoice->invoice_code,
             'transferAmount' => floatval($invoice->final_amount),
             'referenceCode' => 'SIMULATE_' . strtoupper(substr(md5(uniqid()), 0, 8)),
-        ]);
+        ];
+
+        $configuredApiKey = config('services.sepay.api_key') ?? env('SEPAY_API_KEY');
+        if (!empty($configuredApiKey)) {
+            $payload['api_key'] = $configuredApiKey;
+        }
+
+        $fakeRequest = new Request($payload);
 
         return $this->handleWebhook($fakeRequest);
     }

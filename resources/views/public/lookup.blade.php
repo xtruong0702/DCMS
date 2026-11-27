@@ -165,12 +165,12 @@
                 </div>
             </div>
 
-            <!-- 3. KẾT QUẢ TRA CỨU CHI TIẾT (HIỂN THỊ KHI ĐÃ NHẬP SĐT) -->
-            @if($phone !== '')
+            <!-- 3. KẾT QUẢ TRA CỨU CHI TIẾT (HIỂN THỊ KHI ĐÃ NHẬP SĐT HOẶC MÃ BỆNH NHÂN) -->
+            @if($phone !== '' || !empty($patientCode))
                 @if(!$patient)
                     <div class="clinic-card rounded-3xl p-8 text-center border border-rose-500/20 max-w-2xl mx-auto space-y-4">
                         <div class="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center text-2xl mx-auto">⚠️</div>
-                        <h3 class="font-heading-clinic !text-xl font-bold text-slate-900">Không tìm thấy hồ sơ với SĐT "{{ $phone }}"</h3>
+                        <h3 class="font-heading-clinic !text-xl font-bold text-slate-900">Không tìm thấy hồ sơ với thông tin "{{ $phone !== '' && !empty($patientCode) ? ($phone . ' / ' . $patientCode) : ($phone ?: $patientCode) }}"</h3>
                         <p class="text-xs sm:text-sm text-slate-600">
                             Vui lòng kiểm tra lại số điện thoại hoặc liên hệ Hotline <strong class="text-teal-800 tabular-nums">0775 761 388</strong> để được Lễ tân hỗ trợ tra cứu trực tiếp.
                         </p>
@@ -295,9 +295,27 @@
                                             @else
                                                 <span class="px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-800">Chưa thanh toán</span>
                                             @endif
-                                            <a href="{{ route('patient.invoices.show', $inv->id) }}" class="btn-press btn-clinic-primary px-3.5 py-1.5 rounded-lg text-xs">
-                                                Chi tiết & VietQR
-                                            </a>
+                                            @php
+                                                $authUser = auth()->user();
+                                                $authRole = $authUser && $authUser->role ? strtolower(trim($authUser->role->name)) : null;
+                                            @endphp
+                                            @if($authRole === 'patient' && $authUser->patient && $authUser->patient->id === $inv->patient_id)
+                                                <a href="{{ route('patient.invoices.show', $inv->id) }}" class="btn-press btn-clinic-primary px-3.5 py-1.5 rounded-lg text-xs">
+                                                    Chi tiết & VietQR
+                                                </a>
+                                            @elseif($authRole === 'admin')
+                                                <a href="{{ route('admin.invoices.show', $inv->id) }}" class="btn-press btn-clinic-primary px-3.5 py-1.5 rounded-lg text-xs">
+                                                    Xem hóa đơn
+                                                </a>
+                                            @elseif($authRole === 'receptionist')
+                                                <a href="{{ route('receptionist.invoices.show', $inv->id) }}" class="btn-press btn-clinic-primary px-3.5 py-1.5 rounded-lg text-xs">
+                                                    Xem hóa đơn
+                                                </a>
+                                            @else
+                                                <a href="{{ route('patient.login') }}" class="btn-press btn-clinic-primary px-3.5 py-1.5 rounded-lg text-xs">
+                                                    Đăng nhập xem VietQR
+                                                </a>
+                                            @endif
                                         </div>
                                     </div>
                                 @empty

@@ -44,16 +44,17 @@ class PatientAuthController extends Controller
             'is_active' => true,
         ]);
 
-        // Kiểm tra xem đã có bệnh nhân nào có số điện thoại này chưa
-        $patient = Patient::where('phone', $request->phone)->first();
+        // Chỉ liên kết với hồ sơ bệnh nhân chưa gắn tài khoản nào
+        $patient = Patient::where('phone', $request->phone)
+            ->whereNull('user_id')
+            ->first();
 
         if ($patient) {
-            // Liên kết
             $patient->update(['user_id' => $user->id]);
         } else {
-            // Tạo mới Patient record
+            // Tạo mới Patient record với mã không trùng lặp
             Patient::create([
-                'patient_code' => 'BN' . date('YmdHis'),
+                'patient_code' => 'BN' . date('YmdHis') . random_int(100, 999),
                 'name' => $request->name,
                 'phone' => $request->phone,
                 'user_id' => $user->id,
@@ -84,6 +85,17 @@ class PatientAuthController extends Controller
         $loginType = filter_var($credentials['login'], FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
 
         if (Auth::attempt([$loginType => $credentials['login'], 'password' => $credentials['password']])) {
+            $user = Auth::user();
+            if (isset($user->is_active) && !$user->is_active) {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                return back()->withErrors([
+                    'login' => 'Tài khoản của bạn đã bị khóa. Vui lòng liên hệ Quản trị viên hoặc Hotline 0775 761 388.',
+                ])->onlyInput('login');
+            }
+
             $request->session()->regenerate();
             
             // Redirect to the generic dashboard route which handles role-based redirection
@@ -117,38 +129,37 @@ class PatientAuthController extends Controller
         ]);
 
         $login = trim($request->input('login'));
+        $patient = null;
 
-        $user = User::where('phone', $login)->orWhere('email', $login)->first();
+        // Chỉ cho phép đặt lại mật khẩu qua luồng này đối với tài khoản Bệnh nhân (Patient)
+        $user = User::whereHas('role', function ($q) {
+                $q->whereRaw('LOWER(name) = ?', ['patient']);
+            })
+            ->where(function ($q) use ($login) {
+                $q->where('phone', $login)->orWhere('email', $login);
+            })
+            ->first();
 
         if (!$user) {
-            $patient = Patient::where('phone', $login)->whereNotNull('user_id')->first();
-            if ($patient && $patient->user) {
+            $patient = Patient::where('phone', $login)->whereNotNull('user_id')->with('user.role')->first();
+            if ($patient && $patient->user && strtolower($patient->user->role->name ?? '') === 'patient') {
                 $user = $patient->user;
             }
         }
 
         if (!$user) {
             return back()->withInput()->withErrors([
-                'login' => 'Không tìm thấy tài khoản với thông tin đã nhập. Vui lòng kiểm tra lại.',
+                'login' => 'Không tìm thấy tài khoản bệnh nhân với thông tin đã nhập. Nhân viên phòng khám vui lòng liên hệ Quản trị viên.',
             ]);
         }
 
-        $otp = (string) rand(100000, 999999);
-
-        session([
-            'patient_reset_user_id' => $user->id,
-            'patient_reset_identity' => $login,
-            'patient_reset_otp' => $otp,
-            'patient_reset_expires_at' => now()->addMinutes(15),
-        ]);
-
-        $masked = $login;
-        if (filter_var($login, FILTER_VALIDATE_EMAIL)) {
-            $parts = explode('@', $login);
-            $masked = substr($parts[0], 0, 2) . '***@' . $parts[1];
-        } elseif (strlen($login) >= 6) {
-            $masked = substr($login, 0, 3) . '****' . substr($login, -3);
+        if (isset($user->is_active) && !$user->is_active) {
+            return back()->withInput()->withErrors([
+                'login' => 'Tài khoản này đã bị khóa. Vui lòng liên hệ Hotline 0775 761 388.',
+            ]);
         }
+
+        $otp = (string) random_int(100000, 999999);
 
         // Gửi email chứa OTP nếu tài khoản có email
         $recipientEmail = $user->email ?? ($patient->email ?? null);
@@ -163,11 +174,26 @@ class PatientAuthController extends Controller
             }
         }
 
+        if (!$mailSent && !app()->isLocal()) {
+            return back()->withInput()->withErrors([
+                'login' => 'Tài khoản chưa liên kết email hợp lệ hoặc không thể gửi mã OTP lúc này. Vui lòng liên hệ Hotline 0775 761 388 để được hỗ trợ đặt lại mật khẩu.',
+            ]);
+        }
+
+        session([
+            'patient_reset_user_id' => $user->id,
+            'patient_reset_identity' => $login,
+            'patient_reset_otp' => $otp,
+            'patient_reset_expires_at' => now()->addMinutes(15),
+            'patient_reset_attempts' => 0,
+        ]);
+
         if ($mailSent) {
             $maskedEmail = substr(explode('@', $recipientEmail)[0], 0, 2) . '***@' . explode('@', $recipientEmail)[1];
             $statusMessage = "Mã xác thực OTP đã được gửi đến hộp thư {$maskedEmail}. Vui lòng kiểm tra email (bao gồm cả thư mục Spam/Rác).";
         } else {
-            $statusMessage = "Mã xác thực OTP đã được tạo cho {$masked}. Mã xác nhận của bạn là: {$otp} (Hiệu lực trong 15 phút).";
+            // Chỉ hiển thị OTP trực tiếp trên môi trường local dev để kiểm thử
+            $statusMessage = "[Local Dev] Mã xác thực OTP của bạn là: {$otp} (Hiệu lực trong 15 phút).";
         }
 
         return redirect()->route('patient.password.reset')->with('status', $statusMessage);
@@ -201,30 +227,53 @@ class PatientAuthController extends Controller
         $savedOtp = session('patient_reset_otp');
         $userId = session('patient_reset_user_id');
         $expiresAt = session('patient_reset_expires_at');
+        $attempts = (int) session('patient_reset_attempts', 0);
 
         if (!$savedOtp || !$userId || !$expiresAt || now()->gt($expiresAt)) {
+            session()->forget(['patient_reset_user_id', 'patient_reset_identity', 'patient_reset_otp', 'patient_reset_expires_at', 'patient_reset_attempts']);
             return redirect()->route('patient.password.request')->withErrors([
                 'login' => 'Phiên xác thực đã hết hạn. Vui lòng thực hiện lại.',
             ]);
         }
 
-        if (trim($request->otp) !== (string) $savedOtp) {
-            return back()->withInput()->withErrors([
-                'otp' => 'Mã xác thực OTP không chính xác. Vui lòng kiểm tra lại.',
+        if ($attempts >= 5) {
+            session()->forget(['patient_reset_user_id', 'patient_reset_identity', 'patient_reset_otp', 'patient_reset_expires_at', 'patient_reset_attempts']);
+            return redirect()->route('patient.password.request')->withErrors([
+                'login' => 'Bạn đã nhập sai mã OTP quá 5 lần. Vui lòng yêu cầu mã mới.',
             ]);
         }
 
-        $user = User::find($userId);
+        if (!hash_equals((string) $savedOtp, trim($request->otp))) {
+            $attempts++;
+            session(['patient_reset_attempts' => $attempts]);
+
+            if ($attempts >= 5) {
+                session()->forget(['patient_reset_user_id', 'patient_reset_identity', 'patient_reset_otp', 'patient_reset_expires_at', 'patient_reset_attempts']);
+                return redirect()->route('patient.password.request')->withErrors([
+                    'login' => 'Bạn đã nhập sai mã OTP quá 5 lần. Vui lòng yêu cầu mã mới.',
+                ]);
+            }
+
+            return back()->withInput()->withErrors([
+                'otp' => "Mã xác thực OTP không chính xác. Còn lại " . (5 - $attempts) . " lần thử.",
+            ]);
+        }
+
+        $user = User::whereHas('role', function ($q) {
+            $q->whereRaw('LOWER(name) = ?', ['patient']);
+        })->find($userId);
+
         if (!$user) {
+            session()->forget(['patient_reset_user_id', 'patient_reset_identity', 'patient_reset_otp', 'patient_reset_expires_at', 'patient_reset_attempts']);
             return redirect()->route('patient.password.request')->withErrors([
-                'login' => 'Không tìm thấy tài khoản người dùng.',
+                'login' => 'Không tìm thấy tài khoản bệnh nhân hợp lệ.',
             ]);
         }
 
         $user->password = Hash::make($request->password);
         $user->save();
 
-        session()->forget(['patient_reset_user_id', 'patient_reset_identity', 'patient_reset_otp', 'patient_reset_expires_at']);
+        session()->forget(['patient_reset_user_id', 'patient_reset_identity', 'patient_reset_otp', 'patient_reset_expires_at', 'patient_reset_attempts']);
 
         return redirect()->route('patient.login')->with('success', 'Đổi mật khẩu thành công! Quý khách vui lòng đăng nhập bằng mật khẩu mới.');
     }

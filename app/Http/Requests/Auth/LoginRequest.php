@@ -50,6 +50,17 @@ class LoginRequest extends FormRequest
             ]);
         }
 
+        $user = Auth::user();
+        if (isset($user->is_active) && ! $user->is_active) {
+            Auth::logout();
+            $this->session()->invalidate();
+            $this->session()->regenerateToken();
+
+            throw ValidationException::withMessages([
+                'email' => 'Tài khoản của bạn đã bị khóa. Vui lòng liên hệ Quản trị viên.',
+            ]);
+        }
+
         RateLimiter::clear($this->throttleKey());
     }
 

@@ -22,7 +22,7 @@ Route::get('/booking', [\App\Http\Controllers\PublicController::class, 'booking'
 Route::post('/dat-lich', [\App\Http\Controllers\PublicController::class, 'storeBooking'])->name('public.booking.store');
 Route::get('/tra-cuu', [\App\Http\Controllers\PublicController::class, 'lookup'])->name('public.lookup');
 
-// Route dọn dẹp cache hệ thống trực tiếp trên Production (View, Route, Config Cache)
+// Route dọn dẹp cache hệ thống (chỉ dành cho Admin)
 Route::get('/clear-cache', function () {
     try {
         \Illuminate\Support\Facades\Artisan::call('view:clear');
@@ -34,40 +34,45 @@ Route::get('/clear-cache', function () {
             'message' => 'Đã dọn dẹp toàn bộ View, Route và Config Cache thành công!',
         ]);
     } catch (\Throwable $e) {
+        \Illuminate\Support\Facades\Log::error('Clear cache failed: ' . $e->getMessage());
         return response()->json([
             'success' => false,
-            'error' => $e->getMessage(),
+            'error' => 'Không thể dọn dẹp cache hệ thống.',
         ], 500);
     }
-});
+})->middleware(['auth', 'role:admin']);
 
-// Route tự động nạp dữ liệu mẫu trực tiếp (Seed Database)
+// Route nạp dữ liệu mẫu (chỉ dành cho Admin và không chạy trên Production)
 Route::get('/seed-database', function () {
+    if (app()->isProduction()) {
+        abort(403, 'Không được phép chạy seed trên môi trường Production.');
+    }
+
     try {
         \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
         return response()->json([
             'success' => true,
-            'message' => 'Đã tự động nạp toàn bộ danh sách Bệnh nhân, Bác sĩ, Lễ tân và Lịch sử khám thành công!',
-            'output' => \Illuminate\Support\Facades\Artisan::output(),
+            'message' => 'Đã tự động nạp toàn bộ dữ liệu mẫu thành công!',
         ]);
     } catch (\Throwable $e) {
+        \Illuminate\Support\Facades\Log::error('Seed database failed: ' . $e->getMessage());
         return response()->json([
             'success' => false,
-            'error' => $e->getMessage(),
+            'error' => 'Lỗi khi nạp dữ liệu mẫu.',
         ], 500);
     }
-});
+})->middleware(['auth', 'role:admin']);
 
 // Patient Auth Routes
 Route::get('/patient/register', [\App\Http\Controllers\PatientAuthController::class, 'showRegister'])->name('patient.register');
-Route::post('/patient/register', [\App\Http\Controllers\PatientAuthController::class, 'register'])->name('patient.register.store');
+Route::post('/patient/register', [\App\Http\Controllers\PatientAuthController::class, 'register'])->middleware('throttle:10,1')->name('patient.register.store');
 Route::get('/patient/login', [\App\Http\Controllers\PatientAuthController::class, 'showLogin'])->name('patient.login');
-Route::post('/patient/login', [\App\Http\Controllers\PatientAuthController::class, 'login'])->name('patient.login.store');
+Route::post('/patient/login', [\App\Http\Controllers\PatientAuthController::class, 'login'])->middleware('throttle:10,1')->name('patient.login.store');
 Route::post('/patient/logout', [\App\Http\Controllers\PatientAuthController::class, 'logout'])->name('patient.logout');
 Route::get('/patient/forgot-password', [\App\Http\Controllers\PatientAuthController::class, 'showForgotPassword'])->name('patient.password.request');
-Route::post('/patient/forgot-password', [\App\Http\Controllers\PatientAuthController::class, 'sendResetOtp'])->name('patient.password.email');
+Route::post('/patient/forgot-password', [\App\Http\Controllers\PatientAuthController::class, 'sendResetOtp'])->middleware('throttle:5,1')->name('patient.password.email');
 Route::get('/patient/reset-password', [\App\Http\Controllers\PatientAuthController::class, 'showResetPassword'])->name('patient.password.reset');
-Route::post('/patient/reset-password', [\App\Http\Controllers\PatientAuthController::class, 'resetPassword'])->name('patient.password.update');
+Route::post('/patient/reset-password', [\App\Http\Controllers\PatientAuthController::class, 'resetPassword'])->middleware('throttle:10,1')->name('patient.password.update');
 
 // Common Auth Routes
 Route::middleware('auth')->group(function () {
@@ -77,8 +82,8 @@ Route::middleware('auth')->group(function () {
     
     // System Notifications
     Route::get('/notifications', [\App\Http\Controllers\System\NotificationController::class, 'index'])->name('notifications.index');
-    Route::patch('/contact-inquiries/{id}/resolve', [\App\Http\Controllers\System\NotificationController::class, 'resolveInquiry'])->name('contact-inquiries.resolve');
-    Route::delete('/contact-inquiries/{id}', [\App\Http\Controllers\System\NotificationController::class, 'destroyInquiry'])->name('contact-inquiries.destroy');
+    Route::patch('/contact-inquiries/{id}/resolve', [\App\Http\Controllers\System\NotificationController::class, 'resolveInquiry'])->middleware('role:admin,receptionist')->name('contact-inquiries.resolve');
+    Route::delete('/contact-inquiries/{id}', [\App\Http\Controllers\System\NotificationController::class, 'destroyInquiry'])->middleware('role:admin,receptionist')->name('contact-inquiries.destroy');
     
     // Redirect /dashboard based on role
     Route::get('/dashboard', function () {

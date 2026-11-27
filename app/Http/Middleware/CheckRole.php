@@ -20,6 +20,17 @@ class CheckRole
         }
 
         $user = auth()->user();
+
+        if (isset($user->is_active) && !$user->is_active) {
+            auth()->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return redirect()->route('patient.login')->withErrors([
+                'login' => 'Tài khoản của bạn đã bị khóa. Vui lòng liên hệ Quản trị viên.',
+            ]);
+        }
+
         $userRole = $user->role ? strtolower(trim($user->role->name)) : null;
         $allowedRoles = array_map('strtolower', array_map('trim', $roles));
 

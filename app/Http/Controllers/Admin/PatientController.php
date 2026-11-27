@@ -44,7 +44,7 @@ class PatientController extends Controller
             'contact_person' => 'nullable|string|max:255',
         ]);
 
-        $patientCode = 'BN' . date('YmdHis');
+        $patientCode = 'BN' . date('YmdHis') . random_int(100, 999);
 
         Patient::create([
             'patient_code' => $patientCode,
@@ -99,6 +99,10 @@ class PatientController extends Controller
 
     public function destroy(Patient $patient)
     {
+        if ($patient->appointments()->exists() || $patient->medicalRecords()->exists() || $patient->invoices()->exists()) {
+            return redirect()->route('admin.patients.index')->with('error', 'Không thể xóa hồ sơ bệnh nhân đã có lịch hẹn, bệnh án hoặc hóa đơn trong hệ thống.');
+        }
+
         $patient->delete();
         return redirect()->route('admin.patients.index')->with('success', 'Đã xóa hồ sơ bệnh nhân!');
     }

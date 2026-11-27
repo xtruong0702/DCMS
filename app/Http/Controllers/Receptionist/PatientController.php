@@ -30,18 +30,23 @@ class PatientController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'phone' => 'required|string|unique:patients',
+            'phone' => 'required|string|max:20|unique:patients',
             'dob' => 'nullable|date',
             'gender' => 'nullable|in:Nam,Nữ,Khác',
+            'job' => 'nullable|string|max:255',
+            'address' => 'nullable|string|max:255',
+            'email' => 'nullable|email|max:255',
+            'allergy_history' => 'nullable|string',
+            'medical_history' => 'nullable|string',
+            'contact_person' => 'nullable|string|max:255',
         ]);
 
-        $data = $request->all();
-        // Tự động sinh mã bệnh nhân: BN + YmdHis
-        $data['patient_code'] = 'BN' . date('YmdHis');
+        // Tự động sinh mã bệnh nhân không trùng lặp
+        $validated['patient_code'] = 'BN' . date('YmdHis') . random_int(100, 999);
 
-        Patient::create($data);
+        Patient::create($validated);
 
         return redirect()->route('receptionist.patients.index')->with('success', 'Thêm bệnh nhân thành công.');
     }
@@ -59,20 +64,30 @@ class PatientController extends Controller
 
     public function update(Request $request, Patient $patient)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'phone' => 'required|string|unique:patients,phone,' . $patient->id,
+            'phone' => 'required|string|max:20|unique:patients,phone,' . $patient->id,
             'dob' => 'nullable|date',
             'gender' => 'nullable|in:Nam,Nữ,Khác',
+            'job' => 'nullable|string|max:255',
+            'address' => 'nullable|string|max:255',
+            'email' => 'nullable|email|max:255',
+            'allergy_history' => 'nullable|string',
+            'medical_history' => 'nullable|string',
+            'contact_person' => 'nullable|string|max:255',
         ]);
 
-        $patient->update($request->all());
+        $patient->update($validated);
 
         return redirect()->route('receptionist.patients.index')->with('success', 'Cập nhật thông tin bệnh nhân thành công.');
     }
 
     public function destroy(Patient $patient)
     {
+        if ($patient->appointments()->exists() || $patient->medicalRecords()->exists() || $patient->invoices()->exists()) {
+            return redirect()->route('receptionist.patients.index')->with('error', 'Không thể xóa hồ sơ bệnh nhân đã có lịch hẹn, bệnh án hoặc hóa đơn trong hệ thống.');
+        }
+
         $patient->delete();
         return redirect()->route('receptionist.patients.index')->with('success', 'Xóa bệnh nhân thành công.');
     }

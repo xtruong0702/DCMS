@@ -14,6 +14,17 @@ use Illuminate\Support\Facades\DB;
 
 class PrescriptionController extends Controller
 {
+    protected function ownsPrescription(?Prescription $prescription): bool
+    {
+        $doctorId = auth()->user()->doctor->id ?? null;
+        if (!$doctorId || !$prescription) {
+            return false;
+        }
+        $prescription->loadMissing('medicalRecord');
+        $record = $prescription->medicalRecord;
+        return $record && (!$record->doctor_id || $record->doctor_id === $doctorId);
+    }
+
     public function index()
     {
         $doctorId = auth()->user()->doctor->id ?? 0;
@@ -75,10 +86,9 @@ class PrescriptionController extends Controller
         $taxable = max(0, $totalAmount - $discount);
 
         $vatSetting = SystemSetting::where('setting_key', 'vat_percentage')->first();
-        $vatRate = ($vatSetting && $vatSetting->setting_value !== '') ? floatval($vatSetting->setting_value) : 10;
-        if ($vatRate <= 0) {
-            $vatRate = 10;
-        }
+        $vatRate = ($vatSetting && $vatSetting->setting_value !== '' && is_numeric($vatSetting->setting_value))
+            ? max(0, floatval($vatSetting->setting_value))
+            : 10;
         $vatAmount = $taxable * ($vatRate / 100);
         $finalAmount = $taxable + $vatAmount;
 
@@ -104,15 +114,22 @@ class PrescriptionController extends Controller
             'instructions' => 'nullable|string',
         ]);
 
+        $prescription = Prescription::with('medicalRecord.patient')->findOrFail($request->prescription_id);
+        if (!$this->ownsPrescription($prescription)) {
+            return back()->with('error', 'Bạn không có quyền kê đơn thuốc cho hồ sơ này.');
+        }
+
         try {
             DB::beginTransaction();
 
             $medicineName = $request->medicine_name;
+            $medicine = null;
 
             if ($request->medicine_id) {
-                $medicine = Medicine::findOrFail($request->medicine_id);
+                $medicine = Medicine::where('id', $request->medicine_id)->lockForUpdate()->firstOrFail();
 
                 if ($medicine->stock_quantity < $request->quantity) {
+                    DB::rollBack();
                     return back()->with('error', 'Thuốc [' . $medicine->name . '] không đủ tồn kho! Tồn hiện tại: ' . $medicine->stock_quantity);
                 }
 
@@ -120,7 +137,6 @@ class PrescriptionController extends Controller
             }
 
             // Kiểm tra cảnh báo Dị ứng thuốc tự động từ hồ sơ bệnh nhân
-            $prescription = Prescription::with('medicalRecord.patient')->find($request->prescription_id);
             $patient = $prescription->medicalRecord->patient ?? null;
             if ($patient && !empty(trim($patient->allergy_history)) && !$request->boolean('force_allergy_override')) {
                 $allergyRaw = mb_strtolower($patient->allergy_history);
@@ -142,12 +158,12 @@ class PrescriptionController extends Controller
                 }
             }
 
-            if ($request->medicine_id && isset($medicine)) {
+            if ($medicine) {
                 $medicine->decrement('stock_quantity', $request->quantity);
             }
 
             PrescriptionDetail::create([
-                'prescription_id' => $request->prescription_id,
+                'prescription_id' => $prescription->id,
                 'medicine_id' => $request->medicine_id,
                 'medicine_name' => $medicineName,
                 'quantity' => $request->quantity,
@@ -159,10 +175,8 @@ class PrescriptionController extends Controller
                 'instructions' => $request->instructions,
             ]);
 
-            $prescription = Prescription::find($request->prescription_id);
-            if ($prescription) {
-                $this->syncUnpaidInvoice($prescription);
-            }
+            $prescription->refresh();
+            $this->syncUnpaidInvoice($prescription);
 
             DB::commit();
 
@@ -178,11 +192,16 @@ class PrescriptionController extends Controller
         try {
             DB::beginTransaction();
 
-            $detail = PrescriptionDetail::findOrFail($id);
-            $prescriptionId = $detail->prescription_id;
+            $detail = PrescriptionDetail::with('prescription.medicalRecord')->findOrFail($id);
+            $prescription = $detail->prescription;
+
+            if (!$this->ownsPrescription($prescription)) {
+                DB::rollBack();
+                return redirect()->back()->with('error', 'Bạn không có quyền xóa thuốc khỏi đơn này.');
+            }
 
             if ($detail->medicine_id) {
-                $medicine = Medicine::find($detail->medicine_id);
+                $medicine = Medicine::where('id', $detail->medicine_id)->lockForUpdate()->first();
                 if ($medicine) {
                     $medicine->increment('stock_quantity', $detail->quantity);
                 }
@@ -190,8 +209,8 @@ class PrescriptionController extends Controller
 
             $detail->delete();
 
-            $prescription = Prescription::find($prescriptionId);
             if ($prescription) {
+                $prescription->refresh();
                 $this->syncUnpaidInvoice($prescription);
             }
 
@@ -211,7 +230,11 @@ class PrescriptionController extends Controller
             'follow_up_date' => 'nullable|date',
         ]);
 
-        $prescription = Prescription::findOrFail($id);
+        $prescription = Prescription::with('medicalRecord')->findOrFail($id);
+        if (!$this->ownsPrescription($prescription)) {
+            return redirect()->back()->with('error', 'Bạn không có quyền cập nhật đơn thuốc này.');
+        }
+
         $prescription->update($request->only(['note', 'follow_up_date']));
 
         return redirect()->back()->with('success', 'Đã lưu thông tin chung của đơn thuốc!');

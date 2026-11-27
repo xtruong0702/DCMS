@@ -38,7 +38,7 @@ class AppointmentController extends Controller
             $patient = Patient::firstOrCreate(
                 ['phone' => trim($request->phone)],
                 [
-                    'patient_code' => 'BN' . date('Ymd') . rand(100, 999),
+                    'patient_code' => 'BN' . date('YmdHis') . random_int(100, 999),
                     'name' => trim($request->name),
                 ]
             );
@@ -162,6 +162,26 @@ class AppointmentController extends Controller
             $updateData['appointment_time'] = $request->appointment_time;
         }
 
+        $targetDoctorId = array_key_exists('doctor_id', $updateData) ? $updateData['doctor_id'] : $appointment->doctor_id;
+        $targetTime = array_key_exists('appointment_time', $updateData) ? \Carbon\Carbon::parse($updateData['appointment_time']) : $appointment->appointment_time;
+
+        if ($targetDoctorId && $targetTime && in_array($request->status, ['pending', 'confirmed', 'waiting', 'in_progress'])) {
+            $conflict = Appointment::where('doctor_id', $targetDoctorId)
+                ->where('id', '!=', $appointment->id)
+                ->whereIn('status', ['pending', 'confirmed', 'waiting', 'in_progress'])
+                ->whereBetween('appointment_time', [
+                    $targetTime->copy()->subMinutes(29),
+                    $targetTime->copy()->addMinutes(29),
+                ])
+                ->exists();
+
+            if ($conflict) {
+                return back()->withInput()->withErrors([
+                    'doctor_id' => 'Bác sĩ này đã có lịch hẹn khác trong khoảng thời gian đã chọn (cách nhau dưới 30 phút).'
+                ]);
+            }
+        }
+
         $appointment->update($updateData);
 
         if ($request->status === 'in_progress' && !$request->has('appointment_time')) {
@@ -173,6 +193,10 @@ class AppointmentController extends Controller
 
     public function checkIn(Request $request, Appointment $appointment)
     {
+        if (!in_array($appointment->status, ['pending', 'confirmed'])) {
+            return redirect()->back()->with('error', 'Chỉ có thể Check-in lịch hẹn đang ở trạng thái Chờ xác nhận hoặc Đã xác nhận.');
+        }
+
         // Khi khách đến phòng khám, lễ tân ấn Check-in
         $appointment->update(['status' => 'waiting']);
         
