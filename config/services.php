@@ -39,4 +39,9 @@ return [
         'api_key' => env('SEPAY_API_KEY'),
     ],
 
+    'gemini' => [
+        'api_key' => env('GEMINI_API_KEY'),
+        'model' => env('GEMINI_MODEL', 'gemini-3.1-flash-lite'),
+    ],
+
 ];

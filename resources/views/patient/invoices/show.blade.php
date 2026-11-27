@@ -154,9 +154,23 @@
                                 Tôi đã chuyển khoản xong
                             </button>
                         </div>
+                    @elseif($invoice->status === 'paid')
+                        <div class="bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-200 p-5 rounded-2xl flex items-start gap-4 shadow-2xs">
+                            <div class="w-12 h-12 rounded-full bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-sm">
+                                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                                </svg>
+                            </div>
+                            <div class="space-y-1">
+                                <h4 class="text-base font-black text-emerald-900">Thanh toán thành công, cảm ơn quý khách!</h4>
+                                <p class="text-xs text-emerald-800 leading-relaxed">
+                                    Hóa đơn <strong class="font-mono">#{{ $invoice->invoice_code }}</strong> ({{ number_format($invoice->final_amount, 0, ',', '.') }} đ) đã được ghi nhận hoàn tất lúc {{ $invoice->updated_at->format('H:i d/m/Y') }}. Cảm ơn quý khách đã tin tưởng {{ $settings['clinic_name'] ?? 'Nha Khoa Smile' }}.
+                                </p>
+                            </div>
+                        </div>
                     @else
-                        <div class="bg-teal-50 border border-teal-100 p-4 rounded-xl text-teal-900 text-xs font-medium">
-                            Cảm ơn bạn đã tin tưởng và sử dụng dịch vụ tại {{ $settings['clinic_name'] ?? 'Nha Khoa Smile' }}.
+                        <div class="bg-rose-50 border border-rose-200 p-4 rounded-xl text-rose-800 text-xs font-medium">
+                            Hóa đơn này đã bị hủy bỏ. Mọi thắc mắc vui lòng liên hệ Hotline {{ $settings['clinic_hotline'] ?? '0775 761 388' }}.
                         </div>
                     @endif
                 </div>

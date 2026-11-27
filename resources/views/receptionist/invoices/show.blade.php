@@ -415,6 +415,48 @@
 
                 <!-- Cột phải: VietQR Code & Thao tác Thu tiền (1/3) -->
                 <div class="space-y-6">
+                    @if($invoice->status === 'paid')
+                        <!-- Khối Thanh Toán Thành Công (ẩn mã QR) -->
+                        <div class="bg-gradient-to-br from-emerald-600 via-[#0D7A68] to-[#084c41] rounded-2xl shadow-sm p-7 text-white text-center border border-emerald-700/60 space-y-4">
+                            <div class="w-16 h-16 rounded-full bg-white/20 backdrop-blur border border-white/30 flex items-center justify-center mx-auto shadow-inner">
+                                <svg class="w-9 h-9 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                                </svg>
+                            </div>
+                            <div class="space-y-1.5">
+                                <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-white/15 rounded-full text-[11px] font-bold uppercase tracking-wider text-emerald-100">
+                                    <span>✓</span> Đã hoàn tất thanh toán
+                                </div>
+                                <h4 class="text-xl font-black text-white tracking-tight pt-1">Thanh toán thành công!</h4>
+                                <p class="text-xs text-emerald-100 leading-relaxed">
+                                    Cảm ơn quý khách đã tin tưởng và sử dụng dịch vụ tại <strong>{{ $settings['clinic_name'] ?? 'Nha Khoa Smile' }}</strong>.
+                                </p>
+                            </div>
+                            <div class="bg-white/10 backdrop-blur rounded-xl p-3.5 text-left space-y-1.5 text-xs border border-white/15">
+                                <div class="flex justify-between">
+                                    <span class="text-emerald-100">Mã hóa đơn:</span>
+                                    <span class="font-mono font-bold text-white">#{{ $invoice->invoice_code }}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-emerald-100">Số tiền đã thu:</span>
+                                    <span class="font-bold text-amber-300">{{ number_format($invoice->final_amount, 0, ',', '.') }} đ</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-emerald-100">Thời gian hoàn tất:</span>
+                                    <span class="font-semibold text-white">{{ $invoice->updated_at->format('H:i • d/m/Y') }}</span>
+                                </div>
+                            </div>
+                            <a href="{{ route('receptionist.invoices.print', $invoice) }}" target="_blank" class="w-full inline-flex items-center justify-center gap-1.5 py-2.5 px-4 bg-white hover:bg-emerald-50 text-[#0D7A68] rounded-xl font-bold text-xs shadow-sm transition">
+                                <span>🖨️ In Hóa Đơn Cho Khách</span>
+                            </a>
+                        </div>
+                    @elseif($invoice->status === 'cancelled')
+                        <div class="bg-rose-50 rounded-2xl p-6 text-center border border-rose-200 space-y-2">
+                            <div class="w-12 h-12 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center mx-auto text-xl font-bold">✕</div>
+                            <h4 class="text-base font-bold text-rose-900">Hóa đơn đã hủy / hoàn trả</h4>
+                            <p class="text-xs text-rose-700">Mã VietQR đã được vô hiệu hóa cho hóa đơn này.</p>
+                        </div>
+                    @else
                     <!-- Khối VietQR -->
                     <div class="bg-gradient-to-br from-[#095246] via-[#0D7A68] to-[#0A4B40] rounded-2xl shadow-sm p-6 text-white text-center border border-teal-800">
                         <div class="inline-flex items-center gap-2 px-3 py-1 bg-white/20 backdrop-blur rounded-full text-xs font-semibold uppercase tracking-wider mb-3">
@@ -462,15 +504,14 @@
                             </div>
                         </div>
 
-                        @if($invoice->status !== 'paid' && $invoice->status !== 'cancelled')
-                            <div class="mt-3 flex items-center justify-center text-xs px-1">
-                                <span class="inline-flex items-center gap-1.5 text-teal-100">
-                                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-                                    Đang tự động chờ xác nhận chuyển khoản VietQR...
-                                </span>
-                            </div>
-                        @endif
+                        <div class="mt-3 flex items-center justify-center text-xs px-1">
+                            <span class="inline-flex items-center gap-1.5 text-teal-100">
+                                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                                Đang tự động chờ xác nhận chuyển khoản VietQR...
+                            </span>
+                        </div>
                     </div>
+                    @endif
 
                     <!-- Thao tác Thu tiền / Cập nhật thanh toán -->
                     @if($invoice->status !== 'paid' && $invoice->status !== 'cancelled')

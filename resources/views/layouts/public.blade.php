@@ -471,6 +471,7 @@
                 });
             });
         </script>
+        <x-dental-ai-chat />
         @stack('scripts')
     </body>
 </html>

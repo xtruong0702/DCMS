@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\PaymentWebhookController;
+use App\Http\Controllers\Api\DentalAiChatController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,4 +21,7 @@ Route::post('/webhooks/payos', [PaymentWebhookController::class, 'handleWebhook'
 
 // API kiểm tra trạng thái thanh toán thời gian thực (cho trang Bệnh nhân & Lễ tân tự động đổi màu)
 Route::get('/invoices/{code}/status', [PaymentWebhookController::class, 'checkStatus'])->name('api.invoices.status');
+
+// API Trợ lý AI Tư vấn Nha khoa 24/7
+Route::post('/ai-assistant/chat', [DentalAiChatController::class, 'chat'])->middleware('throttle:25,1')->name('api.ai.chat');
 
