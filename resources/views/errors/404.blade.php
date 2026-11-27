@@ -6,10 +6,11 @@
         <title>404 Không tìm thấy trang - Nha Khoa Smile</title>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700;800&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,600;0,700;1,600&family=Inter:wght@400;500;600&subset=vietnamese&display=swap" rel="stylesheet">
         @vite(['resources/css/app.css'])
         <style>
-            html, body, h1, h2, p, a { font-family: 'Be Vietnam Pro', sans-serif !important; }
+            html, body, p, a { font-family: 'Inter', sans-serif !important; -webkit-font-smoothing: antialiased; }
+            h1, h2 { font-family: 'Be Vietnam Pro', 'Inter', sans-serif !important; }
         </style>
     </head>
     <body class="antialiased bg-gray-50 flex items-center justify-center min-h-screen text-slate-800">

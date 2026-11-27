@@ -198,7 +198,6 @@ Route::middleware(['auth', 'role:doctor'])->prefix('doctor')->name('doctor.')->g
 Route::middleware(['auth', 'role:patient'])->prefix('patient')->name('patient.')->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\PatientController::class, 'dashboard'])->name('dashboard');
     Route::get('/profile', [\App\Http\Controllers\PatientController::class, 'profile'])->name('profile');
-    Route::put('/profile', [\App\Http\Controllers\PatientController::class, 'updateProfile'])->name('profile.update');
     Route::get('/history', [\App\Http\Controllers\PatientController::class, 'history'])->name('history');
     Route::get('/appointments', [\App\Http\Controllers\PatientController::class, 'history'])->name('appointments');
     Route::patch('/appointments/{id}/cancel', [\App\Http\Controllers\PatientController::class, 'cancelAppointment'])->name('appointments.cancel');

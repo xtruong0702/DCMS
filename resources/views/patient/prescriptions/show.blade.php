@@ -45,7 +45,7 @@
                     <div>
                         <h2 class="font-black text-2xl tracking-tight text-slate-800 uppercase">Nha Khoa Smile</h2>
                         <p class="text-xs text-slate-500 font-medium mt-0.5">123 Nguyễn Văn Cừ, Quận 5, TP.HCM</p>
-                        <p class="text-xs text-slate-500 font-medium">1900 1234 - nhakhoasmile.com</p>
+                        <p class="text-xs text-slate-500 font-medium">0775 761 388 - nhakhoasmile.com</p>
                     </div>
                 </div>
                 <div class="md:text-right flex flex-col justify-center">

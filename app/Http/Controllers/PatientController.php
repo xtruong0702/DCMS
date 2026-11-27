@@ -62,24 +62,7 @@ class PatientController extends Controller
 
     public function updateProfile(Request $request)
     {
-        $patient = $this->getPatient();
-        
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'gender' => 'nullable|string',
-            'dob' => 'nullable|date',
-            'job' => 'nullable|string|max:255',
-            'address' => 'nullable|string|max:500',
-            'email' => 'nullable|email',
-            'allergy_history' => 'nullable|string',
-            'medical_history' => 'nullable|string',
-            'contact_person' => 'nullable|string|max:255',
-        ]);
-
-        $patient->update($request->except(['_token', '_method']));
-        Auth::user()->update(['name' => $request->name, 'email' => $request->email]);
-
-        return redirect()->route('patient.profile')->with('success', 'Cập nhật hồ sơ thành công!');
+        abort(403, 'Hồ sơ bệnh nhân chỉ có Bác sĩ hoặc Lễ tân mới được phép chỉnh sửa.');
     }
 
     public function history()

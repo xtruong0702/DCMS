@@ -1,112 +1,57 @@
-@extends('layouts.public')
-
-@section('title', 'Niềng răng thẩm mỹ - Nha Khoa Smile')
-
-@section('content')
-<div class="bg-slate-50 py-16">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <!-- Breadcrumbs -->
-        <nav class="flex text-sm text-gray-500 mb-8">
-            <ol class="flex items-center space-x-2">
-                <li><a href="{{ route('home') }}" class="hover:text-blue-600">Trang chủ</a></li>
-                <li><span class="mx-2">/</span></li>
-                <li><a href="{{ route('public.services') }}" class="hover:text-blue-600">Dịch vụ</a></li>
-                <li><span class="mx-2">/</span></li>
-                <li class="font-semibold text-gray-800">Niềng răng thẩm mỹ</li>
-            </ol>
-        </nav>
-
-        <!-- Main Content Article -->
-        <article class="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 md:p-12 prose prose-lg prose-blue max-w-none">
-            <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-8 uppercase">Niềng răng thẩm mỹ</h1>
-            
-            <img src="https://images.unsplash.com/photo-1598256989800-fea5f6c8d0bd?auto=format&fit=crop&q=80&w=1200" alt="Niềng răng thẩm mỹ" class="w-full h-80 object-cover rounded-2xl mb-10 shadow-md">
-
-            <h2 class="text-2xl font-bold text-slate-800 mt-10 mb-4 uppercase">Niềng răng thẩm mỹ Là Gì?</h2>
-            <p class="text-gray-700 leading-relaxed mb-6">Giải pháp chỉnh nha hoàn hảo, mang lại nụ cười tự tin và hàm răng đều đặn.</p>
-            <p class="text-gray-700 leading-relaxed mb-6">Nha Khoa Smile tự hào áp dụng các công nghệ tiên tiến nhất trong nha khoa để mang đến dịch vụ <strong>Niềng răng thẩm mỹ</strong> an toàn, nhanh chóng và đạt hiệu quả thẩm mỹ cao nhất cho mọi khách hàng. Đội ngũ y bác sĩ giàu kinh nghiệm sẽ trực tiếp thăm khám và lên phác đồ điều trị chuyên biệt cho từng trường hợp.</p>
-
-            <h2 class="text-2xl font-bold text-slate-800 mt-10 mb-4 uppercase">Quy Trình Thực Hiện Tại Nha Khoa Smile</h2>
-            <ol class="list-decimal pl-6 mb-8 text-gray-700 space-y-2">
-                <li>Thăm khám tổng quát và chụp phim X-quang kỹ thuật số.</li>
-                <li>Bác sĩ chuyên khoa phân tích và lên phác đồ điều trị chi tiết.</li>
-                <li>Tiến hành vệ sinh răng miệng và vô cảm (gây tê) đảm bảo không đau.</li>
-                <li>Thực hiện quy trình điều trị chuẩn y khoa với thiết bị vô trùng tuyệt đối.</li>
-                <li>Kiểm tra sau điều trị, hướng dẫn chăm sóc tại nhà và hẹn lịch tái khám.</li>
-            </ol>
-
-            <h2 class="text-2xl font-bold text-slate-800 mt-10 mb-4 uppercase">Vì Sao Chọn Nha Khoa Smile?</h2>
-            <ul class="list-disc pl-6 mb-12 text-gray-700 space-y-2">
-                <li>Đội ngũ bác sĩ chuyên khoa răng hàm mặt giỏi, trên 10 năm kinh nghiệm.</li>
-                <li>Hệ thống trang thiết bị, máy móc nhập khẩu nguyên chiếc từ Châu Âu.</li>
-                <li>Phòng khám vô trùng đạt tiêu chuẩn khắt khe của Bộ Y Tế.</li>
-                <li>Chi phí minh bạch, cam kết không phát sinh trong suốt quá trình điều trị.</li>
-                <li>Chế độ bảo hành chính hãng và chăm sóc khách hàng trọn đời.</li>
-            </ul>
-
-            <!-- Booking Section inside Article -->
-            <div class="bg-blue-600 rounded-2xl p-8 mt-12 text-white shadow-xl" id="dat-lich">
-                <div class="text-center mb-8">
-                    <h3 class="text-2xl md:text-3xl font-bold mb-2 uppercase">Đăng Ký Tư Vấn Miễn Phí Từ Chuyên Gia</h3>
-                    <p class="text-blue-100">Hãy để lại thông tin, bác sĩ chuyên khoa của chúng tôi sẽ liên hệ lại ngay!</p>
-                </div>
-                
-                <form action="{{ route('public.booking.store') }}" method="POST" class="max-w-2xl mx-auto bg-white p-6 md:p-8 rounded-xl shadow-lg">
-                    @csrf
-                    <!-- Pre-select Service ID if passed -->
-                    @if(isset($targetService))
-                        <input type="hidden" name="service_id" value="{{ $targetService->id }}">
-                    @endif
-                    
-                    <div class="space-y-5">
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">Họ và tên *</label>
-                            <input type="text" name="name" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-gray-800" placeholder="Nhập tên của bạn">
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">Số điện thoại *</label>
-                            <input type="tel" name="phone" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-gray-800" placeholder="Nhập số điện thoại">
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">Dịch vụ bạn quan tâm *</label>
-                            <select name="service_id_display" disabled class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 text-gray-600">
-                                <option value="">{{ isset($targetService) ? $targetService->name : 'Dịch vụ' }}</option>
-                            </select>
-                            <p class="text-xs text-gray-500 mt-1">Dịch vụ đã được chọn tự động.</p>
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">Chọn Bác sĩ khám (Tùy chọn)</label>
-                            <select name="doctor_id" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-gray-800">
-                                <option value="">-- Để phòng khám sắp xếp Bác sĩ chuyên khoa --</option>
-                                @if(isset($doctors))
-                                    @foreach($doctors as $doc)
-                                        <option value="{{ $doc->id }}">BS. {{ $doc->user->name ?? '' }} ({{ $doc->specialty ?: 'Chuyên khoa RHM' }})</option>
-                                    @endforeach
-                                @endif
-                            </select>
-                        </div>
-
-                        <!-- Lịch hẹn dự kiến -->
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">Thời gian dự kiến (Từ ngày mai) *</label>
-                            <input type="datetime-local" name="appointment_time" min="{{ \Carbon\Carbon::tomorrow()->format('Y-m-d\T00:00') }}" value="{{ old('appointment_time', \Carbon\Carbon::tomorrow()->setTime(9, 0)->format('Y-m-d\TH:i')) }}" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-gray-800">
-                            <p class="text-xs text-amber-600 mt-1">Lưu ý: Chỉ nhận đặt lịch từ ngày hôm sau trở đi. Nếu khám trong ngày, quý khách không cần đặt lịch mà vui lòng đến trực tiếp phòng khám.</p>
-                            @error('appointment_time') <span class="text-red-500 text-xs font-medium block mt-1">{{ $message }}</span> @enderror
-                        </div>
-                        
-                        <div class="pt-4">
-                            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-full shadow-lg transform hover:-translate-y-1 transition-all duration-300 text-lg">
-                                Xác Nhận Đăng Ký
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            
-        </article>
-    </div>
-</div>
-@endsection
+@include('public.services._layout', [
+    'pageTitle' => 'Niềng Răng & Chỉnh Nha Chuyên Sâu',
+    'badge' => 'CHUYÊN KHOA CHỈNH NHA',
+    'heroTitle' => 'NIỀNG RĂNG & CHỈNH NHA',
+    'heroHighlight' => 'Chuẩn Khớp Cắn Sinh Học & Bảng Giá Chi Tiết',
+    'heroDesc' => 'Chỉnh nha bằng mắc cài tự buộc hoặc khay trong suốt Invisalign giúp sắp đều răng khấp khểnh, cải thiện hô – móm – lệch khớp cắn, bảo tồn 100% răng thật và hài hòa đường nét khuôn mặt.',
+    'highlights' => [
+        ['icon' => '💎', 'title' => 'Mô phỏng 3D ClinCheck', 'sub' => 'Xem trước kết quả dịch chuyển răng'],
+        ['icon' => '💳', 'title' => 'Trả góp 0% lãi suất', 'sub' => 'Chia nhỏ chi phí theo tháng'],
+        ['icon' => '👩‍⚕️', 'title' => 'BS. Chuyên khoa Chỉnh nha', 'sub' => 'Theo dõi sát từng giai đoạn'],
+    ],
+    'prosConsTitle' => 'Đánh Giá Ưu & Nhược Điểm Của Niềng Răng',
+    'pros' => [
+        ['title' => 'Bảo tồn 100% răng thật tự nhiên', 'desc' => 'Dịch chuyển răng sinh học về đúng vị trí khớp cắn chuẩn mà không cần mài men răng.'],
+        ['title' => 'Cải thiện thẩm mỹ khuôn mặt rõ rệt', 'desc' => 'Giúp góc nghiêng hài hòa, đường cười cân đối và khắc phục tình trạng hô, móm, lệch mặt.'],
+        ['title' => 'Bảo vệ sức khỏe ăn nhai lâu dài', 'desc' => 'Khớp cắn chuẩn giảm áp lực lên khớp thái dương hàm, dễ vệ sinh và hạn chế sâu răng, viêm nướu.'],
+        ['title' => 'Đa dạng phương pháp linh hoạt', 'desc' => 'Tùy chọn mắc cài kim loại, mắc cài sứ thẩm mỹ hoặc khay trong suốt Invisalign dễ tháo lắp.'],
+    ],
+    'cons' => [
+        ['title' => 'Cần thời gian kiên trì', 'desc' => 'Lộ trình chỉnh nha thường kéo dài từ 12–24 tháng tùy mức độ sai lệch khớp cắn.'],
+        ['title' => 'Cần tái khám định kỳ đúng hẹn', 'desc' => 'Tái khám mỗi 4–6 tuần để bác sĩ điều chỉnh lực kéo và kiểm soát hướng dịch chuyển răng.'],
+        ['title' => 'Chú ý vệ sinh răng miệng kỹ hơn', 'desc' => 'Khi đeo mắc cài cần sử dụng bàn chải kẽ và máy tăm nước để làm sạch mảng bám quanh mắc cài.'],
+        ['title' => 'Cần đeo hàm duy trì sau tháo niềng', 'desc' => 'Đeo hàm duy trì theo hướng dẫn giúp ổn định xương ổ răng và tránh răng chạy lại vị trí cũ.'],
+    ],
+    'whoTitle' => 'Ai Nên Thực Hiện Niềng Răng — Chỉnh Nha?',
+    'whoCards' => [
+        ['icon' => '😬', 'title' => 'Răng Khấp Khểnh, Chen Chúc', 'desc' => 'Răng mọc lệch lạc, chồng chéo gây khó vệ sinh và mất thẩm mỹ khi cười nói.'],
+        ['icon' => '📐', 'title' => 'Răng Hô (Vẩu) Hoặc Móm', 'desc' => 'Sai lệch tương quan hai hàm ảnh hưởng góc nghiêng khuôn mặt và khả năng cắn xé thức ăn.'],
+        ['icon' => '✨', 'title' => 'Răng Thưa, Khe Hở Lớn', 'desc' => 'Các kẽ răng thưa rộng dễ giắt thức ăn, muốn đóng kín kẽ mà vẫn giữ nguyên răng thật.'],
+        ['icon' => '🧒', 'title' => 'Trẻ Em Đang Thay Răng', 'desc' => 'Chỉnh nha tiền chỉnh nha (7–12 tuổi) giúp định hướng xương hàm phát triển cân đối từ sớm.'],
+    ],
+    'criteriaTitle' => 'Tiêu Chí Lựa Chọn Phương Pháp Niềng Răng',
+    'criteria' => [
+        ['title' => 'Mức Độ Sai Lệch Khớp Cắn', 'desc' => 'Đánh giá trên phim Cephalometric & CT 3D để chọn mắc cài hoặc khay trong suốt phù hợp.', 'tag' => 'Chẩn đoán chuẩn'],
+        ['title' => 'Nhu Cầu Thẩm Mỹ Giao Tiếp', 'desc' => 'Khay Invisalign hoặc mắc cài sứ giúp người đối diện khó nhận ra bạn đang niềng răng.', 'tag' => 'Tự tin giao tiếp'],
+        ['title' => 'Bác Sĩ Lập Phác Đồ Trực Tiếp', 'desc' => '100% ca niềng do ThS.BS chuyên khoa Chỉnh nha trực tiếp thăm khám và theo dõi.', 'tag' => 'An toàn tủy & xương'],
+        ['title' => 'Hợp Đồng Cam Kết Lộ Trình', 'desc' => 'Minh bạch thời gian dự kiến, tổng chi phí trọn gói và kết quả khớp cắn sau tháo niềng.', 'tag' => 'Rõ ràng minh bạch'],
+        ['title' => 'Chính Sách Trả Góp Linh Hoạt', 'desc' => 'Chỉ cần thanh toán trước 20–30%, phần còn lại chia đều hàng tháng 0% lãi suất.', 'tag' => 'Trả góp 0%'],
+    ],
+    'processTitle' => 'Quy Trình Niềng Răng 6 Bước Chuẩn Y Khoa',
+    'steps' => [
+        ['title' => 'Khám & Chụp Phim Panorama / Cephalo', 'desc' => 'Thu thập đầy đủ dữ liệu xương hàm, chụp ảnh trong miệng – ngoài mặt và scan dấu hàm 3D.'],
+        ['title' => 'Lập Phác Đồ & Xem Trước Kết Quả 3D', 'desc' => 'Bác sĩ phân tích hướng dịch chuyển từng răng, tư vấn loại khí cụ và ký hợp đồng cam kết.'],
+        ['title' => 'Vệ Sinh & Điều Trị Tổng Quát', 'desc' => 'Cạo vôi răng, trám răng sâu hoặc xử lý viêm nướu trước khi gắn khí cụ chỉnh nha.'],
+        ['title' => 'Gắn Mắc Cài Hoặc Giao Khay Invisalign', 'desc' => 'Gắn mắc cài chuẩn vị trí hoặc bàn giao bộ khay trong suốt kèm hướng dẫn đeo & vệ sinh chi tiết.'],
+        ['title' => 'Tái Khám Siết Răng / Đổi Khay Định Kỳ', 'desc' => 'Theo dõi tiến độ mỗi 4–6 tuần trên hồ sơ điện tử DCMS, đảm bảo răng dịch chuyển đúng kế hoạch.'],
+        ['title' => 'Tháo Niềng & Đeo Hàm Duy Trì', 'desc' => 'Đánh bóng men răng, bàn giao hàm duy trì trong suốt và hẹn lịch kiểm tra định kỳ miễn phí.'],
+    ],
+    'priceTitle' => 'Bảng Giá Niềng Răng & Invisalign Niêm Yết',
+    'priceRows' => [
+        ['name' => 'Niềng răng mắc cài kim loại tiêu chuẩn', 'desc' => 'Hiệu quả cao, tiết kiệm chi phí, phù hợp học sinh – sinh viên', 'warranty' => 'Cam kết phác đồ', 'price' => '26.000.000 đ / gói'],
+        ['name' => 'Niềng răng mắc cài kim loại tự buộc', 'desc' => 'Giảm ma sát, rút ngắn thời gian niềng 3–6 tháng', 'warranty' => 'Cam kết phác đồ', 'price' => '32.000.000 đ / gói', 'badge' => 'Phổ biến'],
+        ['name' => 'Niềng răng mắc cài sứ tự buộc', 'desc' => 'Mắc cài màu trùng răng tự nhiên, tăng tính thẩm mỹ', 'warranty' => 'Cam kết phác đồ', 'price' => '42.000.000 đ / gói'],
+        ['name' => 'Niềng răng trong suốt Invisalign Lite', 'desc' => 'Chính hãng Hoa Kỳ, dành cho các ca lệch lạc nhẹ – trung bình', 'warranty' => 'Chính hãng Mỹ', 'price' => '68.000.000 đ / gói'],
+        ['name' => 'Niềng răng Invisalign Comprehensive', 'desc' => 'Toàn diện mọi mức độ sai lệch, mô phỏng 3D ClinCheck', 'warranty' => 'Chính hãng Mỹ', 'price' => '104.000.000 đ / gói', 'badge' => 'Cao cấp nhất', 'featured' => true],
+    ],
+])

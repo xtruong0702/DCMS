@@ -1,112 +1,55 @@
-@extends('layouts.public')
-
-@section('title', 'Tẩy trắng răng - Nha Khoa Smile')
-
-@section('content')
-<div class="bg-slate-50 py-16">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <!-- Breadcrumbs -->
-        <nav class="flex text-sm text-gray-500 mb-8">
-            <ol class="flex items-center space-x-2">
-                <li><a href="{{ route('home') }}" class="hover:text-blue-600">Trang chủ</a></li>
-                <li><span class="mx-2">/</span></li>
-                <li><a href="{{ route('public.services') }}" class="hover:text-blue-600">Dịch vụ</a></li>
-                <li><span class="mx-2">/</span></li>
-                <li class="font-semibold text-gray-800">Tẩy trắng răng</li>
-            </ol>
-        </nav>
-
-        <!-- Main Content Article -->
-        <article class="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 md:p-12 prose prose-lg prose-blue max-w-none">
-            <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-8 uppercase">Tẩy trắng răng</h1>
-            
-            <img src="https://images.unsplash.com/photo-1606811841689-23dfddce3e95?auto=format&fit=crop&q=80&w=1200" alt="Tẩy trắng răng" class="w-full h-80 object-cover rounded-2xl mb-10 shadow-md">
-
-            <h2 class="text-2xl font-bold text-slate-800 mt-10 mb-4 uppercase">Tẩy trắng răng Là Gì?</h2>
-            <p class="text-gray-700 leading-relaxed mb-6">Lấy lại nụ cười trắng sáng rạng rỡ chỉ sau 60 phút với công nghệ tẩy trắng răng Laser.</p>
-            <p class="text-gray-700 leading-relaxed mb-6">Nha Khoa Smile tự hào áp dụng các công nghệ tiên tiến nhất trong nha khoa để mang đến dịch vụ <strong>Tẩy trắng răng</strong> an toàn, nhanh chóng và đạt hiệu quả thẩm mỹ cao nhất cho mọi khách hàng. Đội ngũ y bác sĩ giàu kinh nghiệm sẽ trực tiếp thăm khám và lên phác đồ điều trị chuyên biệt cho từng trường hợp.</p>
-
-            <h2 class="text-2xl font-bold text-slate-800 mt-10 mb-4 uppercase">Quy Trình Thực Hiện Tại Nha Khoa Smile</h2>
-            <ol class="list-decimal pl-6 mb-8 text-gray-700 space-y-2">
-                <li>Thăm khám tổng quát và chụp phim X-quang kỹ thuật số.</li>
-                <li>Bác sĩ chuyên khoa phân tích và lên phác đồ điều trị chi tiết.</li>
-                <li>Tiến hành vệ sinh răng miệng và vô cảm (gây tê) đảm bảo không đau.</li>
-                <li>Thực hiện quy trình điều trị chuẩn y khoa với thiết bị vô trùng tuyệt đối.</li>
-                <li>Kiểm tra sau điều trị, hướng dẫn chăm sóc tại nhà và hẹn lịch tái khám.</li>
-            </ol>
-
-            <h2 class="text-2xl font-bold text-slate-800 mt-10 mb-4 uppercase">Vì Sao Chọn Nha Khoa Smile?</h2>
-            <ul class="list-disc pl-6 mb-12 text-gray-700 space-y-2">
-                <li>Đội ngũ bác sĩ chuyên khoa răng hàm mặt giỏi, trên 10 năm kinh nghiệm.</li>
-                <li>Hệ thống trang thiết bị, máy móc nhập khẩu nguyên chiếc từ Châu Âu.</li>
-                <li>Phòng khám vô trùng đạt tiêu chuẩn khắt khe của Bộ Y Tế.</li>
-                <li>Chi phí minh bạch, cam kết không phát sinh trong suốt quá trình điều trị.</li>
-                <li>Chế độ bảo hành chính hãng và chăm sóc khách hàng trọn đời.</li>
-            </ul>
-
-            <!-- Booking Section inside Article -->
-            <div class="bg-blue-600 rounded-2xl p-8 mt-12 text-white shadow-xl" id="dat-lich">
-                <div class="text-center mb-8">
-                    <h3 class="text-2xl md:text-3xl font-bold mb-2 uppercase">Đăng Ký Tư Vấn Miễn Phí Từ Chuyên Gia</h3>
-                    <p class="text-blue-100">Hãy để lại thông tin, bác sĩ chuyên khoa của chúng tôi sẽ liên hệ lại ngay!</p>
-                </div>
-                
-                <form action="{{ route('public.booking.store') }}" method="POST" class="max-w-2xl mx-auto bg-white p-6 md:p-8 rounded-xl shadow-lg">
-                    @csrf
-                    <!-- Pre-select Service ID if passed -->
-                    @if(isset($targetService))
-                        <input type="hidden" name="service_id" value="{{ $targetService->id }}">
-                    @endif
-                    
-                    <div class="space-y-5">
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">Họ và tên *</label>
-                            <input type="text" name="name" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-gray-800" placeholder="Nhập tên của bạn">
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">Số điện thoại *</label>
-                            <input type="tel" name="phone" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-gray-800" placeholder="Nhập số điện thoại">
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">Dịch vụ bạn quan tâm *</label>
-                            <select name="service_id_display" disabled class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 text-gray-600">
-                                <option value="">{{ isset($targetService) ? $targetService->name : 'Dịch vụ' }}</option>
-                            </select>
-                            <p class="text-xs text-gray-500 mt-1">Dịch vụ đã được chọn tự động.</p>
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">Chọn Bác sĩ khám (Tùy chọn)</label>
-                            <select name="doctor_id" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-gray-800">
-                                <option value="">-- Để phòng khám sắp xếp Bác sĩ chuyên khoa --</option>
-                                @if(isset($doctors))
-                                    @foreach($doctors as $doc)
-                                        <option value="{{ $doc->id }}">BS. {{ $doc->user->name ?? '' }} ({{ $doc->specialty ?: 'Chuyên khoa RHM' }})</option>
-                                    @endforeach
-                                @endif
-                            </select>
-                        </div>
-
-                        <!-- Lịch hẹn dự kiến -->
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">Thời gian dự kiến (Từ ngày mai) *</label>
-                            <input type="datetime-local" name="appointment_time" min="{{ \Carbon\Carbon::tomorrow()->format('Y-m-d\T00:00') }}" value="{{ old('appointment_time', \Carbon\Carbon::tomorrow()->setTime(9, 0)->format('Y-m-d\TH:i')) }}" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-gray-800">
-                            <p class="text-xs text-amber-600 mt-1">Lưu ý: Chỉ nhận đặt lịch từ ngày hôm sau trở đi. Nếu khám trong ngày, quý khách không cần đặt lịch mà vui lòng đến trực tiếp phòng khám.</p>
-                            @error('appointment_time') <span class="text-red-500 text-xs font-medium block mt-1">{{ $message }}</span> @enderror
-                        </div>
-                        
-                        <div class="pt-4">
-                            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-full shadow-lg transform hover:-translate-y-1 transition-all duration-300 text-lg">
-                                Xác Nhận Đăng Ký
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            
-        </article>
-    </div>
-</div>
-@endsection
+@include('public.services._layout', [
+    'pageTitle' => 'Tẩy Trắng Răng Laser Whitening',
+    'badge' => 'THẨM MỸ NỤ CƯỜI NHANH CHÓNG',
+    'heroTitle' => 'TẨY TRẮNG RĂNG LASER',
+    'heroHighlight' => 'Bật 3–5 Tone Trong 45 Phút & Bảng Giá',
+    'heroDesc' => 'Công nghệ tẩy trắng ánh sáng lạnh Laser Whitening hoạt hóa gel làm trắng chính hãng dịu nhẹ, giúp đánh bật vết ố vàng thực phẩm mà không làm mòn men răng hay gây ê buốt.',
+    'highlights' => [
+        ['icon' => '⚡', 'title' => 'Chỉ 45 phút tại ghế', 'sub' => 'Trắng sáng ngay sau 1 lần hẹn'],
+        ['icon' => '🛡️', 'title' => 'An toàn men răng', 'sub' => 'Cách ly nướu kỹ lưỡng'],
+        ['icon' => '✨', 'title' => 'Hiệu quả 2–3 năm', 'sub' => 'Tự nhiên, không trắng đục'],
+    ],
+    'prosConsTitle' => 'Ưu & Lưu Ý Khi Tẩy Trắng Răng Laser',
+    'pros' => [
+        ['title' => 'Hiệu quả tức thì sau 1 lần hẹn', 'desc' => 'Bật 3–5 tone màu trên bảng so màu Vita chỉ sau 45 phút thực hiện tại phòng khám.'],
+        ['title' => 'Không gây hại cấu trúc men răng', 'desc' => 'Ánh sáng lạnh sinh học kết hợp thuốc tẩy pH trung tính bảo vệ men răng và bổ sung khoáng chất chống ê.'],
+        ['title' => 'Cách ly bảo vệ môi và nướu 100%', 'desc' => 'Bác sĩ bôi gel bảo vệ nướu chuyên dụng trước khi chiếu đèn, không gây bỏng rát mô mềm.'],
+        ['title' => 'Chi phí hợp lý, tiết kiệm thời gian', 'desc' => 'Giải pháp làm sáng nụ cười nhanh gọn trước các dịp quan trọng mà không cần xâm lấn răng thật.'],
+    ],
+    'cons' => [
+        ['title' => 'Có thể nhạy cảm nhẹ 24 giờ đầu', 'desc' => 'Một số người có men răng mỏng sẽ hơi ê thoáng qua khi uống nước quá lạnh và tự hết sau 1 ngày.'],
+        ['title' => 'Không tác dụng lên răng sứ / miếng trám', 'desc' => 'Thuốc tẩy chỉ làm trắng mô răng thật; miếng trám cũ hoặc mão sứ không đổi màu theo.'],
+        ['title' => 'Cần kiêng thực phẩm sậm màu 48 giờ', 'desc' => 'Tránh cà phê, trà đặc, rượu vang đỏ, thuốc lá trong 2 ngày đầu để giữ màu trắng bền nhất.'],
+        ['title' => 'Không khuyến khích cho phụ nữ mang thai', 'desc' => 'Phụ nữ mang thai, cho con bú hoặc trẻ dưới 16 tuổi nên trì hoãn tẩy trắng hóa học.'],
+    ],
+    'whoTitle' => 'Ai Nên Tẩy Trắng Răng Laser?',
+    'whoCards' => [
+        ['icon' => '☕', 'title' => 'Răng Ố Vàng Do Thực Phẩm', 'desc' => 'Thường xuyên uống cà phê, trà, nước ngọt có màu hoặc hút thuốc lá làm xỉn màu răng.'],
+        ['icon' => '📸', 'title' => 'Chuẩn Bị Sự Kiện Quan Trọng', 'desc' => 'Cưới hỏi, chụp ảnh, phỏng vấn hay gặp gỡ đối tác cần nụ cười sáng rạng rỡ nhanh chóng.'],
+        ['icon' => '🦷', 'title' => 'Răng Xỉn Màu Theo Tuổi Tác', 'desc' => 'Men răng ngả vàng tự nhiên theo thời gian muốn lấy lại độ sáng tươi tắn.'],
+        ['icon' => '✨', 'title' => 'Răng Đều Nhưng Chưa Đủ Sáng', 'desc' => 'Form răng vốn đã đều đẹp, chỉ cần nâng tone màu mà không muốn bọc răng sứ.'],
+    ],
+    'criteriaTitle' => '5 Tiêu Chí Tẩy Trắng Răng An Toàn',
+    'criteria' => [
+        ['title' => 'Khám Răng Trước Khi Tẩy', 'desc' => 'Kiểm tra sâu răng, mòn cổ răng hay viêm nướu để xử lý trước khi đặt thuốc tẩy.', 'tag' => 'Không ê buốt'],
+        ['title' => 'Thuốc Tẩy Chính Hãng', 'desc' => 'Sử dụng gel tẩy nồng độ chuẩn y khoa nhập khẩu Mỹ/Úc có kiểm định an toàn.', 'tag' => 'Chuẩn FDA'],
+        ['title' => 'Cạo Vôi Răng Làm Sạch Trước', 'desc' => 'Loại bỏ sạch mảng bám và cao răng giúp thuốc thẩm thấu đều trên toàn bộ bề mặt răng.', 'tag' => 'Trắng đều màu'],
+        ['title' => 'Cách Ly Nướu & Bảo Vệ Mắt', 'desc' => 'Đeo kính lọc tia UV và che chắn nướu kỹ lưỡng trong suốt quá trình chiếu đèn.', 'tag' => 'An toàn 100%'],
+        ['title' => 'Bôi Gel Dưỡng Khoáng Sau Tẩy', 'desc' => 'Tái khoáng men răng bằng gel chứa Fluor/CPP-ACP giúp răng chắc khỏe và giảm nhạy cảm.', 'tag' => 'Bảo vệ men'],
+    ],
+    'processTitle' => 'Quy Trình Tẩy Trắng Răng 6 Bước Chuẩn Y Khoa',
+    'steps' => [
+        ['title' => 'Thăm Khám & So Màu Răng Ban Đầu', 'desc' => 'Bác sĩ kiểm tra tình trạng men răng, nướu và ghi nhận tone màu răng hiện tại bằng bảng màu Vita.'],
+        ['title' => 'Vệ Sinh & Đánh Bóng Bề Mặt Răng', 'desc' => 'Làm sạch mảng bám để bề mặt răng thông thoáng, tăng hiệu quả tiếp xúc với gel làm trắng.'],
+        ['title' => 'Cách Ly Môi & Phủ Gel Bảo Vệ Nướu', 'desc' => 'Đặt banh miệng êm ái, thoa lớp bảo vệ viền nướu và đeo kính chắn ánh sáng cho khách hàng.'],
+        ['title' => 'Thoa Gel Tẩy & Chiếu Đèn Laser Lạnh', 'desc' => 'Thực hiện 2–3 chu kỳ chiếu đèn ánh sáng lạnh (mỗi chu kỳ 12–15 phút) nhẹ nhàng, thư giãn.'],
+        ['title' => 'Làm Sạch & Bôi Gel Tái Khoáng Chống Ê', 'desc' => 'Loại bỏ hoàn toàn thuốc tẩy, bôi gel dưỡng men răng giúp giảm ê buốt và tăng độ bóng.'],
+        ['title' => 'So Màu Sau Tẩy & Hướng Dẫn Chăm Sóc', 'desc' => 'Đối chiếu kết quả bật tone trực tiếp và hướng dẫn chế độ ăn uống giữ màu trắng bền lâu.'],
+    ],
+    'priceTitle' => 'Bảng Giá Tẩy Trắng Răng Niêm Yết',
+    'priceRows' => [
+        ['name' => 'Tẩy trắng răng tại nhà (Kèm máng cá nhân)', 'desc' => 'Lấy dấu ép máng vừa khít + 2 ống thuốc tẩy chính hãng', 'warranty' => 'Hướng dẫn 1:1', 'price' => '1.200.000 đ / bộ'],
+        ['name' => 'Tẩy trắng răng Laser Whitening tại phòng khám', 'desc' => 'Chiếu đèn ánh sáng lạnh 45 phút, bật 3–5 tone tức thì', 'warranty' => 'Hiệu quả ngay', 'price' => '2.000.000 đ / ca', 'badge' => 'Phổ biến', 'featured' => true],
+        ['name' => 'Gói Tẩy trắng Laser + Máng duy trì tại nhà', 'desc' => 'Kết hợp tẩy tại phòng khám và duy trì màu trắng lâu dài', 'warranty' => 'Trọn gói tiết kiệm', 'price' => '2.800.000 đ / gói', 'badge' => 'Tiết kiệm', 'featured' => true],
+    ],
+])

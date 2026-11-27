@@ -46,7 +46,7 @@
                     <div>
                         <h2 class="font-extrabold text-xl tracking-tight uppercase mb-0.5">{{ $settings['clinic_name'] ?? 'Nha Khoa Smile' }}</h2>
                         <p class="text-teal-100 text-xs font-medium">{{ $settings['clinic_address'] ?? '123 Nguyễn Văn Cừ, Quận 5, TP.HCM' }}</p>
-                        <p class="text-teal-100 text-xs font-medium">Hotline: {{ $settings['clinic_hotline'] ?? '1900 1234' }}</p>
+                        <p class="text-teal-100 text-xs font-medium">Hotline: {{ $settings['clinic_hotline'] ?? '0775 761 388' }}</p>
                     </div>
                 </div>
                 <div class="md:text-right flex flex-col justify-end">

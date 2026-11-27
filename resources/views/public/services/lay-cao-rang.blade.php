@@ -1,112 +1,55 @@
-@extends('layouts.public')
-
-@section('title', 'Lấy cao răng - Nha Khoa Smile')
-
-@section('content')
-<div class="bg-slate-50 py-16">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <!-- Breadcrumbs -->
-        <nav class="flex text-sm text-gray-500 mb-8">
-            <ol class="flex items-center space-x-2">
-                <li><a href="{{ route('home') }}" class="hover:text-blue-600">Trang chủ</a></li>
-                <li><span class="mx-2">/</span></li>
-                <li><a href="{{ route('public.services') }}" class="hover:text-blue-600">Dịch vụ</a></li>
-                <li><span class="mx-2">/</span></li>
-                <li class="font-semibold text-gray-800">Lấy cao răng</li>
-            </ol>
-        </nav>
-
-        <!-- Main Content Article -->
-        <article class="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 md:p-12 prose prose-lg prose-blue max-w-none">
-            <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-8 uppercase">Lấy cao răng</h1>
-            
-            <img src="https://images.unsplash.com/photo-1598256989800-fea5f6c8d0bd?auto=format&fit=crop&q=80&w=1200" alt="Lấy cao răng" class="w-full h-80 object-cover rounded-2xl mb-10 shadow-md">
-
-            <h2 class="text-2xl font-bold text-slate-800 mt-10 mb-4 uppercase">Lấy cao răng Là Gì?</h2>
-            <p class="text-gray-700 leading-relaxed mb-6">Vệ sinh răng miệng toàn diện, loại bỏ mảng bám và vôi răng, ngăn ngừa các bệnh lý răng miệng.</p>
-            <p class="text-gray-700 leading-relaxed mb-6">Nha Khoa Smile tự hào áp dụng các công nghệ tiên tiến nhất trong nha khoa để mang đến dịch vụ <strong>Lấy cao răng</strong> an toàn, nhanh chóng và đạt hiệu quả thẩm mỹ cao nhất cho mọi khách hàng. Đội ngũ y bác sĩ giàu kinh nghiệm sẽ trực tiếp thăm khám và lên phác đồ điều trị chuyên biệt cho từng trường hợp.</p>
-
-            <h2 class="text-2xl font-bold text-slate-800 mt-10 mb-4 uppercase">Quy Trình Thực Hiện Tại Nha Khoa Smile</h2>
-            <ol class="list-decimal pl-6 mb-8 text-gray-700 space-y-2">
-                <li>Thăm khám tổng quát và chụp phim X-quang kỹ thuật số.</li>
-                <li>Bác sĩ chuyên khoa phân tích và lên phác đồ điều trị chi tiết.</li>
-                <li>Tiến hành vệ sinh răng miệng và vô cảm (gây tê) đảm bảo không đau.</li>
-                <li>Thực hiện quy trình điều trị chuẩn y khoa với thiết bị vô trùng tuyệt đối.</li>
-                <li>Kiểm tra sau điều trị, hướng dẫn chăm sóc tại nhà và hẹn lịch tái khám.</li>
-            </ol>
-
-            <h2 class="text-2xl font-bold text-slate-800 mt-10 mb-4 uppercase">Vì Sao Chọn Nha Khoa Smile?</h2>
-            <ul class="list-disc pl-6 mb-12 text-gray-700 space-y-2">
-                <li>Đội ngũ bác sĩ chuyên khoa răng hàm mặt giỏi, trên 10 năm kinh nghiệm.</li>
-                <li>Hệ thống trang thiết bị, máy móc nhập khẩu nguyên chiếc từ Châu Âu.</li>
-                <li>Phòng khám vô trùng đạt tiêu chuẩn khắt khe của Bộ Y Tế.</li>
-                <li>Chi phí minh bạch, cam kết không phát sinh trong suốt quá trình điều trị.</li>
-                <li>Chế độ bảo hành chính hãng và chăm sóc khách hàng trọn đời.</li>
-            </ul>
-
-            <!-- Booking Section inside Article -->
-            <div class="bg-blue-600 rounded-2xl p-8 mt-12 text-white shadow-xl" id="dat-lich">
-                <div class="text-center mb-8">
-                    <h3 class="text-2xl md:text-3xl font-bold mb-2 uppercase">Đăng Ký Tư Vấn Miễn Phí Từ Chuyên Gia</h3>
-                    <p class="text-blue-100">Hãy để lại thông tin, bác sĩ chuyên khoa của chúng tôi sẽ liên hệ lại ngay!</p>
-                </div>
-                
-                <form action="{{ route('public.booking.store') }}" method="POST" class="max-w-2xl mx-auto bg-white p-6 md:p-8 rounded-xl shadow-lg">
-                    @csrf
-                    <!-- Pre-select Service ID if passed -->
-                    @if(isset($targetService))
-                        <input type="hidden" name="service_id" value="{{ $targetService->id }}">
-                    @endif
-                    
-                    <div class="space-y-5">
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">Họ và tên *</label>
-                            <input type="text" name="name" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-gray-800" placeholder="Nhập tên của bạn">
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">Số điện thoại *</label>
-                            <input type="tel" name="phone" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-gray-800" placeholder="Nhập số điện thoại">
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">Dịch vụ bạn quan tâm *</label>
-                            <select name="service_id_display" disabled class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 text-gray-600">
-                                <option value="">{{ isset($targetService) ? $targetService->name : 'Dịch vụ' }}</option>
-                            </select>
-                            <p class="text-xs text-gray-500 mt-1">Dịch vụ đã được chọn tự động.</p>
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">Chọn Bác sĩ khám (Tùy chọn)</label>
-                            <select name="doctor_id" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-gray-800">
-                                <option value="">-- Để phòng khám sắp xếp Bác sĩ chuyên khoa --</option>
-                                @if(isset($doctors))
-                                    @foreach($doctors as $doc)
-                                        <option value="{{ $doc->id }}">BS. {{ $doc->user->name ?? '' }} ({{ $doc->specialty ?: 'Chuyên khoa RHM' }})</option>
-                                    @endforeach
-                                @endif
-                            </select>
-                        </div>
-
-                        <!-- Lịch hẹn dự kiến -->
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">Thời gian dự kiến (Từ ngày mai) *</label>
-                            <input type="datetime-local" name="appointment_time" min="{{ \Carbon\Carbon::tomorrow()->format('Y-m-d\T00:00') }}" value="{{ old('appointment_time', \Carbon\Carbon::tomorrow()->setTime(9, 0)->format('Y-m-d\TH:i')) }}" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-gray-800">
-                            <p class="text-xs text-amber-600 mt-1">Lưu ý: Chỉ nhận đặt lịch từ ngày hôm sau trở đi. Nếu khám trong ngày, quý khách không cần đặt lịch mà vui lòng đến trực tiếp phòng khám.</p>
-                            @error('appointment_time') <span class="text-red-500 text-xs font-medium block mt-1">{{ $message }}</span> @enderror
-                        </div>
-                        
-                        <div class="pt-4">
-                            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-full shadow-lg transform hover:-translate-y-1 transition-all duration-300 text-lg">
-                                Xác Nhận Đăng Ký
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            
-        </article>
-    </div>
-</div>
-@endsection
+@include('public.services._layout', [
+    'pageTitle' => 'Cạo Vôi Răng Siêu Âm & Chăm Sóc Nha Chu',
+    'badge' => 'NHA KHOA PHÒNG NGỪA ĐỊNH KỲ',
+    'heroTitle' => 'CẠO VÔI RĂNG SIÊU ÂM',
+    'heroHighlight' => 'Êm Ái Không Ê Buốt & Ngừa Viêm Nướu',
+    'heroDesc' => 'Cạo vôi răng định kỳ 6 tháng/lần bằng máy rung siêu âm thế hệ mới giúp đánh bay mảng bám vôi hóa trên và dưới nướu, loại bỏ hôi miệng, hết chảy máu chân răng và bảo vệ nướu chắc khỏe.',
+    'highlights' => [
+        ['icon' => '🫧', 'title' => 'Sóng siêu âm êm ái', 'sub' => 'Không làm xước men răng'],
+        ['icon' => '⏱️', 'title' => 'Nhanh gọn 20–30 phút', 'sub' => 'Kèm đánh bóng sạch mảng bám'],
+        ['icon' => '🦷', 'title' => 'Tầm soát răng miệng', 'sub' => 'Phát hiện sớm lỗ sâu li ti'],
+    ],
+    'prosConsTitle' => 'Lợi Ích & Lưu Ý Khi Cạo Vôi Răng Định Kỳ',
+    'pros' => [
+        ['title' => 'Chấm dứt chảy máu chân răng & hôi miệng', 'desc' => 'Loại bỏ ổ vi khuẩn bám chặt ở viền nướu — nguyên nhân hàng đầu gây viêm lợi và hơi thở có mùi.'],
+        ['title' => 'Ngăn ngừa viêm nha chu, tụt nướu, lung lay răng', 'desc' => 'Cao răng tích tụ lâu năm gây tiêu xương ổ răng; làm sạch định kỳ giúp bảo vệ răng thật suốt đời.'],
+        ['title' => 'Răng sáng sạch, mịn bóng tự nhiên', 'desc' => 'Bước đánh bóng bằng bột khoáng giúp loại bỏ vết ố trà, cà phê và hạn chế mảng bám quay lại.'],
+        ['title' => 'Chi phí rất tiết kiệm', 'desc' => 'Chỉ từ 200.000 đ mỗi 6 tháng giúp phòng tránh các bệnh lý tốn kém như chữa tủy hay mất răng.'],
+    ],
+    'cons' => [
+        ['title' => 'Có thể hơi tê nhẹ nếu cao răng quá dày', 'desc' => 'Trường hợp lâu năm chưa lấy cao răng, nướu đang viêm có thể rỉ chút máu nhẹ và lành hẳn sau 1–2 ngày.'],
+        ['title' => 'Không nên cạo vôi quá dày đặc', 'desc' => 'Tần suất lý tưởng theo khuyến cáo nha khoa là 6 tháng/lần (hoặc 3–4 tháng với người hút thuốc, viêm nha chu).'],
+        ['title' => 'Hạn chế đồ quá nóng/lạnh trong vài giờ đầu', 'desc' => 'Sau khi lớp cao răng dày được lấy đi, cổ răng cần vài giờ để thích nghi lại với nhiệt độ.'],
+        ['title' => 'Cần kết hợp chải răng & chỉ nha khoa hàng ngày', 'desc' => 'Vệ sinh đúng cách tại nhà giúp kéo dài thời gian răng sạch bóng sau khi cạo vôi.'],
+    ],
+    'whoTitle' => 'Ai Nên Đi Cạo Vôi Răng Ngay?',
+    'whoCards' => [
+        ['icon' => '🩸', 'title' => 'Chảy Máu Khi Đánh Răng', 'desc' => 'Nướu sưng đỏ, dễ chảy máu mỗi lần chải răng hoặc cắn trái cây cứng.'],
+        ['icon' => '💨', 'title' => 'Hơi Thở Có Mùi Khó Chịu', 'desc' => 'Mảng bám và cao răng dưới nướu tích tụ vi khuẩn gây mùi dù đã đánh răng kỹ.'],
+        ['icon' => '☕', 'title' => 'Mảng Bám Ố Vàng Cổ Răng', 'desc' => 'Thấy lớp vôi vàng hoặc nâu đen bám chặt mặt trong răng cửa dưới và kẽ răng hàm.'],
+        ['icon' => '📅', 'title' => 'Đã Hơn 6 Tháng Chưa Khám', 'desc' => 'Kiểm tra răng miệng tổng quát định kỳ để giữ hàm răng luôn sạch khỏe.'],
+    ],
+    'criteriaTitle' => '5 Tiêu Chí Cạo Vôi Răng Chuẩn Y Khoa',
+    'criteria' => [
+        ['title' => 'Đầu Rung Siêu Âm Mỏng Nhẹ', 'desc' => 'Làm vỡ mảng vôi bằng sóng siêu âm mà không mài mòn bề mặt men răng.', 'tag' => 'An toàn men'],
+        ['title' => 'Tiệt Trùng Tay Lấy Cao Riêng', 'desc' => '100% đầu lấy cao răng được hấp tiệt trùng Class B riêng biệt cho từng khách hàng.', 'tag' => 'Vô trùng 100%'],
+        ['title' => 'Làm Sạch Cả Vôi Dưới Nướu', 'desc' => 'Xử lý kỹ các mảng cao răng ẩn sâu dưới túi lợi nơi bàn chải không chạm tới.', 'tag' => 'Sạch sâu'],
+        ['title' => 'Đánh Bóng Khoáng Chất', 'desc' => 'Làm nhẵn bề mặt răng sau khi cạo giúp răng sáng hơn và chậm bám vôi trở lại.', 'tag' => 'Mịn bóng'],
+        ['title' => 'Khám Tổng Quát Miễn Phí', 'desc' => 'Bác sĩ kiểm tra toàn bộ 32 răng giúp phát hiện sớm các lỗ sâu mới chớm.', 'tag' => 'Phòng ngừa sớm'],
+    ],
+    'processTitle' => 'Quy Trình Cạo Vôi Răng 6 Bước Chuẩn Y Khoa',
+    'steps' => [
+        ['title' => 'Thăm Khám & Đánh Giá Mức Độ Cao Răng', 'desc' => 'Bác sĩ kiểm tra tình trạng cao răng (độ 1, 2, 3) và mức độ viêm nướu của bệnh nhân.'],
+        ['title' => 'Súc Miệng Dung Dịch Sát Khuẩn', 'desc' => 'Làm sạch khoang miệng ban đầu giúp giảm lượng vi khuẩn trước khi tiến hành.'],
+        ['title' => 'Lấy Cao Răng Trên Nướu Bằng Siêu Âm', 'desc' => 'Nhẹ nhàng tách các mảng vôi bám trên thân răng và kẽ răng kèm tia nước làm mát liên tục.'],
+        ['title' => 'Làm Sạch Cao Răng Dưới Viền Nướu', 'desc' => 'Xử lý tỉ mỉ vùng cổ răng và túi nướu nông giúp nướu nhanh chóng săn chắc, hồng hào lại.'],
+        ['title' => 'Đánh Bóng Răng & Xịt Rửa Sạch', 'desc' => 'Sử dụng chổi mềm và bột đánh bóng nha khoa loại bỏ vết ố bề mặt và làm nhẵn men răng.'],
+        ['title' => 'Hướng Dẫn Chải Răng & Hẹn Tái Khám', 'desc' => 'Tư vấn cách dùng chỉ nha khoa/tăm nước và ghi nhận lịch nhắc tái khám sau 6 tháng trên DCMS.'],
+    ],
+    'priceTitle' => 'Bảng Giá Cạo Vôi Răng & Nha Chu Niêm Yết',
+    'priceRows' => [
+        ['name' => 'Cạo vôi răng & Đánh bóng siêu âm (Độ 1 – 2)', 'desc' => 'Làm sạch toàn hàm 2 hàm + đánh bóng khoáng chất', 'warranty' => 'Khám tổng quát', 'price' => '200.000 đ / lần', 'badge' => 'Phổ biến', 'featured' => true],
+        ['name' => 'Cạo vôi răng & Chăm sóc nha chu (Độ 3)', 'desc' => 'Cao răng dày dưới nướu, kèm bơm rửa sát khuẩn túi lợi', 'warranty' => 'Khám tổng quát', 'price' => '350.000 đ / lần', 'featured' => true],
+        ['name' => 'Thổi cát Air-Flow loại bỏ vết ố cà phê, thuốc lá', 'desc' => 'Làm sạch sâu kẽ răng bằng tia nước & bột khoáng siêu mịn', 'warranty' => 'Sạch sáng ngay', 'price' => '500.000 đ / lần'],
+    ],
+])

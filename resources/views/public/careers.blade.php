@@ -84,7 +84,7 @@
             </div>
 
             <div class="pt-2 text-center text-xs text-slate-400">
-                Gửi CV và hồ sơ trực tiếp về: <a href="mailto:tuyendung@nhakhoasmile.vn" class="font-bold text-[#063B30] hover:underline">tuyendung@nhakhoasmile.vn</a> hoặc Hotline Tuyển Dụng: <strong>1900 1234</strong>
+                Gửi CV và hồ sơ trực tiếp về: <a href="mailto:tuyendung@nhakhoasmile.vn" class="font-bold text-[#063B30] hover:underline">tuyendung@nhakhoasmile.vn</a> hoặc Hotline Tuyển Dụng: <strong>0775 761 388</strong>
             </div>
         </div>
     </div>

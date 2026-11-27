@@ -6,13 +6,55 @@
         <title>@yield('title', 'Cổng Bệnh Nhân - Nha Khoa Smile')</title>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600;1,700&family=Inter:wght@400;500;600;700&subset=vietnamese&display=swap" rel="stylesheet">
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         <style>
             html, body, .font-sans, button, input, select, textarea {
-                font-family: 'Inter', 'Be Vietnam Pro', system-ui, -apple-system, sans-serif !important;
+                font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+                font-size: 0.875rem; /* 14px */
                 background-color: #F8FAFC;
                 -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+                text-rendering: optimizeLegibility;
+            }
+            h1, .h1 {
+                font-family: 'Be Vietnam Pro', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+                font-size: 1.625rem !important; /* 26px */
+                font-weight: 700 !important;
+                line-height: 1.3 !important;
+                letter-spacing: -0.02em;
+            }
+            h2, .h2 {
+                font-family: 'Be Vietnam Pro', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+                font-size: 1.125rem !important; /* 18px */
+                font-weight: 600 !important;
+                line-height: 1.35 !important;
+                letter-spacing: -0.015em;
+            }
+            h3, .h3 {
+                font-family: 'Be Vietnam Pro', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+                font-size: 1rem !important; /* 16px */
+                font-weight: 600 !important;
+                line-height: 1.4 !important;
+            }
+            h4, h5, h6 {
+                font-family: 'Be Vietnam Pro', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+                font-weight: 600 !important;
+            }
+            table th {
+                font-size: 0.75rem !important;
+                font-weight: 700 !important;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                color: #64748b;
+            }
+            table td {
+                font-size: 0.875rem !important;
+                line-height: 1.5;
+            }
+            .tabular-nums, .font-mono, td.text-right, .price, .currency, .phone, .time {
+                font-variant-numeric: tabular-nums !important;
+                font-feature-settings: "tnum" 1 !important;
             }
             .glass-header {
                 background: rgba(255, 255, 255, 0.95);
@@ -166,6 +208,16 @@
                                 <div class="bg-red-50 border border-red-200 text-red-800 p-4 rounded-2xl shadow-xs flex items-center gap-2 text-xs font-semibold" role="alert">
                                     <span class="w-2 h-2 rounded-full bg-red-500"></span>
                                     <span>{{ session('error') }}</span>
+                                </div>
+                            @endif
+                            @if ($errors->any())
+                                <div class="bg-rose-50 border border-rose-200 text-rose-800 p-4 rounded-2xl shadow-xs text-xs space-y-1" role="alert">
+                                    <p class="font-bold">Vui lòng kiểm tra lại thông tin:</p>
+                                    <ul class="list-disc list-inside space-y-0.5">
+                                        @foreach ($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
                                 </div>
                             @endif
                             

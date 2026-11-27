@@ -4,76 +4,68 @@
 
 @section('content')
 <!-- Hero Liên Hệ -->
-<section class="relative overflow-hidden bg-[#063B30] text-white py-16 sm:py-20 border-b border-[#C5A880]/30">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 text-center relative z-10 space-y-4">
-        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-[#C5A880]/40 text-[#E6D5B8] text-[11px] font-bold uppercase tracking-widest shadow-2xs">
-            <span class="text-[#C5A880]">✦</span>
-            <span>Hệ Thống Tiếp Đón & Chăm Sóc Khách Hàng</span>
+<section class="relative overflow-hidden bg-gradient-to-b from-teal-50/80 via-white to-slate-50 py-14 sm:py-16 border-b border-slate-200/40">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 text-center relative z-10 space-y-3">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-teal-500/15 text-teal-800 text-xs font-semibold shadow-sm">
+            <span class="pulse-dot pulse-dot-emerald"></span>
+            <span>Tiếp Nhận & Chăm Sóc Bệnh Nhân</span>
         </div>
-        <h1 class="font-serif-luxury text-3xl sm:text-5xl font-bold tracking-tight">
-            Liên Hệ <span class="italic font-normal text-[#E6D5B8]">Nha Khoa Smile</span>
+        <h1 class="font-heading-clinic !text-3xl sm:!text-4xl font-extrabold tracking-tight text-slate-900">
+            Liên Hệ <span class="text-clinic-gradient">Nha Khoa Smile</span>
         </h1>
-        <p class="text-slate-200 text-xs sm:text-sm max-w-xl mx-auto font-light leading-relaxed">
-            Đội ngũ tư vấn và chăm sóc khách hàng của Nha Khoa Smile luôn sẵn sàng đồng hành, giải đáp mọi băn khoăn và sắp xếp lịch hẹn khám thuận tiện nhất cho quý khách.
+        <p class="text-slate-600 text-sm max-w-xl mx-auto leading-relaxed">
+            Đội ngũ Lễ tân và Bác sĩ tư vấn luôn sẵn sàng hỗ trợ giải đáp mọi thắc mắc về tình trạng răng miệng, bảng giá và lịch hẹn khám.
         </p>
     </div>
 </section>
 
-<section class="py-12 sm:py-16 bg-[#FBF9F5]" x-data="{ msgText: '{{ old('message', '') }}' }">
+<section class="py-12 sm:py-16 bg-slate-50" x-data="{ msgText: '{{ old('message', '') }}' }">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            
+
             <!-- Cột thông tin liên hệ (5 cột) -->
             <div class="lg:col-span-5 space-y-5">
-                <div class="bg-white rounded-3xl p-6 sm:p-7 border border-[#EAE5DD] shadow-xs space-y-5">
+                <div class="bg-white rounded-2xl p-6 sm:p-7 border border-slate-200/40 shadow-sm space-y-5">
                     <div>
-                        <span class="text-[10px] font-bold uppercase tracking-widest text-[#A37F4E]">Thông Tin Phòng Khám</span>
-                        <h2 class="font-serif-luxury text-xl font-bold text-slate-900 mt-0.5">Nha Khoa Smile DCMS</h2>
-                        <p class="text-xs text-slate-500 font-light mt-0.5">Không gian khám chữa bệnh chuẩn Y khoa hiện đại.</p>
+                        <span class="text-xs font-bold uppercase tracking-wider text-teal-700">Thông Tin Phòng Khám</span>
+                        <h2 class="font-heading-clinic !text-xl font-bold text-slate-900 mt-0.5">Phòng Khám Nha Khoa Smile</h2>
+                        <p class="text-xs text-slate-500 mt-0.5">Không gian khám chữa bệnh chuẩn Y khoa hiện đại.</p>
                     </div>
 
                     <div class="space-y-3 text-xs">
-                        <div class="p-4 rounded-2xl bg-[#FBF9F5] border border-[#EAE5DD] flex items-start gap-3.5">
-                            <div class="w-9 h-9 rounded-xl bg-[#063B30] text-[#E6D5B8] flex items-center justify-center shrink-0 text-sm">
-                                📍
-                            </div>
+                        <a href="https://www.google.com/maps/dir/?api=1&destination=204+Tr%E1%BA%A7n+Duy+H%C6%B0ng,+Y%C3%AAn+H%C3%B2a,+C%E1%BA%A7u+Gi%E1%BA%A5y,+H%C3%A0+N%E1%BB%99i" target="_blank" rel="noopener noreferrer" class="p-4 rounded-xl bg-slate-50 border border-slate-200/40 hover:border-teal-400 transition flex items-start gap-3.5 group">
+                            <div class="w-9 h-9 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center shrink-0 text-base border border-teal-500/10">📍</div>
                             <div>
-                                <div class="text-[10px] uppercase font-bold text-slate-400">Địa chỉ phòng khám</div>
-                                <div class="font-bold text-slate-900 mt-0.5">123 Đường Nguyễn Huệ, Phường Bến Nghé, Quận 1, TP. Hồ Chí Minh</div>
-                                <div class="text-[11px] text-slate-500 mt-0.5 font-light">Khu vực trung tâm, thuận tiện đỗ xe ô tô và xe máy</div>
-                            </div>
-                        </div>
-
-                        <a href="tel:19001234" class="p-4 rounded-2xl bg-[#FBF9F5] border border-[#EAE5DD] hover:border-[#063B30] transition flex items-start gap-3.5 group">
-                            <div class="w-9 h-9 rounded-xl bg-[#063B30] text-[#E6D5B8] flex items-center justify-center shrink-0 text-sm">
-                                📞
-                            </div>
-                            <div>
-                                <div class="text-[10px] uppercase font-bold text-slate-400">Hotline Tư Vấn 24/7</div>
-                                <div class="font-serif-luxury text-base font-bold text-[#063B30] group-hover:underline mt-0.5">1900 1234</div>
-                                <div class="text-[11px] text-slate-500 font-light mt-0.5">Tư vấn chuyên môn & điều phối lịch khám</div>
+                                <div class="text-[11px] uppercase font-semibold text-slate-500">Địa chỉ phòng khám</div>
+                                <div class="font-bold text-slate-900 mt-0.5 group-hover:text-teal-700 transition">204 Trần Duy Hưng, Yên Hòa, Cầu Giấy, Hà Nội</div>
+                                <div class="text-[11px] text-teal-700 font-semibold mt-1">🗺️ Xem chỉ đường trên Google Maps &rarr;</div>
                             </div>
                         </a>
 
-                        <div class="p-4 rounded-2xl bg-[#FBF9F5] border border-[#EAE5DD] flex items-start gap-3.5">
-                            <div class="w-9 h-9 rounded-xl bg-[#063B30] text-[#E6D5B8] flex items-center justify-center shrink-0 text-sm">
-                                ⏰
-                            </div>
+                        <a href="tel:0775761388" class="p-4 rounded-xl bg-teal-50/70 border border-teal-500/15 hover:border-teal-400 transition flex items-start gap-3.5 group">
+                            <div class="w-9 h-9 rounded-xl bg-teal-600 text-white flex items-center justify-center shrink-0 text-base">📞</div>
                             <div>
-                                <div class="text-[10px] uppercase font-bold text-slate-400">Thời gian làm việc</div>
-                                <div class="font-bold text-slate-900 mt-0.5">08:00 – 20:00 (Thứ 2 – Chủ Nhật)</div>
-                                <div class="text-[11px] text-slate-500 font-light mt-0.5">Làm việc xuyên trưa, cả ngày lễ</div>
+                                <div class="text-[11px] uppercase font-semibold text-teal-700">Hotline Tư Vấn & Cấp Cứu 24/7</div>
+                                <div class="font-heading-clinic text-base font-extrabold text-teal-900 group-hover:underline mt-0.5 tabular-nums">0775 761 388</div>
+                                <div class="text-[11px] text-slate-600 mt-0.5">Tư vấn chuyên môn & điều phối lịch khám</div>
+                            </div>
+                        </a>
+
+                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200/40 flex items-start gap-3.5">
+                            <div class="w-9 h-9 rounded-xl bg-sky-50 text-sky-700 flex items-center justify-center shrink-0 text-base border border-sky-500/10">⏰</div>
+                            <div>
+                                <div class="text-[11px] uppercase font-semibold text-slate-500">Thời gian làm việc</div>
+                                <div class="font-bold text-slate-900 mt-0.5 tabular-nums">08:00 – 20:00 (Thứ 2 – Chủ Nhật)</div>
+                                <div class="text-[11px] text-slate-500 mt-0.5">Làm việc xuyên trưa, cả Thứ 7 & Chủ Nhật</div>
                             </div>
                         </div>
 
-                        <div class="p-4 rounded-2xl bg-[#FBF9F5] border border-[#EAE5DD] flex items-start gap-3.5">
-                            <div class="w-9 h-9 rounded-xl bg-[#063B30] text-[#E6D5B8] flex items-center justify-center shrink-0 text-sm">
-                                ✉️
-                            </div>
+                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200/40 flex items-start gap-3.5">
+                            <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0 text-base border border-emerald-500/10">✉️</div>
                             <div>
-                                <div class="text-[10px] uppercase font-bold text-slate-400">Hòm thư điện tử</div>
+                                <div class="text-[11px] uppercase font-semibold text-slate-500">Hòm thư điện tử</div>
                                 <div class="font-bold text-slate-900 mt-0.5">contact@nhakhoasmile.vn</div>
-                                <div class="text-[11px] text-slate-500 font-light mt-0.5">Tiếp nhận phản hồi và hồ sơ bệnh án</div>
+                                <div class="text-[11px] text-slate-500 mt-0.5">Tiếp nhận phản hồi và yêu cầu hồ sơ bệnh án</div>
                             </div>
                         </div>
                     </div>
@@ -81,15 +73,15 @@
             </div>
 
             <!-- Form gửi yêu cầu tư vấn (7 cột) -->
-            <div class="lg:col-span-7 bg-white rounded-3xl p-6 sm:p-8 border border-[#EAE5DD] shadow-xs space-y-5">
+            <div class="lg:col-span-7 bg-white rounded-2xl p-6 sm:p-8 border border-slate-200/40 shadow-sm space-y-5">
                 <div>
-                    <span class="text-[10px] font-bold uppercase tracking-widest text-[#A37F4E]">Tư Vấn Miễn Phí</span>
-                    <h3 class="font-serif-luxury text-xl font-bold text-slate-900 mt-0.5">Gửi Yêu Cầu Tư Vấn Trực Tuyến</h3>
-                    <p class="text-xs text-slate-500 font-light mt-0.5">Bác sĩ chuyên khoa sẽ liên hệ phản hồi trong thời gian sớm nhất.</p>
+                    <span class="text-xs font-bold uppercase tracking-wider text-teal-700">Tư Vấn Miễn Phí</span>
+                    <h3 class="font-heading-clinic !text-xl font-bold text-slate-900 mt-0.5">Gửi Yêu Cầu Tư Vấn Trực Tuyến</h3>
+                    <p class="text-xs text-slate-500 mt-0.5">Bác sĩ chuyên khoa sẽ liên hệ phản hồi trong thời gian sớm nhất.</p>
                 </div>
 
                 @if(session('success'))
-                    <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center gap-2">
+                    <div class="p-4 rounded-xl bg-emerald-50 border border-emerald-500/15 text-emerald-800 text-xs font-semibold flex items-center gap-2">
                         <span>✓</span>
                         <span>{{ session('success') }}</span>
                     </div>
@@ -99,47 +91,91 @@
                     @csrf
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                            <label class="block text-xs font-semibold text-slate-700 mb-1.5">
                                 Họ và tên <span class="text-rose-500">*</span>
                             </label>
                             <input type="text" name="name" value="{{ old('name', auth()->user()->name ?? '') }}" required
                                 placeholder="Họ và tên của bạn..."
-                                class="w-full rounded-xl border-[#EAE5DD] focus:border-[#063B30] focus:ring-[#063B30] text-xs py-2.5 px-3 bg-[#FBF9F5] font-medium">
+                                class="input-clinic w-full rounded-xl text-sm py-2.5 px-3.5">
                         </div>
                         <div>
-                            <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                            <label class="block text-xs font-semibold text-slate-700 mb-1.5">
                                 Số điện thoại <span class="text-rose-500">*</span>
                             </label>
                             <input type="text" name="phone" value="{{ old('phone') }}" required
                                 placeholder="Số điện thoại liên hệ..."
-                                class="w-full rounded-xl border-[#EAE5DD] focus:border-[#063B30] focus:ring-[#063B30] text-xs py-2.5 px-3 bg-[#FBF9F5] font-medium">
+                                class="input-clinic w-full rounded-xl text-sm py-2.5 px-3.5 tabular-nums">
                         </div>
                     </div>
 
                     <div>
-                        <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                        <label class="block text-xs font-semibold text-slate-700 mb-1.5">
                             Địa chỉ Email (Tùy chọn)
                         </label>
                         <input type="email" name="email" value="{{ old('email') }}"
                             placeholder="Địa chỉ email để nhận tư vấn..."
-                            class="w-full rounded-xl border-[#EAE5DD] focus:border-[#063B30] focus:ring-[#063B30] text-xs py-2.5 px-3 bg-[#FBF9F5] font-medium">
+                            class="input-clinic w-full rounded-xl text-sm py-2.5 px-3.5">
                     </div>
 
                     <div>
-                        <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                        <label class="block text-xs font-semibold text-slate-700 mb-1.5">
                             Nội dung cần tư vấn hoặc tình trạng răng miệng <span class="text-rose-500">*</span>
                         </label>
                         <textarea name="message" rows="4" required
                             placeholder="Mô tả triệu chứng răng miệng, dịch vụ quan tâm hoặc câu hỏi dành cho Bác sĩ..."
-                            class="w-full rounded-xl border-[#EAE5DD] focus:border-[#063B30] focus:ring-[#063B30] text-xs py-2.5 px-3 bg-[#FBF9F5] font-medium resize-none">{{ old('message') }}</textarea>
+                            class="input-clinic w-full rounded-xl text-sm py-2.5 px-3.5 resize-none">{{ old('message') }}</textarea>
                     </div>
 
-                    <button type="submit" class="w-full py-3.5 px-6 rounded-xl bg-[#063B30] hover:bg-[#042A22] text-[#FDFBF7] font-bold text-xs uppercase tracking-wider shadow-sm transition flex items-center justify-center gap-2 border border-[#C5A880]/30">
+                    <button type="submit" class="btn-press btn-shimmer btn-clinic-primary w-full py-3.5 px-6 rounded-xl text-sm">
                         <span>Gửi Yêu Cầu Tư Vấn</span>
                     </button>
                 </form>
             </div>
 
+        </div>
+
+        <!-- Bản Đồ Google Maps & Chỉ Dẫn Đường Đi -->
+        <div class="mt-10 clinic-card rounded-3xl p-5 sm:p-7 space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-teal-700">Bản Đồ & Chỉ Dẫn Đường Đi</span>
+                    <h3 class="font-heading-clinic !text-xl font-bold text-slate-900 mt-0.5">204 Trần Duy Hưng, Yên Hòa, Cầu Giấy, Hà Nội</h3>
+                    <p class="text-xs text-slate-500 mt-0.5">Mặt đường lớn Trần Duy Hưng, thuận tiện di chuyển và có chỗ đỗ ô tô, xe máy.</p>
+                </div>
+                <a href="https://www.google.com/maps/dir/?api=1&destination=204+Tr%E1%BA%A7n+Duy+H%C6%B0ng,+Y%C3%AAn+H%C3%B2a,+C%E1%BA%A7u+Gi%E1%BA%A5y,+H%C3%A0+N%E1%BB%99i" target="_blank" rel="noopener noreferrer" class="btn-press btn-clinic-primary px-5 py-2.5 rounded-xl text-xs inline-flex items-center justify-center gap-2 shrink-0">
+                    <span>🗺️</span>
+                    <span>Mở Chỉ Đường Google Maps</span>
+                </a>
+            </div>
+            <div class="rounded-2xl overflow-hidden shadow-md ring-1 ring-slate-900/5 h-72 sm:h-96 bg-slate-100">
+                <iframe
+                    title="Bản đồ Nha Khoa Smile - 204 Trần Duy Hưng, Yên Hòa, Cầu Giấy, Hà Nội"
+                    src="https://maps.google.com/maps?q=204%20Tr%E1%BA%A7n%20Duy%20H%C6%B0ng,%20Y%C3%AAn%20H%C3%B2a,%20C%E1%BA%A7u%20Gi%E1%BA%A5y,%20H%C3%A0%20N%E1%BB%99i&t=&z=16&ie=UTF8&iwloc=&output=embed"
+                    class="w-full h-full border-0"
+                    loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade"
+                    allowfullscreen>
+                </iframe>
+            </div>
+        </div>
+
+        <!-- Tiện Ích Đón Tiếp & Hướng Dẫn Di Chuyển -->
+        <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-5">
+            <div class="clinic-card rounded-2xl p-5 space-y-2">
+                <div class="icon-pop w-10 h-10 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center text-lg">🚗</div>
+                <h4 class="font-heading-clinic !text-base font-bold text-slate-900">Bãi Đỗ Ô Tô & Xe Máy Miễn Phí</h4>
+                <p class="text-xs text-slate-600 leading-relaxed">Khu vực đỗ xe rộng rãi ngay trước cửa phòng khám 204 Trần Duy Hưng, có nhân viên bảo vệ hỗ trợ 24/7.</p>
+            </div>
+            <div class="clinic-card rounded-2xl p-5 space-y-2">
+                <div class="icon-pop w-10 h-10 rounded-xl bg-sky-50 text-sky-700 flex items-center justify-center text-lg">🧭</div>
+                <h4 class="font-heading-clinic !text-base font-bold text-slate-900">Vị Trí Trung Tâm Cầu Giấy</h4>
+                <p class="text-xs text-slate-600 leading-relaxed">Nằm trên trục đường lớn Trần Duy Hưng, cách Vincom Trần Duy Hưng & ngã tư Hoàng Đạo Thúy chỉ vài phút di chuyển.</p>
+            </div>
+            <div class="clinic-card rounded-2xl p-5 space-y-2">
+                <div class="icon-pop w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-lg">☕</div>
+                <h4 class="font-heading-clinic !text-base font-bold text-slate-900">Sảnh Chờ Riêng Tư & Trà Thảo Mộc</h4>
+                <p class="text-xs text-slate-600 leading-relaxed">Phòng chờ thoáng mát, phục vụ trà thảo mộc miễn phí và hỗ trợ sắp xếp phòng khám ưu tiên cho khách đặt hẹn trước.</p>
+            </div>
         </div>
     </div>
 </section>

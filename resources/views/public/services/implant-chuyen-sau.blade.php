@@ -1,169 +1,57 @@
-@extends('layouts.public')
-
-@section('title', 'Trồng răng implant chuyên sâu - Nha Khoa Smile')
-
-@section('content')
-<div class="bg-slate-50 py-16">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <!-- Breadcrumbs -->
-        <nav class="flex text-sm text-gray-500 mb-8">
-            <ol class="flex items-center space-x-2">
-                <li><a href="{{ route('home') }}" class="hover:text-blue-600">Trang chủ</a></li>
-                <li><span class="mx-2">/</span></li>
-                <li><a href="{{ route('public.services') }}" class="hover:text-blue-600">Dịch vụ</a></li>
-                <li><span class="mx-2">/</span></li>
-                <li class="font-semibold text-gray-800">Trồng răng implant chuyên sâu</li>
-            </ol>
-        </nav>
-
-        <!-- Main Content Article -->
-        <article class="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 md:p-12 prose prose-lg prose-blue max-w-none">
-            <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-8">Trồng răng implant chuyên sâu</h1>
-            
-            <img src="https://images.unsplash.com/photo-1606811841689-23dfddce3e95?auto=format&fit=crop&q=80&w=1200" alt="Trồng răng implant" class="w-full h-80 object-cover rounded-2xl mb-10 shadow-md">
-
-            <h2 class="text-2xl font-bold text-slate-800 mt-10 mb-4">Trồng răng Implant là gì?</h2>
-            <p class="text-gray-700 leading-relaxed mb-6">Trồng răng Implant là phương pháp khôi phục răng mất cố định, được thực hiện bằng cách phẫu thuật đặt trụ Implant được làm từ vật liệu Titanium vào trong xương hàm. Sau khi chờ một thời gian để trụ Implant tích hợp với xương hàm, bác sĩ sẽ tiến hành lắp khớp nối Abutment và phục hình răng sứ bên trên.</p>
-
-            <h2 class="text-2xl font-bold text-slate-800 mt-10 mb-4">Kỹ thuật trồng răng Implant</h2>
-            <p class="text-gray-700 leading-relaxed mb-6">Phương pháp trồng răng Implant được nghiên cứu và phát triển bởi GS. Per-Ingvar Brånemark – Trưởng nhóm nghiên cứu trường Đại học Lund, Thụy Điển. Ông được coi là cha đẻ của phương pháp cấy ghép Implant. Năm 1965, ông thực hiện thành công ca cấy ghép titan đầu tiên cho một bệnh nhân tại Thụy Điển. Sự nghiệp của Brånemark đã thay đổi diện mạo ngành nha khoa, cải thiện chất lượng cuộc sống cho hàng triệu người.</p>
-
-            <h2 class="text-2xl font-bold text-slate-800 mt-10 mb-4">Các đối tượng nên trồng răng Implant</h2>
-            <p class="text-gray-700 leading-relaxed mb-4">Phương pháp trồng răng Implant có thể áp dụng cho hầu hết các trường hợp mất răng ở bất kỳ vị trí nào trên hàm. Các đối tượng phù hợp bao gồm:</p>
-            <ul class="list-disc pl-6 mb-8 text-gray-700 space-y-2">
-                <li>Người mất 1 răng, nhiều răng hoặc mất toàn bộ răng ở hàm trên hoặc hàm dưới.</li>
-                <li>Bệnh nhân mất răng bẩm sinh hoặc do tai nạn, bệnh lý.</li>
-                <li>Răng bị hỏng nặng, viêm nha chu không thể bảo tồn và phải nhổ bỏ.</li>
-                <li>Răng bị lung lay, mất xương ổ răng.</li>
-                <li>Người đã từng làm răng giả nhưng gặp hư hỏng và muốn thay thế.</li>
-            </ul>
-
-            <h2 class="text-2xl font-bold text-slate-800 mt-10 mb-4">Đánh giá ưu và nhược điểm của phương pháp trồng răng Implant</h2>
-            <h3 class="text-xl font-semibold text-blue-600 mt-6 mb-3">Ưu điểm:</h3>
-            <ul class="list-disc pl-6 mb-6 text-gray-700 space-y-2">
-                <li>Phục hồi toàn diện từ chân đến thân răng, mang lại thẩm mỹ tự nhiên.</li>
-                <li>Khả năng ăn nhai gần như răng thật, hồi phục đến 99%.</li>
-                <li>Đứng độc lập tại vị trí răng mất, không ảnh hưởng đến các răng bên cạnh.</li>
-                <li>Hấp thụ lực truyền tải đến xương hàm, duy trì mật độ xương, ngăn ngừa tiêu xương.</li>
-                <li>Độ bền cao, có thể kéo dài hơn 20 năm hoặc vĩnh viễn nếu chăm sóc tốt.</li>
-            </ul>
-
-            <h3 class="text-xl font-semibold text-red-500 mt-6 mb-3">Nhược điểm:</h3>
-            <ul class="list-disc pl-6 mb-8 text-gray-700 space-y-2">
-                <li>Chi phí cao hơn so với các phương pháp phục hình răng khác.</li>
-                <li>Thời gian điều trị kéo dài từ 2 đến 6 tháng để trụ Implant hợp nhất với xương.</li>
-                <li>Không phù hợp với trẻ dưới 18 tuổi, người sức khỏe yếu hoặc mắc bệnh lý nền không kiểm soát.</li>
-            </ul>
-
-            <h2 class="text-2xl font-bold text-slate-800 mt-10 mb-4">Quy trình trồng răng Implant tại Nha Khoa Smile</h2>
-            <p class="text-gray-700 leading-relaxed mb-4">Quy trình trồng răng Implant được thực hiện theo 9 bước chuẩn y khoa:</p>
-            <ol class="list-decimal pl-6 mb-8 text-gray-700 space-y-2">
-                <li>Thăm khám tổng quát, xác định tình trạng xương hàm, số lượng răng mất.</li>
-                <li>Chụp phim X-quang CT Cone Beam, Scan dấu răng 3D.</li>
-                <li>Lên phác đồ điều trị với công nghệ kỹ thuật số.</li>
-                <li>Tư vấn phác đồ điều trị thông qua hình ảnh 3D.</li>
-                <li>Ký kết hợp đồng bảo hành dịch vụ.</li>
-                <li>Tiến hành gây tê, đặt trụ Implant an toàn, không đau.</li>
-                <li>Kiểm tra và cắt chỉ sau 10 ngày – 2 tuần.</li>
-                <li>Đặt trụ lành thương, thử mão sứ sau 2 – 3 tháng.</li>
-                <li>Lắp răng sứ cố định và kết thúc quá trình trồng răng Implant.</li>
-            </ol>
-
-            <h2 class="text-2xl font-bold text-slate-800 mt-10 mb-4">Bảng giá Trồng răng Implant</h2>
-            <div class="overflow-x-auto mb-8">
-                <table class="w-full text-left border-collapse border border-gray-200">
-                    <thead>
-                        <tr class="bg-blue-50 text-blue-800">
-                            <th class="p-4 border border-gray-200 font-bold">STT</th>
-                            <th class="p-4 border border-gray-200 font-bold">Dịch vụ</th>
-                            <th class="p-4 border border-gray-200 font-bold">Chi phí (VNĐ)</th>
-                        </tr>
-                    </thead>
-                    <tbody class="text-gray-700">
-                        <tr><td class="p-4 border border-gray-200 text-center">1</td><td class="p-4 border border-gray-200">Cấy ghép implant Yes Biotech</td><td class="p-4 border border-gray-200 font-semibold">8.000.000</td></tr>
-                        <tr><td class="p-4 border border-gray-200 text-center">2</td><td class="p-4 border border-gray-200">Cấy ghép implant Straumann Thụy Sĩ</td><td class="p-4 border border-gray-200 font-semibold">30.000.000</td></tr>
-                        <tr><td class="p-4 border border-gray-200 text-center">3</td><td class="p-4 border border-gray-200">Phục hình cố định trên implant Sứ Titan</td><td class="p-4 border border-gray-200 font-semibold">2.000.000</td></tr>
-                        <tr><td class="p-4 border border-gray-200 text-center">4</td><td class="p-4 border border-gray-200">Phục hình cố định trên implant Ceramil</td><td class="p-4 border border-gray-200 font-semibold">6.000.000</td></tr>
-                        <tr><td class="p-4 border border-gray-200 text-center">5</td><td class="p-4 border border-gray-200">Phẫu thuật ghép xương</td><td class="p-4 border border-gray-200 font-semibold">5.000.000 – 10.000.000</td></tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <h2 class="text-2xl font-bold text-slate-800 mt-10 mb-4">Cấy răng Implant có đau không? An toàn không?</h2>
-            <p class="text-gray-700 leading-relaxed mb-6">Trước khi trồng răng Implant bác sĩ đã tiến hành gây tê cục bộ tại vùng phẫu thuật. Do đó bệnh nhân sẽ không cảm thấy đau đớn hay khó chịu trong quá trình thực hiện. Sau khi cấy ghép, bạn sẽ được kê đơn thuốc giảm đau, kháng viêm để đảm bảo sự thoải mái nhất.</p>
-
-            <h2 class="text-2xl font-bold text-slate-800 mt-10 mb-4">Vì sao nên lựa chọn trồng răng Implant tại Nha Khoa Smile?</h2>
-            <ul class="list-disc pl-6 mb-12 text-gray-700 space-y-2">
-                <li>Đối tác chiến lược của Straumann Group và Osstem.</li>
-                <li>Đội ngũ bác sĩ nha khoa có trình độ chuyên môn cao và nhiều năm kinh nghiệm.</li>
-                <li>Miễn phí khám, nhận phác đồ điều trị và chụp phim.</li>
-                <li>Báo giá trọn gói, minh bạch, không phát sinh thêm chi phí.</li>
-                <li>Trang thiết bị y tế và cơ sở vật chất hiện đại, vô trùng chuẩn y tế.</li>
-            </ul>
-
-            <!-- Booking Section inside Article -->
-            <div class="bg-blue-600 rounded-2xl p-8 mt-12 text-white shadow-xl" id="dat-lich">
-                <div class="text-center mb-8">
-                    <h3 class="text-2xl md:text-3xl font-bold mb-2">ĐĂNG KÝ NGAY ĐỂ ĐƯỢC TƯ VẤN MIỄN PHÍ TỪ CHUYÊN GIA</h3>
-                    <p class="text-blue-100">Hãy để lại thông tin, chúng tôi sẽ gọi lại ngay cho bạn!</p>
-                </div>
-                
-                <form action="{{ route('public.booking.store') }}" method="POST" class="max-w-2xl mx-auto bg-white p-6 md:p-8 rounded-xl shadow-lg">
-                    @csrf
-                    <!-- Pre-select Service ID if passed -->
-                    @if(isset($targetService))
-                        <input type="hidden" name="service_id" value="{{ $targetService->id }}">
-                    @endif
-                    
-                    <div class="space-y-5">
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">Họ và tên *</label>
-                            <input type="text" name="name" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-gray-800" placeholder="Nhập tên của bạn">
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">Số điện thoại *</label>
-                            <input type="tel" name="phone" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-gray-800" placeholder="Nhập số điện thoại">
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">Dịch vụ bạn quan tâm *</label>
-                            <select name="service_id_display" disabled class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 text-gray-600">
-                                <option value="">Trồng răng implant chuyên sâu</option>
-                            </select>
-                            <p class="text-xs text-gray-500 mt-1">Dịch vụ đã được chọn tự động.</p>
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">Chọn Bác sĩ khám (Tùy chọn)</label>
-                            <select name="doctor_id" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-gray-800">
-                                <option value="">-- Để phòng khám sắp xếp Bác sĩ chuyên khoa --</option>
-                                @if(isset($doctors))
-                                    @foreach($doctors as $doc)
-                                        <option value="{{ $doc->id }}">BS. {{ $doc->user->name ?? '' }} ({{ $doc->specialty ?: 'Chuyên khoa RHM' }})</option>
-                                    @endforeach
-                                @endif
-                            </select>
-                        </div>
-
-                        <!-- Lịch hẹn dự kiến -->
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">Thời gian dự kiến (Từ ngày mai) *</label>
-                            <input type="datetime-local" name="appointment_time" min="{{ \Carbon\Carbon::tomorrow()->format('Y-m-d\T00:00') }}" value="{{ old('appointment_time', \Carbon\Carbon::tomorrow()->setTime(9, 0)->format('Y-m-d\TH:i')) }}" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-gray-800">
-                            <p class="text-xs text-amber-600 mt-1">Lưu ý: Chỉ nhận đặt lịch từ ngày hôm sau trở đi. Nếu khám trong ngày, quý khách không cần đặt lịch mà vui lòng đến trực tiếp phòng khám.</p>
-                            @error('appointment_time') <span class="text-red-500 text-xs font-medium block mt-1">{{ $message }}</span> @enderror
-                        </div>
-                        
-                        <div class="pt-4">
-                            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-full shadow-lg transform hover:-translate-y-1 transition-all duration-300 text-lg">
-                                Xác Nhận Đăng Ký
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            
-        </article>
-    </div>
-</div>
-@endsection
+@include('public.services._layout', [
+    'pageTitle' => 'Cấy Ghép Implant Chuẩn Quốc Tế',
+    'badge' => 'CHUYÊN KHOA CẤY GHÉP IMPLANT',
+    'heroTitle' => 'CẤY GHÉP IMPLANT NHA KHOA',
+    'heroHighlight' => 'Phục Hồi Răng Mất 1:1 & Bảng Giá Chi Tiết',
+    'heroDesc' => 'Cấy ghép Implant là phương pháp phục hồi răng mất tối ưu nhất hiện nay, thay thế cả chân răng và thân răng giúp ăn nhai vững chắc, ngăn tiêu xương hàm và không cần mài các răng kế cận.',
+    'highlights' => [
+        ['icon' => '🦷', 'title' => 'Trụ Titanium chính hãng', 'sub' => 'Straumann Thụy Sĩ • Osstem • Nobel'],
+        ['icon' => '🩻', 'title' => 'Định vị CT ConeBeam 3D', 'sub' => 'Chính xác từng milimet'],
+        ['icon' => '🛡️', 'title' => 'Bảo hành trọn đời', 'sub' => 'Thẻ bảo hành toàn cầu'],
+    ],
+    'prosConsTitle' => 'Đánh Giá Ưu & Nhược Điểm Của Cấy Ghép Implant',
+    'pros' => [
+        ['title' => 'Ngăn chặn tiêu xương hàm hiệu quả', 'desc' => 'Trụ Titanium đóng vai trò như chân răng thật truyền lực nhai xuống xương hàm, giữ gương mặt không bị hóp má.'],
+        ['title' => 'Không mài nhỏ răng thật kế cận', 'desc' => 'Khác với cầu răng sứ truyền thống, Implant đứng độc lập giúp bảo tồn trọn vẹn các răng khỏe xung quanh.'],
+        ['title' => 'Ăn nhai vững chắc như răng thật', 'desc' => 'Tích hợp xương sinh học bền vững, khôi phục tới 99% lực nhai và cảm giác ăn uống tự nhiên.'],
+        ['title' => 'Tuổi thọ lâu dài trọn đời', 'desc' => 'Trụ Implant cao cấp có thể sử dụng 25 năm đến trọn đời nếu chăm sóc răng miệng đúng cách.'],
+    ],
+    'cons' => [
+        ['title' => 'Cần thời gian tích hợp xương', 'desc' => 'Thông thường mất từ 3–12 tuần (tùy dòng trụ và mật độ xương) để trụ bám chắc trước khi gắn răng sứ cố định.'],
+        ['title' => 'Yêu cầu mật độ xương hàm đủ tốt', 'desc' => 'Trường hợp mất răng lâu năm bị tiêu xương nhiều có thể cần ghép xương hoặc nâng xoang hỗ trợ.'],
+        ['title' => 'Chi phí đầu tư ban đầu cao hơn', 'desc' => 'Tuy nhiên tính theo tuổi thọ trọn đời lại tiết kiệm hơn so với làm cầu răng hay hàm tháo lắp phải thay nhiều lần.'],
+        ['title' => 'Đòi hỏi bác sĩ chuyên khoa & phòng vô trùng', 'desc' => 'Bắt buộc thực hiện bởi bác sĩ có chứng chỉ cấy ghép Implant trong phòng tiểu phẫu vô trùng chuẩn Bộ Y Tế.'],
+    ],
+    'whoTitle' => 'Ai Nên Thực Hiện Cấy Ghép Implant?',
+    'whoCards' => [
+        ['icon' => '1️⃣', 'title' => 'Mất 1 Răng Đơn Lẻ', 'desc' => 'Mất răng hàm hoặc răng cửa do sâu nặng, tai nạn muốn phục hồi độc lập không mài răng bên cạnh.'],
+        ['icon' => '🦷', 'title' => 'Mất Nhiều Răng Liền Kề', 'desc' => 'Mất 2–4 răng liên tiếp gây khó ăn nhai và xô lệch các răng đối diện.'],
+        ['icon' => '👵', 'title' => 'Mất Răng Toàn Hàm', 'desc' => 'Phục hồi toàn hàm All-on-4 / All-on-6 thay thế hàm giả tháo lắp lỏng lẻo, ăn nhai thoải mái.'],
+        ['icon' => '⚡', 'title' => 'Răng Hỏng Cần Nhổ & Cấy Ngay', 'desc' => 'Cấy Implant tức thì ngay sau khi nhổ răng giúp rút ngắn thời gian điều trị và bảo tồn mô nướu.'],
+    ],
+    'criteriaTitle' => 'Tiêu Chí Lựa Chọn Trụ Implant An Toàn',
+    'criteria' => [
+        ['title' => 'Thương Hiệu & Xuất Xứ', 'desc' => 'Ưu tiên các hãng lớn có nghiên cứu lâm sàng lâu năm như Straumann (Thụy Sĩ), Nobel (Hoa Kỳ), Osstem (Hàn Quốc).', 'tag' => 'Chính hãng 100%'],
+        ['title' => 'Công Nghệ Bề Mặt Trụ', 'desc' => 'Bề mặt xử lý SLActive giúp tăng tốc độ tích hợp xương chỉ còn 3–4 tuần thay vì 3–6 tháng.', 'tag' => 'Tích hợp nhanh'],
+        ['title' => 'Chụp Phim CT 3D Đánh Giá Xương', 'desc' => 'Đo chính xác chiều cao, độ dày xương hàm và vị trí dây thần kinh trước khi đặt trụ.', 'tag' => 'An toàn tuyệt đối'],
+        ['title' => 'Bác Sĩ Chứng Chỉ Implant', 'desc' => 'Trực tiếp thực hiện bởi TS.BS / BS.CKII giàu kinh nghiệm cấy ghép lâm sàng.', 'tag' => 'Tay nghề cao'],
+        ['title' => 'Phòng Tiểu Phẫu Vô Trùng', 'desc' => 'Đảm bảo vô trùng 1 chiều, dụng cụ tiệt trùng Autoclave Class B ngăn ngừa nhiễm trùng.', 'tag' => 'Chuẩn Bộ Y Tế'],
+    ],
+    'processTitle' => 'Quy Trình Cấy Ghép Implant 6 Bước Chuẩn Y Khoa',
+    'steps' => [
+        ['title' => 'Khám Tổng Quát & Chụp CT ConeBeam 3D', 'desc' => 'Đánh giá mật độ xương hàm, xoang hàm, tình trạng nha chu và kiểm tra các chỉ số sức khỏe toàn thân.'],
+        ['title' => 'Lập Phác Đồ Giả Định 3D', 'desc' => 'Bác sĩ mô phỏng vị trí, góc nghiêng, kích thước trụ Implant và báo giá trọn gói minh bạch.'],
+        ['title' => 'Gây Tê & Đặt Trụ Implant Nhẹ Nhàng', 'desc' => 'Thực hiện trong phòng vô trùng, thời gian đặt 1 trụ chỉ khoảng 15–20 phút, êm ái không đau.'],
+        ['title' => 'Gắn Răng Tạm & Tái Khám Cắt Chỉ', 'desc' => 'Gắn răng tạm vùng thẩm mỹ, hướng dẫn chăm sóc hậu phẫu và tái khám kiểm tra lành thương sau 7–10 ngày.'],
+        ['title' => 'Lấy Dấu Phục Hình Khi Tích Hợp Xương', 'desc' => 'Khi trụ bám chắc vào xương hàm, bác sĩ lấy dấu kỹ thuật số 3D để chế tác khớp nối Abutment và mão sứ.'],
+        ['title' => 'Gắn Mão Sứ Cố Định & Bảo Hành', 'desc' => 'Hoàn thiện răng sứ chuẩn khớp cắn, cấp thẻ bảo hành điện tử chính hãng và hẹn lịch kiểm tra định kỳ 6 tháng.'],
+    ],
+    'priceTitle' => 'Bảng Giá Trồng Răng Implant Niêm Yết',
+    'priceRows' => [
+        ['name' => 'Implant Osstem (Hàn Quốc)', 'desc' => 'Trụ Titanium + Abutment + Mão sứ Titanium, tích hợp tốt', 'warranty' => '10 năm', 'price' => '13.500.000 đ / trụ'],
+        ['name' => 'Implant Dentium SuperLine (Mỹ)', 'desc' => 'Trụ Titanium + Abutment + Mão toàn sứ Zirconia', 'warranty' => '15 năm', 'price' => '18.000.000 đ / trụ', 'badge' => 'Phổ biến'],
+        ['name' => 'Implant Tekka Global D (Pháp)', 'desc' => 'Thiết kế ren xoắn ổn định sơ khởi cao + Mão toàn sứ', 'warranty' => '20 năm', 'price' => '22.000.000 đ / trụ'],
+        ['name' => 'Implant Straumann SLA (Thụy Sĩ)', 'desc' => 'Thương hiệu số 1 Thụy Sĩ + Abutment chính hãng + Sứ Cercon', 'warranty' => 'Trọn đời', 'price' => '25.000.000 đ / trụ', 'badge' => 'Khuyên dùng', 'featured' => true],
+        ['name' => 'Implant Straumann SLActive (Thụy Sĩ)', 'desc' => 'Bề mặt hoạt hóa sinh học tích hợp siêu tốc 3–4 tuần', 'warranty' => 'Trọn đời', 'price' => '32.180.000 đ / trụ', 'badge' => 'Cao cấp nhất', 'featured' => true],
+    ],
+])

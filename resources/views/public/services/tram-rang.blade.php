@@ -1,112 +1,55 @@
-@extends('layouts.public')
-
-@section('title', 'Trám răng - Nha Khoa Smile')
-
-@section('content')
-<div class="bg-slate-50 py-16">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <!-- Breadcrumbs -->
-        <nav class="flex text-sm text-gray-500 mb-8">
-            <ol class="flex items-center space-x-2">
-                <li><a href="{{ route('home') }}" class="hover:text-blue-600">Trang chủ</a></li>
-                <li><span class="mx-2">/</span></li>
-                <li><a href="{{ route('public.services') }}" class="hover:text-blue-600">Dịch vụ</a></li>
-                <li><span class="mx-2">/</span></li>
-                <li class="font-semibold text-gray-800">Trám răng</li>
-            </ol>
-        </nav>
-
-        <!-- Main Content Article -->
-        <article class="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 md:p-12 prose prose-lg prose-blue max-w-none">
-            <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-8 uppercase">Trám răng</h1>
-            
-            <img src="https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&q=80&w=1200" alt="Trám răng" class="w-full h-80 object-cover rounded-2xl mb-10 shadow-md">
-
-            <h2 class="text-2xl font-bold text-slate-800 mt-10 mb-4 uppercase">Trám răng Là Gì?</h2>
-            <p class="text-gray-700 leading-relaxed mb-6">Phục hồi những tổn thương của răng do sâu răng, sứt mẻ bằng vật liệu trám thẩm mỹ cao cấp.</p>
-            <p class="text-gray-700 leading-relaxed mb-6">Nha Khoa Smile tự hào áp dụng các công nghệ tiên tiến nhất trong nha khoa để mang đến dịch vụ <strong>Trám răng</strong> an toàn, nhanh chóng và đạt hiệu quả thẩm mỹ cao nhất cho mọi khách hàng. Đội ngũ y bác sĩ giàu kinh nghiệm sẽ trực tiếp thăm khám và lên phác đồ điều trị chuyên biệt cho từng trường hợp.</p>
-
-            <h2 class="text-2xl font-bold text-slate-800 mt-10 mb-4 uppercase">Quy Trình Thực Hiện Tại Nha Khoa Smile</h2>
-            <ol class="list-decimal pl-6 mb-8 text-gray-700 space-y-2">
-                <li>Thăm khám tổng quát và chụp phim X-quang kỹ thuật số.</li>
-                <li>Bác sĩ chuyên khoa phân tích và lên phác đồ điều trị chi tiết.</li>
-                <li>Tiến hành vệ sinh răng miệng và vô cảm (gây tê) đảm bảo không đau.</li>
-                <li>Thực hiện quy trình điều trị chuẩn y khoa với thiết bị vô trùng tuyệt đối.</li>
-                <li>Kiểm tra sau điều trị, hướng dẫn chăm sóc tại nhà và hẹn lịch tái khám.</li>
-            </ol>
-
-            <h2 class="text-2xl font-bold text-slate-800 mt-10 mb-4 uppercase">Vì Sao Chọn Nha Khoa Smile?</h2>
-            <ul class="list-disc pl-6 mb-12 text-gray-700 space-y-2">
-                <li>Đội ngũ bác sĩ chuyên khoa răng hàm mặt giỏi, trên 10 năm kinh nghiệm.</li>
-                <li>Hệ thống trang thiết bị, máy móc nhập khẩu nguyên chiếc từ Châu Âu.</li>
-                <li>Phòng khám vô trùng đạt tiêu chuẩn khắt khe của Bộ Y Tế.</li>
-                <li>Chi phí minh bạch, cam kết không phát sinh trong suốt quá trình điều trị.</li>
-                <li>Chế độ bảo hành chính hãng và chăm sóc khách hàng trọn đời.</li>
-            </ul>
-
-            <!-- Booking Section inside Article -->
-            <div class="bg-blue-600 rounded-2xl p-8 mt-12 text-white shadow-xl" id="dat-lich">
-                <div class="text-center mb-8">
-                    <h3 class="text-2xl md:text-3xl font-bold mb-2 uppercase">Đăng Ký Tư Vấn Miễn Phí Từ Chuyên Gia</h3>
-                    <p class="text-blue-100">Hãy để lại thông tin, bác sĩ chuyên khoa của chúng tôi sẽ liên hệ lại ngay!</p>
-                </div>
-                
-                <form action="{{ route('public.booking.store') }}" method="POST" class="max-w-2xl mx-auto bg-white p-6 md:p-8 rounded-xl shadow-lg">
-                    @csrf
-                    <!-- Pre-select Service ID if passed -->
-                    @if(isset($targetService))
-                        <input type="hidden" name="service_id" value="{{ $targetService->id }}">
-                    @endif
-                    
-                    <div class="space-y-5">
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">Họ và tên *</label>
-                            <input type="text" name="name" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-gray-800" placeholder="Nhập tên của bạn">
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">Số điện thoại *</label>
-                            <input type="tel" name="phone" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-gray-800" placeholder="Nhập số điện thoại">
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">Dịch vụ bạn quan tâm *</label>
-                            <select name="service_id_display" disabled class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 text-gray-600">
-                                <option value="">{{ isset($targetService) ? $targetService->name : 'Dịch vụ' }}</option>
-                            </select>
-                            <p class="text-xs text-gray-500 mt-1">Dịch vụ đã được chọn tự động.</p>
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">Chọn Bác sĩ khám (Tùy chọn)</label>
-                            <select name="doctor_id" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-gray-800">
-                                <option value="">-- Để phòng khám sắp xếp Bác sĩ chuyên khoa --</option>
-                                @if(isset($doctors))
-                                    @foreach($doctors as $doc)
-                                        <option value="{{ $doc->id }}">BS. {{ $doc->user->name ?? '' }} ({{ $doc->specialty ?: 'Chuyên khoa RHM' }})</option>
-                                    @endforeach
-                                @endif
-                            </select>
-                        </div>
-
-                        <!-- Lịch hẹn dự kiến -->
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">Thời gian dự kiến (Từ ngày mai) *</label>
-                            <input type="datetime-local" name="appointment_time" min="{{ \Carbon\Carbon::tomorrow()->format('Y-m-d\T00:00') }}" value="{{ old('appointment_time', \Carbon\Carbon::tomorrow()->setTime(9, 0)->format('Y-m-d\TH:i')) }}" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-gray-800">
-                            <p class="text-xs text-amber-600 mt-1">Lưu ý: Chỉ nhận đặt lịch từ ngày hôm sau trở đi. Nếu khám trong ngày, quý khách không cần đặt lịch mà vui lòng đến trực tiếp phòng khám.</p>
-                            @error('appointment_time') <span class="text-red-500 text-xs font-medium block mt-1">{{ $message }}</span> @enderror
-                        </div>
-                        
-                        <div class="pt-4">
-                            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-full shadow-lg transform hover:-translate-y-1 transition-all duration-300 text-lg">
-                                Xác Nhận Đăng Ký
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            
-        </article>
-    </div>
-</div>
-@endsection
+@include('public.services._layout', [
+    'pageTitle' => 'Trám Răng Thẩm Mỹ Composite Nano',
+    'badge' => 'NHA KHOA PHỤC HỒI BẢO TỒN',
+    'heroTitle' => 'TRÁM RĂNG THẨM MỸ',
+    'heroHighlight' => 'Composite Nano Tự Nhiên & Bảng Giá',
+    'heroDesc' => 'Trám răng bằng vật liệu Composite Nano 3M Hoa Kỳ trùng khớp hoàn hảo với màu răng thật giúp bít kín lỗ sâu, tái tạo răng sứt mẻ và đóng khe thưa nhanh chóng chỉ trong 20 phút.',
+    'highlights' => [
+        ['icon' => '🩹', 'title' => 'Composite 3M Hoa Kỳ', 'sub' => 'Màu trùng khớp răng thật'],
+        ['icon' => '⏱️', 'title' => 'Nhanh chóng 20 phút', 'sub' => 'Ăn nhai ngay sau khi trám'],
+        ['icon' => '🦷', 'title' => 'Không mài răng thật', 'sub' => 'Ngăn sâu răng tiến triển'],
+    ],
+    'prosConsTitle' => 'Ưu Điểm & Lưu Ý Khi Trám Răng Thẩm Mỹ',
+    'pros' => [
+        ['title' => 'Ngăn chặn sâu răng lan vào tủy', 'desc' => 'Loại bỏ hoàn toàn mô sâu và bít kín lỗ hổng giúp bảo vệ tủy răng khỏe mạnh, tránh phải chữa tủy.'],
+        ['title' => 'Thẩm mỹ tự nhiên, khó nhận ra vết trám', 'desc' => 'Vật liệu Composite Nano có nhiều sắc độ trùng khít men răng gốc, đặc biệt đẹp ở vùng răng cửa.'],
+        ['title' => 'Không xâm lấn, không đau', 'desc' => 'Thực hiện nhẹ nhàng trong 15–30 phút, hoàn toàn không mài nhỏ thân răng thật.'],
+        ['title' => 'Chi phí tiết kiệm, dễ bảo trì', 'desc' => 'Giải pháp phục hồi nhanh chóng, tiết kiệm với độ bền sử dụng tốt từ 3–5 năm.'],
+    ],
+    'cons' => [
+        ['title' => 'Không phù hợp với răng vỡ quá lớn', 'desc' => 'Nếu mô răng thật mất trên 50%, miếng trám dễ bong khi nhai mạnh; Bác sĩ sẽ tư vấn Inlay/Onlay hoặc bọc sứ.'],
+        ['title' => 'Có thể hơi đổi màu nhẹ sau nhiều năm', 'desc' => 'Nếu dùng nhiều cà phê, trà đặc, miếng trám Composite có thể ngả màu nhẹ và cần đánh bóng lại.'],
+        ['title' => 'Tránh cắn đồ quá cứng tại vị trí trám', 'desc' => 'Đặc biệt với vết trám cạnh cắn răng cửa, tránh cắn hạt cứng, mía hoặc đá lạnh trực tiếp.'],
+        ['title' => 'Cần kiểm tra định kỳ 6 tháng', 'desc' => 'Kiểm tra độ khít sát bờ miếng trám để đảm bảo không phát sinh sâu răng thứ phát.'],
+    ],
+    'whoTitle' => 'Trường Hợp Nên Trám Răng Sớm',
+    'whoCards' => [
+        ['icon' => '🕳️', 'title' => 'Răng Sâu Mới Chớm – Sâu Ngà', 'desc' => 'Xuất hiện đốm đen, lỗ sâu trên mặt nhai hoặc kẽ răng, hơi ê khi ăn đồ ngọt lạnh.'],
+        ['icon' => '💥', 'title' => 'Răng Sứt Mẻ Cạnh Cắn', 'desc' => 'Răng cửa hoặc răng hàm bị mẻ góc nhỏ do va chạm hoặc nhai phải vật cứng.'],
+        ['icon' => '🦷', 'title' => 'Mòn Cổ Chân Răng', 'desc' => 'Cổ răng bị khuyết hình chêm gây buốt nhói mỗi lần chải răng hay uống nước lạnh.'],
+        ['icon' => '✨', 'title' => 'Khe Thưa Nhỏ Răng Cửa', 'desc' => 'Đóng khe thưa dưới 2mm nhanh gọn, thẩm mỹ mà không cần niềng hay dán sứ.'],
+    ],
+    'criteriaTitle' => '5 Tiêu Chí Trám Răng Bền Đẹp',
+    'criteria' => [
+        ['title' => 'Nạo Sạch 100% Mô Sâu', 'desc' => 'Loại bỏ triệt để vi khuẩn sâu răng trước khi đặt vật liệu để không bị sâu tái phát.', 'tag' => 'Sạch triệt để'],
+        ['title' => 'Vật Liệu Composite 3M Mỹ', 'desc' => 'Hạt độn siêu mịn Nano giúp miếng trám cứng chắc, ít co ngót và bóng tự nhiên.', 'tag' => 'Chính hãng 3M'],
+        ['title' => 'Kỹ Thuật Đắp Từng Lớp & Chiếu Đèn LED', 'desc' => 'Đông cứng từng lớp mỏng giúp tăng độ bám dính và tránh ê buốt sau khi trám.', 'tag' => 'Bám dính cao'],
+        ['title' => 'Tạo Hình Giải Phẫu Mặt Nhai', 'desc' => 'Tái tạo đúng rãnh múi răng và kiểm tra khớp cắn không bị cộm khi ăn nhai.', 'tag' => 'Chuẩn khớp cắn'],
+        ['title' => 'Đánh Bóng Mịn Bờ Miếng Trám', 'desc' => 'Giúp miếng trám liền mạch với men răng thật, không giắt thức ăn và khó bám màu.', 'tag' => 'Thẩm mỹ cao'],
+    ],
+    'processTitle' => 'Quy Trình Trám Răng 6 Bước Chuẩn Y Khoa',
+    'steps' => [
+        ['title' => 'Thăm Khám & Chụp Phim Đánh Giá Độ Sâu', 'desc' => 'Kiểm tra độ sâu lỗ sâu để đảm bảo chưa ảnh hưởng tủy răng và chọn màu Composite trùng răng thật.'],
+        ['title' => 'Làm Sạch Xoang Sâu Nhẹ Nhàng', 'desc' => 'Loại bỏ hoàn toàn mô răng sâu, mảng bám và sát khuẩn sạch sẽ bề mặt xoang trám.'],
+        ['title' => 'Xử Lý Bề Mặt & Phủ Keo Dán Nha Khoa', 'desc' => 'Bôi dung dịch tạo độ nhám vi thể và lớp keo dán chuyên dụng giúp tăng lực liên kết tối đa.'],
+        ['title' => 'Đắp Composite Từng Lớp & Tạo Hình', 'desc' => 'Bác sĩ đắp vật liệu Composite thẩm mỹ, điêu khắc lại hình dáng rãnh múi răng tự nhiên.'],
+        ['title' => 'Chiếu Đèn Quang Trùng Hợp LED', 'desc' => 'Chiếu ánh sáng xanh chuyên dụng làm đông cứng hoàn toàn miếng trám chỉ trong vài chục giây.'],
+        ['title' => 'Mài Chỉnh Khớp Cắn & Đánh Bóng', 'desc' => 'Thử giấy cắn đảm bảo ăn nhai êm ái không cộm vướng và đánh bóng mịn đẹp bề mặt.'],
+    ],
+    'priceTitle' => 'Bảng Giá Trám Răng Thẩm Mỹ Niêm Yết',
+    'priceRows' => [
+        ['name' => 'Trám răng sâu thông thường (Composite 3M)', 'desc' => 'Trám lỗ sâu mặt nhai, mòn cổ răng bằng Composite Mỹ', 'warranty' => '6 tháng', 'price' => '300.000 đ / răng', 'badge' => 'Phổ biến', 'featured' => true],
+        ['name' => 'Trám răng thẩm mỹ răng cửa / đóng khe thưa', 'desc' => 'Composite Nano thẩm mỹ cao, trùng màu men răng gốc', 'warranty' => '12 tháng', 'price' => '500.000 đ / răng', 'featured' => true],
+        ['name' => 'Trám Inlay / Onlay sứ (Răng hàm vỡ lớn)', 'desc' => 'Chế tác miếng trám sứ CAD/CAM 3D siêu bền chắc', 'warranty' => '5 năm', 'price' => '3.000.000 đ / răng'],
+    ],
+])

@@ -12,7 +12,7 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['"Be Vietnam Pro"', 'Inter', ...defaultTheme.fontFamily.sans],
+                sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', ...defaultTheme.fontFamily.sans],
                 heading: ['"Be Vietnam Pro"', 'Inter', ...defaultTheme.fontFamily.sans],
             },
         },

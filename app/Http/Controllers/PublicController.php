@@ -21,9 +21,10 @@ class PublicController extends Controller
         }
 
         $featuredServices = Service::where('is_active', true)->take(6)->get();
-        $doctors = \App\Models\Doctor::with('user')->take(4)->get();
+        $allServices = Service::where('is_active', true)->get();
+        $doctors = $this->getAllDoctors()->take(4);
 
-        return view('welcome', compact('featuredServices', 'doctors'));
+        return view('welcome', compact('featuredServices', 'allServices', 'doctors'));
     }
     public function services()
     {
@@ -49,7 +50,7 @@ class PublicController extends Controller
         if (array_key_exists($slug, $viewMap)) {
             $services = Service::where('is_active', true)->get();
             $targetService = Service::where('name', $viewMap[$slug]['name'])->first();
-            $doctors = \App\Models\Doctor::with('user')->get();
+            $doctors = $this->getAllDoctors();
             return view($viewMap[$slug]['view'], compact('services', 'targetService', 'doctors'));
         }
 
@@ -61,9 +62,31 @@ class PublicController extends Controller
         return view('public.about');
     }
 
+    /**
+     * Đồng bộ tự động mọi tài khoản có vai trò Doctor vào bảng doctors để hiển thị đầy đủ
+     */
+    protected function getAllDoctors()
+    {
+        $doctorUsers = \App\Models\User::whereHas('role', function ($q) {
+            $q->whereRaw('LOWER(name) = ?', ['doctor']);
+        })->get();
+
+        foreach ($doctorUsers as $u) {
+            \App\Models\Doctor::firstOrCreate(
+                ['user_id' => $u->id],
+                ['specialty' => 'Chuyên khoa Răng Hàm Mặt']
+            );
+        }
+
+        return \App\Models\Doctor::with('user')
+            ->whereHas('user')
+            ->orderBy('id')
+            ->get();
+    }
+
     public function doctors()
     {
-        $doctors = \App\Models\Doctor::with('user')->get();
+        $doctors = $this->getAllDoctors();
         return view('public.doctors', compact('doctors'));
     }
 
@@ -108,7 +131,7 @@ class PublicController extends Controller
     public function booking()
     {
         $services = Service::where('is_active', true)->get();
-        $doctors = \App\Models\Doctor::with('user')->get();
+        $doctors = $this->getAllDoctors();
         return view('public.booking', compact('services', 'doctors'));
     }
 

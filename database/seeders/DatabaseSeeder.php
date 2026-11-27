@@ -40,8 +40,8 @@ class DatabaseSeeder extends Seeder
         // -------------------------------------------------------------
         $settings = [
             'clinic_name' => 'Nha Khoa Smile',
-            'clinic_hotline' => '1900 1234',
-            'clinic_address' => '123 Nguyễn Văn Cừ, Quận 5, TP. Hồ Chí Minh',
+            'clinic_hotline' => '0775 761 388',
+            'clinic_address' => '204 Trần Duy Hưng, Yên Hòa, Cầu Giấy, Hà Nội',
             'vat_percentage' => '10',
             'currency_unit' => 'VNĐ',
             'bank_id' => 'TCB',
@@ -120,6 +120,13 @@ class DatabaseSeeder extends Seeder
                 'phone' => '0945678901',
                 'specialty' => 'Chỉnh nha - Niềng răng & Nha khoa trẻ em',
                 'description' => 'Thạc sĩ Răng Hàm Mặt, Bác sĩ chứng chỉ chỉnh nha Invisalign Platinum Hoa Kỳ, chỉnh nha toàn diện cho người lớn và trẻ nhỏ.',
+            ],
+            [
+                'email' => 'uyen.mai@smile.com',
+                'name' => 'ThS. BS. Mai Phương Uyên',
+                'phone' => '0945678999',
+                'specialty' => 'Trưởng khoa Chỉnh nha Invisalign Diamond',
+                'description' => 'Tiên phong chỉnh nha vô hình Invisalign Diamond kết hợp căn chỉnh khớp cắn sinh học, tu nghiệp ĐH Frankfurt, Đức.',
             ],
             [
                 'email' => 'trong.vu@smile.com',

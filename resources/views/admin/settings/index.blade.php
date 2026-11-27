@@ -44,7 +44,7 @@
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 mb-1.5">Số Hotline hỗ trợ</label>
-                                <input type="text" name="clinic_hotline" value="{{ $settings['clinic_hotline'] ?? '1900 1234' }}" class="w-full rounded-xl border-slate-200 text-xs focus:border-[#0D7A68] focus:ring-[#0D7A68]">
+                                <input type="text" name="clinic_hotline" value="{{ $settings['clinic_hotline'] ?? '0775 761 388' }}" class="w-full rounded-xl border-slate-200 text-xs focus:border-[#0D7A68] focus:ring-[#0D7A68]">
                             </div>
                             <div class="md:col-span-2">
                                 <label class="block text-xs font-bold text-slate-700 mb-1.5">Địa chỉ phòng khám</label>

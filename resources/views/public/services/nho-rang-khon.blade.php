@@ -1,112 +1,56 @@
-@extends('layouts.public')
-
-@section('title', 'Nhổ răng khôn - Nha Khoa Smile')
-
-@section('content')
-<div class="bg-slate-50 py-16">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <!-- Breadcrumbs -->
-        <nav class="flex text-sm text-gray-500 mb-8">
-            <ol class="flex items-center space-x-2">
-                <li><a href="{{ route('home') }}" class="hover:text-blue-600">Trang chủ</a></li>
-                <li><span class="mx-2">/</span></li>
-                <li><a href="{{ route('public.services') }}" class="hover:text-blue-600">Dịch vụ</a></li>
-                <li><span class="mx-2">/</span></li>
-                <li class="font-semibold text-gray-800">Nhổ răng khôn</li>
-            </ol>
-        </nav>
-
-        <!-- Main Content Article -->
-        <article class="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 md:p-12 prose prose-lg prose-blue max-w-none">
-            <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-8 uppercase">Nhổ răng khôn</h1>
-            
-            <img src="https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&q=80&w=1200" alt="Nhổ răng khôn" class="w-full h-80 object-cover rounded-2xl mb-10 shadow-md">
-
-            <h2 class="text-2xl font-bold text-slate-800 mt-10 mb-4 uppercase">Nhổ răng khôn Là Gì?</h2>
-            <p class="text-gray-700 leading-relaxed mb-6">Nhổ răng khôn an toàn, không đau bằng công nghệ sóng siêu âm Piezotome tiên tiến nhất.</p>
-            <p class="text-gray-700 leading-relaxed mb-6">Nha Khoa Smile tự hào áp dụng các công nghệ tiên tiến nhất trong nha khoa để mang đến dịch vụ <strong>Nhổ răng khôn</strong> an toàn, nhanh chóng và đạt hiệu quả thẩm mỹ cao nhất cho mọi khách hàng. Đội ngũ y bác sĩ giàu kinh nghiệm sẽ trực tiếp thăm khám và lên phác đồ điều trị chuyên biệt cho từng trường hợp.</p>
-
-            <h2 class="text-2xl font-bold text-slate-800 mt-10 mb-4 uppercase">Quy Trình Thực Hiện Tại Nha Khoa Smile</h2>
-            <ol class="list-decimal pl-6 mb-8 text-gray-700 space-y-2">
-                <li>Thăm khám tổng quát và chụp phim X-quang kỹ thuật số.</li>
-                <li>Bác sĩ chuyên khoa phân tích và lên phác đồ điều trị chi tiết.</li>
-                <li>Tiến hành vệ sinh răng miệng và vô cảm (gây tê) đảm bảo không đau.</li>
-                <li>Thực hiện quy trình điều trị chuẩn y khoa với thiết bị vô trùng tuyệt đối.</li>
-                <li>Kiểm tra sau điều trị, hướng dẫn chăm sóc tại nhà và hẹn lịch tái khám.</li>
-            </ol>
-
-            <h2 class="text-2xl font-bold text-slate-800 mt-10 mb-4 uppercase">Vì Sao Chọn Nha Khoa Smile?</h2>
-            <ul class="list-disc pl-6 mb-12 text-gray-700 space-y-2">
-                <li>Đội ngũ bác sĩ chuyên khoa răng hàm mặt giỏi, trên 10 năm kinh nghiệm.</li>
-                <li>Hệ thống trang thiết bị, máy móc nhập khẩu nguyên chiếc từ Châu Âu.</li>
-                <li>Phòng khám vô trùng đạt tiêu chuẩn khắt khe của Bộ Y Tế.</li>
-                <li>Chi phí minh bạch, cam kết không phát sinh trong suốt quá trình điều trị.</li>
-                <li>Chế độ bảo hành chính hãng và chăm sóc khách hàng trọn đời.</li>
-            </ul>
-
-            <!-- Booking Section inside Article -->
-            <div class="bg-blue-600 rounded-2xl p-8 mt-12 text-white shadow-xl" id="dat-lich">
-                <div class="text-center mb-8">
-                    <h3 class="text-2xl md:text-3xl font-bold mb-2 uppercase">Đăng Ký Tư Vấn Miễn Phí Từ Chuyên Gia</h3>
-                    <p class="text-blue-100">Hãy để lại thông tin, bác sĩ chuyên khoa của chúng tôi sẽ liên hệ lại ngay!</p>
-                </div>
-                
-                <form action="{{ route('public.booking.store') }}" method="POST" class="max-w-2xl mx-auto bg-white p-6 md:p-8 rounded-xl shadow-lg">
-                    @csrf
-                    <!-- Pre-select Service ID if passed -->
-                    @if(isset($targetService))
-                        <input type="hidden" name="service_id" value="{{ $targetService->id }}">
-                    @endif
-                    
-                    <div class="space-y-5">
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">Họ và tên *</label>
-                            <input type="text" name="name" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-gray-800" placeholder="Nhập tên của bạn">
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">Số điện thoại *</label>
-                            <input type="tel" name="phone" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-gray-800" placeholder="Nhập số điện thoại">
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">Dịch vụ bạn quan tâm *</label>
-                            <select name="service_id_display" disabled class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 text-gray-600">
-                                <option value="">{{ isset($targetService) ? $targetService->name : 'Dịch vụ' }}</option>
-                            </select>
-                            <p class="text-xs text-gray-500 mt-1">Dịch vụ đã được chọn tự động.</p>
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">Chọn Bác sĩ khám (Tùy chọn)</label>
-                            <select name="doctor_id" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-gray-800">
-                                <option value="">-- Để phòng khám sắp xếp Bác sĩ chuyên khoa --</option>
-                                @if(isset($doctors))
-                                    @foreach($doctors as $doc)
-                                        <option value="{{ $doc->id }}">BS. {{ $doc->user->name ?? '' }} ({{ $doc->specialty ?: 'Chuyên khoa RHM' }})</option>
-                                    @endforeach
-                                @endif
-                            </select>
-                        </div>
-
-                        <!-- Lịch hẹn dự kiến -->
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">Thời gian dự kiến (Từ ngày mai) *</label>
-                            <input type="datetime-local" name="appointment_time" min="{{ \Carbon\Carbon::tomorrow()->format('Y-m-d\T00:00') }}" value="{{ old('appointment_time', \Carbon\Carbon::tomorrow()->setTime(9, 0)->format('Y-m-d\TH:i')) }}" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-gray-800">
-                            <p class="text-xs text-amber-600 mt-1">Lưu ý: Chỉ nhận đặt lịch từ ngày hôm sau trở đi. Nếu khám trong ngày, quý khách không cần đặt lịch mà vui lòng đến trực tiếp phòng khám.</p>
-                            @error('appointment_time') <span class="text-red-500 text-xs font-medium block mt-1">{{ $message }}</span> @enderror
-                        </div>
-                        
-                        <div class="pt-4">
-                            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-full shadow-lg transform hover:-translate-y-1 transition-all duration-300 text-lg">
-                                Xác Nhận Đăng Ký
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            
-        </article>
-    </div>
-</div>
-@endsection
+@include('public.services._layout', [
+    'pageTitle' => 'Nhổ Răng Khôn Không Đau Piezotome',
+    'badge' => 'CHUYÊN KHOA TIỂU PHẪU NHA KHOA',
+    'heroTitle' => 'NHỔ RĂNG KHÔN KHÔNG ĐAU',
+    'heroHighlight' => 'Công Nghệ Siêu Âm Piezotome & Bảng Giá',
+    'heroDesc' => 'Ứng dụng máy nhổ răng siêu âm Piezotome kết hợp phim chụp CT ConeBeam 3D xác định chính xác vị trí dây thần kinh, giúp nhổ răng khôn mọc lệch – mọc ngầm êm ái, ít chảy máu và nhanh lành thương.',
+    'highlights' => [
+        ['icon' => '⚡', 'title' => 'Sóng siêu âm Piezotome', 'sub' => 'Không tác động mô mềm'],
+        ['icon' => '🩻', 'title' => 'Chụp phim CT 3D', 'sub' => 'An toàn tuyệt đối dây thần kinh'],
+        ['icon' => '⏱️', 'title' => 'Nhanh chóng 15–30 phút', 'sub' => 'Hạn chế sưng đau sau nhổ'],
+    ],
+    'prosConsTitle' => 'Ưu Điểm & Lưu Ý Khi Nhổ Răng Khôn',
+    'pros' => [
+        ['title' => 'Chấm dứt đau nhức, viêm lợi trùm tái phát', 'desc' => 'Loại bỏ hoàn toàn ổ viêm quanh thân răng khôn, hết sưng má, há miệng khó và hôi miệng.'],
+        ['title' => 'Bảo vệ răng hàm số 7 kế cận', 'desc' => 'Ngăn răng khôn mọc nghiêng đâm vào chân răng số 7 gây sâu kẽ, tiêu chân răng hoặc xô lệch cả hàm.'],
+        ['title' => 'Êm ái, ít xâm lấn nhờ Piezotome', 'desc' => 'Đầu rung siêu âm chỉ cắt đứt dây chằng nha chu, không làm tổn thương nướu và mạch máu xung quanh.'],
+        ['title' => 'Hỗ trợ màng huyết tương PRF nhanh lành', 'desc' => 'Tùy chọn đặt màng PRF giúp cầm máu nhanh, giảm sưng và rút ngắn thời gian đóng huyệt ổ răng.'],
+    ],
+    'cons' => [
+        ['title' => 'Cần nghỉ ngơi nhẹ 1–2 ngày đầu', 'desc' => 'Với răng khôn mọc ngầm phức tạp, vùng má có thể hơi căng nhẹ trong 24–48 giờ đầu và giảm dần.'],
+        ['title' => 'Kiêng ăn đồ cứng, nóng và không khạc nhổ mạnh', 'desc' => 'Giữ cục máu đông ổn định trong huyệt ổ răng để tránh chảy máu lại hoặc viêm ổ răng khô.'],
+        ['title' => 'Cần chụp phim X-Quang / CT trước khi nhổ', 'desc' => 'Không nhổ răng khôn khi chưa có phim đánh giá hình dáng chân răng và ống thần kinh hàm dưới.'],
+        ['title' => 'Uống thuốc đúng đơn Bác sĩ kê', 'desc' => 'Tuân thủ đầy đủ đơn thuốc kháng viêm, giảm đau trên hồ sơ điện tử DCMS và tái khám cắt chỉ sau 7 ngày.'],
+    ],
+    'whoTitle' => 'Khi Nào Cần Nhổ Răng Khôn Càng Sớm Càng Tốt?',
+    'whoCards' => [
+        ['icon' => '🔥', 'title' => 'Viêm Lợi Trùm Tái Phát', 'desc' => 'Nướu vùng góc hàm sưng đỏ, đau nhức khi nhai, nổi hạch hoặc sốt nhẹ lặp đi lặp lại.'],
+        ['icon' => '📐', 'title' => 'Mọc Lệch 45° – 90°', 'desc' => 'Răng khôn mọc ngang đâm vào răng số 7 gây giắt thức ăn và sâu âm thầm mặt xa răng số 7.'],
+        ['icon' => '🦷', 'title' => 'Răng Khôn Bị Sâu Nặng', 'desc' => 'Nằm sâu khó vệ sinh dẫn đến sâu vỡ lớn, viêm tủy gây đau buốt lan lên thái dương.'],
+        ['icon' => '💎', 'title' => 'Chỉ Định Trước Khi Niềng Răng', 'desc' => 'Tạo khoảng trống cần thiết để sắp đều cung hàm và tránh răng khôn đẩy xô lệch răng sau khi niềng.'],
+    ],
+    'criteriaTitle' => '5 Tiêu Chí Nhổ Răng Khôn An Toàn Tuyệt Đối',
+    'criteria' => [
+        ['title' => 'Phim CT ConeBeam 3D', 'desc' => 'Nhìn rõ 3 chiều vị trí chân răng so với dây thần kinh hàm dưới và xoang hàm trên.', 'tag' => 'Tránh tê môi'],
+        ['title' => 'Bác Sĩ Chuyên Khoa Tiểu Phẫu', 'desc' => 'Thực hiện bởi BS.CKI Phẫu thuật trong miệng có kinh nghiệm xử lý hàng nghìn ca mọc ngầm.', 'tag' => 'Nhẹ nhàng'],
+        ['title' => 'Công Nghệ Siêu Âm Piezotome', 'desc' => 'Hạn chế tối đa mở xương, giảm sang chấn mô mềm và ít sưng đau hậu phẫu.', 'tag' => 'Ít xâm lấn'],
+        ['title' => 'Kiểm Tra Huyết Áp & Đông Máu', 'desc' => 'Khai thác kỹ tiền sử bệnh lý tim mạch, tiểu đường, dị ứng thuốc tê trước khi thực hiện.', 'tag' => 'An toàn y khoa'],
+        ['title' => 'Theo Dõi Hậu Phẫu 24/7', 'desc' => 'Kê đơn thuốc rõ ràng trên DCMS, chăm sóc hỏi thăm sau nhổ và cắt chỉ miễn phí.', 'tag' => 'Tận tâm'],
+    ],
+    'processTitle' => 'Quy Trình Nhổ Răng Khôn 6 Bước Chuẩn Y Khoa',
+    'steps' => [
+        ['title' => 'Thăm Khám & Chụp Phim CT 3D', 'desc' => 'Chụp phim đánh giá độ khó, hình thể chân răng và khoảng cách tới dây thần kinh.'],
+        ['title' => 'Xét Nghiệm & Khai Thác Tiền Sử', 'desc' => 'Đo huyết áp, kiểm tra tiền sử dị ứng và các bệnh lý nền để đảm bảo đủ điều kiện tiểu phẫu.'],
+        ['title' => 'Sát Khuẩn & Gây Tê Không Đau', 'desc' => 'Súc miệng sát khuẩn, bôi tê bề mặt trước khi tiêm thuốc tê vi điểm giúp hoàn toàn êm ái.'],
+        ['title' => 'Tách Dây Chằng Bằng Piezotome', 'desc' => 'Sử dụng sóng siêu âm Piezotome làm lung lay và lấy răng khôn nhẹ nhàng, gọn gàng.'],
+        ['title' => 'Làm Sạch Huyệt Ổ Răng & Khâu Thẩm Mỹ', 'desc' => 'Bơm rửa sạch ổ răng bằng nước muối sinh lý, đặt màng cầm máu (hoặc PRF) và khâu đóng nướu.'],
+        ['title' => 'Kê Đơn Thuốc & Hẹn Cắt Chỉ Sau 7 Ngày', 'desc' => 'Cắn gạc cầm máu, chườm lạnh tại chỗ, nhận đơn thuốc điện tử và hướng dẫn chăm sóc chi tiết.'],
+    ],
+    'priceTitle' => 'Bảng Giá Nhổ Răng Khôn Niêm Yết',
+    'priceRows' => [
+        ['name' => 'Nhổ răng khôn mọc thẳng (Hàm trên / Hàm dưới)', 'desc' => 'Đơn giản, thời gian thực hiện nhanh 10–15 phút', 'warranty' => 'Tái khám miễn phí', 'price' => '490.000 – 990.000 đ'],
+        ['name' => 'Nhổ răng khôn mọc lệch độ I – II (Piezotome)', 'desc' => 'Răng mọc nghiêng, kẹt một phần dưới nướu, siêu âm ít đau', 'warranty' => 'Cắt chỉ miễn phí', 'price' => '1.500.000 đ / răng', 'badge' => 'Phổ biến', 'featured' => true],
+        ['name' => 'Nhổ răng khôn mọc lệch 90° / mọc ngầm phức tạp', 'desc' => 'Sát dây thần kinh, chia chân răng bằng máy siêu âm Piezotome', 'warranty' => 'Cắt chỉ miễn phí', 'price' => '2.500.000 – 3.500.000 đ', 'featured' => true],
+        ['name' => 'Bổ sung màng huyết tương tự thân PRF', 'desc' => 'Hỗ trợ cầm máu nhanh, giảm sưng và đẩy nhanh lành xương', 'warranty' => 'Tùy chọn thêm', 'price' => '500.000 đ / lần'],
+    ],
+])

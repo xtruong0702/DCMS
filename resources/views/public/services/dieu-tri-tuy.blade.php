@@ -1,112 +1,56 @@
-@extends('layouts.public')
-
-@section('title', 'Điều trị tủy răng - Nha Khoa Smile')
-
-@section('content')
-<div class="bg-slate-50 py-16">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <!-- Breadcrumbs -->
-        <nav class="flex text-sm text-gray-500 mb-8">
-            <ol class="flex items-center space-x-2">
-                <li><a href="{{ route('home') }}" class="hover:text-blue-600">Trang chủ</a></li>
-                <li><span class="mx-2">/</span></li>
-                <li><a href="{{ route('public.services') }}" class="hover:text-blue-600">Dịch vụ</a></li>
-                <li><span class="mx-2">/</span></li>
-                <li class="font-semibold text-gray-800">Điều trị tủy răng</li>
-            </ol>
-        </nav>
-
-        <!-- Main Content Article -->
-        <article class="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 md:p-12 prose prose-lg prose-blue max-w-none">
-            <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-8 uppercase">Điều trị tủy răng</h1>
-            
-            <img src="https://images.unsplash.com/photo-1598256989800-fea5f6c8d0bd?auto=format&fit=crop&q=80&w=1200" alt="Điều trị tủy răng" class="w-full h-80 object-cover rounded-2xl mb-10 shadow-md">
-
-            <h2 class="text-2xl font-bold text-slate-800 mt-10 mb-4 uppercase">Điều trị tủy răng Là Gì?</h2>
-            <p class="text-gray-700 leading-relaxed mb-6">Điều trị nội nha chuyên sâu, loại bỏ triệt để viêm nhiễm, bảo tồn tối đa răng thật.</p>
-            <p class="text-gray-700 leading-relaxed mb-6">Nha Khoa Smile tự hào áp dụng các công nghệ tiên tiến nhất trong nha khoa để mang đến dịch vụ <strong>Điều trị tủy răng</strong> an toàn, nhanh chóng và đạt hiệu quả thẩm mỹ cao nhất cho mọi khách hàng. Đội ngũ y bác sĩ giàu kinh nghiệm sẽ trực tiếp thăm khám và lên phác đồ điều trị chuyên biệt cho từng trường hợp.</p>
-
-            <h2 class="text-2xl font-bold text-slate-800 mt-10 mb-4 uppercase">Quy Trình Thực Hiện Tại Nha Khoa Smile</h2>
-            <ol class="list-decimal pl-6 mb-8 text-gray-700 space-y-2">
-                <li>Thăm khám tổng quát và chụp phim X-quang kỹ thuật số.</li>
-                <li>Bác sĩ chuyên khoa phân tích và lên phác đồ điều trị chi tiết.</li>
-                <li>Tiến hành vệ sinh răng miệng và vô cảm (gây tê) đảm bảo không đau.</li>
-                <li>Thực hiện quy trình điều trị chuẩn y khoa với thiết bị vô trùng tuyệt đối.</li>
-                <li>Kiểm tra sau điều trị, hướng dẫn chăm sóc tại nhà và hẹn lịch tái khám.</li>
-            </ol>
-
-            <h2 class="text-2xl font-bold text-slate-800 mt-10 mb-4 uppercase">Vì Sao Chọn Nha Khoa Smile?</h2>
-            <ul class="list-disc pl-6 mb-12 text-gray-700 space-y-2">
-                <li>Đội ngũ bác sĩ chuyên khoa răng hàm mặt giỏi, trên 10 năm kinh nghiệm.</li>
-                <li>Hệ thống trang thiết bị, máy móc nhập khẩu nguyên chiếc từ Châu Âu.</li>
-                <li>Phòng khám vô trùng đạt tiêu chuẩn khắt khe của Bộ Y Tế.</li>
-                <li>Chi phí minh bạch, cam kết không phát sinh trong suốt quá trình điều trị.</li>
-                <li>Chế độ bảo hành chính hãng và chăm sóc khách hàng trọn đời.</li>
-            </ul>
-
-            <!-- Booking Section inside Article -->
-            <div class="bg-blue-600 rounded-2xl p-8 mt-12 text-white shadow-xl" id="dat-lich">
-                <div class="text-center mb-8">
-                    <h3 class="text-2xl md:text-3xl font-bold mb-2 uppercase">Đăng Ký Tư Vấn Miễn Phí Từ Chuyên Gia</h3>
-                    <p class="text-blue-100">Hãy để lại thông tin, bác sĩ chuyên khoa của chúng tôi sẽ liên hệ lại ngay!</p>
-                </div>
-                
-                <form action="{{ route('public.booking.store') }}" method="POST" class="max-w-2xl mx-auto bg-white p-6 md:p-8 rounded-xl shadow-lg">
-                    @csrf
-                    <!-- Pre-select Service ID if passed -->
-                    @if(isset($targetService))
-                        <input type="hidden" name="service_id" value="{{ $targetService->id }}">
-                    @endif
-                    
-                    <div class="space-y-5">
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">Họ và tên *</label>
-                            <input type="text" name="name" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-gray-800" placeholder="Nhập tên của bạn">
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">Số điện thoại *</label>
-                            <input type="tel" name="phone" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-gray-800" placeholder="Nhập số điện thoại">
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">Dịch vụ bạn quan tâm *</label>
-                            <select name="service_id_display" disabled class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 text-gray-600">
-                                <option value="">{{ isset($targetService) ? $targetService->name : 'Dịch vụ' }}</option>
-                            </select>
-                            <p class="text-xs text-gray-500 mt-1">Dịch vụ đã được chọn tự động.</p>
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">Chọn Bác sĩ khám (Tùy chọn)</label>
-                            <select name="doctor_id" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-gray-800">
-                                <option value="">-- Để phòng khám sắp xếp Bác sĩ chuyên khoa --</option>
-                                @if(isset($doctors))
-                                    @foreach($doctors as $doc)
-                                        <option value="{{ $doc->id }}">BS. {{ $doc->user->name ?? '' }} ({{ $doc->specialty ?: 'Chuyên khoa RHM' }})</option>
-                                    @endforeach
-                                @endif
-                            </select>
-                        </div>
-
-                        <!-- Lịch hẹn dự kiến -->
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">Thời gian dự kiến (Từ ngày mai) *</label>
-                            <input type="datetime-local" name="appointment_time" min="{{ \Carbon\Carbon::tomorrow()->format('Y-m-d\T00:00') }}" value="{{ old('appointment_time', \Carbon\Carbon::tomorrow()->setTime(9, 0)->format('Y-m-d\TH:i')) }}" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-gray-800">
-                            <p class="text-xs text-amber-600 mt-1">Lưu ý: Chỉ nhận đặt lịch từ ngày hôm sau trở đi. Nếu khám trong ngày, quý khách không cần đặt lịch mà vui lòng đến trực tiếp phòng khám.</p>
-                            @error('appointment_time') <span class="text-red-500 text-xs font-medium block mt-1">{{ $message }}</span> @enderror
-                        </div>
-                        
-                        <div class="pt-4">
-                            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-full shadow-lg transform hover:-translate-y-1 transition-all duration-300 text-lg">
-                                Xác Nhận Đăng Ký
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            
-        </article>
-    </div>
-</div>
-@endsection
+@include('public.services._layout', [
+    'pageTitle' => 'Điều Trị Tủy Răng (Nội Nha Không Đau)',
+    'badge' => 'CHUYÊN KHOA NỘI NHA BẢO TỒN',
+    'heroTitle' => 'ĐIỀU TRỊ TỦY RĂNG',
+    'heroHighlight' => 'Chấm Dứt Đau Nhức & Bảo Tồn Răng Thật',
+    'heroDesc' => 'Điều trị nội nha bằng máy định vị chóp điện tử và trâm xoay máy hiện đại giúp loại bỏ triệt để mô tủy viêm nhiễm, cắt cơn đau nhức nhanh chóng và giữ lại chân răng thật.',
+    'highlights' => [
+        ['icon' => '🔬', 'title' => 'Máy định vị chóp', 'sub' => 'Làm sạch ống tủy chuẩn xác'],
+        ['icon' => '🛡️', 'title' => 'Bảo tồn răng thật', 'sub' => 'Tránh phải nhổ bỏ răng'],
+        ['icon' => '✨', 'title' => 'Gây tê nhẹ nhàng', 'sub' => 'Êm ái trong suốt quá trình'],
+    ],
+    'prosConsTitle' => 'Ưu Điểm & Lưu Ý Khi Điều Trị Tủy',
+    'pros' => [
+        ['title' => 'Cắt cơn đau nhức răng tức thì', 'desc' => 'Loại bỏ hoàn toàn mô tủy hoại tử gây đau buốt từng cơn, đau tăng về đêm hoặc sưng lợi.'],
+        ['title' => 'Giữ lại được chân răng thật', 'desc' => 'Thay vì phải nhổ bỏ và trồng lại răng giả tốn kém, răng sau chữa tủy vẫn ăn nhai tốt nhiều năm.'],
+        ['title' => 'Ngăn chặn áp xe xương hàm', 'desc' => 'Triệt tiêu ổ vi khuẩn trong ống tủy, ngăn ngừa biến chứng áp xe chân răng và tiêu xương quanh chóp.'],
+        ['title' => 'Thời gian thực hiện rút ngắn', 'desc' => 'Nhờ hệ thống trâm xoay máy Protaper và máy chụp phim tại ghế, nhiều ca hoàn tất chỉ trong 1–2 buổi hẹn.'],
+    ],
+    'cons' => [
+        ['title' => 'Răng sau lấy tủy sẽ giòn hơn răng sống', 'desc' => 'Do không còn mạch máu nuôi dưỡng, răng dễ vỡ hơn nếu cắn đồ quá cứng.'],
+        ['title' => 'Nên bọc mão sứ bảo vệ sau chữa tủy', 'desc' => 'Đặc biệt với răng hàm vỡ lớn, bọc mão sứ giúp ôm chắc thân răng và kéo dài tuổi thọ ăn nhai.'],
+        ['title' => 'Cần tuân thủ đủ các buổi hẹn', 'desc' => 'Với răng nhiễm trùng nặng, cần đặt thuốc sát khuẩn ống tủy trước khi trám bít vĩnh viễn.'],
+        ['title' => 'Chụp phim kiểm tra sau trám bít', 'desc' => 'Đảm bảo vật liệu trám bít kín khít hết chiều dài ống tủy để không tái phát viêm chóp.'],
+    ],
+    'whoTitle' => 'Dấu Hiệu Răng Cần Điều Trị Tủy Ngay',
+    'whoCards' => [
+        ['icon' => '⚡', 'title' => 'Đau Nhức Dữ Dội Về Đêm', 'desc' => 'Cơn đau tự phát nhói lên từng đợt, tăng nặng khi nằm ngủ hoặc khi ăn đồ nóng lạnh.'],
+        ['icon' => '🕳️', 'title' => 'Lỗ Sâu Lớn Chạm Tủy', 'desc' => 'Răng sâu đen lâu ngày vỡ mẻ lớn, lộ buồng tủy gây buốt nhói khi thức ăn lọt vào.'],
+        ['icon' => '🫧', 'title' => 'Sưng Lợi, Có Nốt Mủ', 'desc' => 'Xuất hiện cục mủ trắng trên nướu gần chân răng (lỗ dò) báo hiệu tủy đã hoại tử viêm quanh chóp.'],
+        ['icon' => '💥', 'title' => 'Răng Chấn Thương Đổi Màu', 'desc' => 'Răng bị va đập mạnh dẫn đến sẫm màu xám đen do chết tủy bên trong.'],
+    ],
+    'criteriaTitle' => '5 Tiêu Chí Điều Trị Tủy Chuẩn Y Khoa',
+    'criteria' => [
+        ['title' => 'Đặt Đê Cao Su Cách Ly', 'desc' => 'Ngăn nước bọt chứa vi khuẩn rơi vào ống tủy và bảo vệ đường thở bệnh nhân.', 'tag' => 'Vô trùng tuyệt đối'],
+        ['title' => 'Máy Định Vị Chóp Điện Tử', 'desc' => 'Xác định chiều dài làm việc của từng ống tủy chính xác tới 0.1mm.', 'tag' => 'Không sót tủy'],
+        ['title' => 'Trâm Xoay Máy Nội Nha', 'desc' => 'Tạo hình và làm sạch ống tủy cong nhỏ hiệu quả, nhẹ nhàng hơn dụng cụ tay.', 'tag' => 'Nhanh & êm'],
+        ['title' => 'Bơm Rửa Sát Khuẩn Chuyên Sâu', 'desc' => 'Loại bỏ hoàn toàn mùn ngà và vi khuẩn trong các nhánh tủy phụ.', 'tag' => 'Không tái viêm'],
+        ['title' => 'Trám Bít Kín Khít 3 Chiều', 'desc' => 'Sử dụng vật liệu Gutta Percha chuẩn y khoa kèm phim chụp kiểm tra sau điều trị.', 'tag' => 'Bền lâu dài'],
+    ],
+    'processTitle' => 'Quy Trình Điều Trị Tủy 6 Bước Chuẩn Y Khoa',
+    'steps' => [
+        ['title' => 'Khám & Chụp Phim X-Quang Chóp Răng', 'desc' => 'Xác định số lượng ống tủy, độ cong chân răng và mức độ viêm nhiễm quanh chóp.'],
+        ['title' => 'Gây Tê Cục Bộ & Đặt Đê Cách Ly', 'desc' => 'Gây tê nhẹ nhàng vùng răng điều trị và cách ly răng khỏi khoang miệng bằng đê cao su.'],
+        ['title' => 'Mở Tủy & Đo Chiều Dài Ống Tủy', 'desc' => 'Làm sạch mô sâu, mở đường vào buồng tủy và đo chính xác chiều dài từng ống tủy.'],
+        ['title' => 'Làm Sạch & Tạo Hình Ống Tủy', 'desc' => 'Lấy sạch mô tủy viêm bằng trâm xoay máy kết hợp bơm rửa dung dịch sát khuẩn chuyên dụng.'],
+        ['title' => 'Trám Bít Ống Tủy Vĩnh Viễn', 'desc' => 'Khi ống tủy hoàn toàn sạch khô, tiến hành trám bít kín khít bằng Gutta Percha và chụp phim kiểm tra.'],
+        ['title' => 'Phục Hồi Thân Răng (Trám / Bọc Sứ)', 'desc' => 'Trám tái tạo thân răng bằng Composite hoặc tư vấn bọc mão sứ bảo vệ răng ăn nhai bền chắc.'],
+    ],
+    'priceTitle' => 'Bảng Giá Điều Trị Tủy Răng Niêm Yết',
+    'priceRows' => [
+        ['name' => 'Điều trị tủy răng cửa / răng nanh (1 ống tủy)', 'desc' => 'Bao gồm làm sạch bằng máy định vị chóp & trám bít', 'warranty' => 'Theo dõi định kỳ', 'price' => '800.000 đ / răng'],
+        ['name' => 'Điều trị tủy răng hàm nhỏ (1–2 ống tủy)', 'desc' => 'Trâm xoay máy nội nha + trám tái tạo Composite', 'warranty' => 'Theo dõi định kỳ', 'price' => '1.200.000 đ / răng', 'badge' => 'Phổ biến', 'featured' => true],
+        ['name' => 'Điều trị tủy răng hàm lớn (3–4 ống tủy)', 'desc' => 'Nhiều ống tủy phức tạp, chụp phim kiểm tra trước & sau', 'warranty' => 'Theo dõi định kỳ', 'price' => '1.500.000 – 2.000.000 đ', 'featured' => true],
+        ['name' => 'Điều trị tủy lại (Ca chữa tủy cũ bị tái viêm)', 'desc' => 'Tháo vật liệu cũ, khử khuẩn chuyên sâu và trám bít lại', 'warranty' => 'Theo dõi định kỳ', 'price' => '2.000.000 đ / răng'],
+    ],
+])

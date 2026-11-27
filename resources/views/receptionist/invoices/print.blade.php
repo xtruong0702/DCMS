@@ -6,7 +6,7 @@
     <title>Hóa đơn #{{ $invoice->invoice_code }} - {{ $settings['clinic_name'] ?? 'Nha Khoa Smile' }}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,600;0,700;1,600&family=Inter:wght@400;500;600;700&subset=vietnamese&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @media print {
@@ -14,7 +14,18 @@
             body { font-size: 13px; color: #000; }
             @page { margin: 12mm; size: auto; }
         }
-        html, body, .font-mono { font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important; }
+        html, body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+            -webkit-font-smoothing: antialiased;
+        }
+        h1, h2, h3, h4, .invoice-title {
+            font-family: 'Be Vietnam Pro', 'Inter', sans-serif !important;
+            font-weight: 700;
+        }
+        .font-mono, td.text-right, .tabular-nums, .price {
+            font-family: 'Inter', monospace !important;
+            font-variant-numeric: tabular-nums !important;
+        }
     </style>
 </head>
 <body class="bg-gray-100 p-4 md:p-8">
@@ -54,7 +65,7 @@
             <div>
                 <h1 class="text-2xl font-black text-indigo-800 uppercase tracking-tight">{{ $settings['clinic_name'] ?? 'Nha Khoa Smile' }}</h1>
                 <p class="text-xs text-gray-600 mt-1">{{ $settings['clinic_address'] ?? '123 Nguyễn Văn Cừ, Quận 5, TP.HCM' }}</p>
-                <p class="text-xs text-gray-600">Hotline: <span class="font-bold text-gray-800">{{ $settings['clinic_hotline'] ?? '1900 1234' }}</span></p>
+                <p class="text-xs text-gray-600">Hotline: <span class="font-bold text-gray-800">{{ $settings['clinic_hotline'] ?? '0775 761 388' }}</span></p>
                 @if(!empty($settings['clinic_email']))
                     <p class="text-xs text-gray-600">Email: {{ $settings['clinic_email'] }}</p>
                 @endif

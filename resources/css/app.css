@@ -1,20 +1,1212 @@
-@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600;1,700&family=Inter:wght@400;500;600;700&subset=vietnamese&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
-    html, body, .font-sans {
-        font-family: 'Be Vietnam Pro', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    /* 1. Global Font Family & Antialiasing */
+    html {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
         text-rendering: optimizeLegibility;
+    }
+
+    body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        font-size: 0.875rem; /* 14px chuẩn văn bản nội dung */
+        font-weight: 400;
+        line-height: 1.5;
+        color: #1e293b;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+    }
+
+    /* 2. Tiêu đề quy chuẩn (Be Vietnam Pro) */
+    h1, .h1 {
+        font-family: 'Be Vietnam Pro', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+        font-size: 1.625rem !important; /* 26px (chuẩn 24px - 28px) */
+        font-weight: 700 !important;
+        line-height: 1.3 !important;
+        letter-spacing: -0.02em;
+        color: #0f172a;
+    }
+
+    h2, .h2 {
+        font-family: 'Be Vietnam Pro', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+        font-size: 1.125rem !important; /* 18px tiêu đề khối / card */
+        font-weight: 600 !important;
+        line-height: 1.35 !important;
+        letter-spacing: -0.015em;
+        color: #0f172a;
+    }
+
+    h3, .h3 {
+        font-family: 'Be Vietnam Pro', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+        font-size: 1rem !important; /* 16px tiêu đề card nhỏ */
+        font-weight: 600 !important;
+        line-height: 1.4 !important;
+        letter-spacing: -0.01em;
+        color: #0f172a;
+    }
+
+    h4, .h4, h5, .h5, h6, .h6 {
+        font-family: 'Be Vietnam Pro', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+        font-size: 0.875rem !important; /* 14px */
+        font-weight: 600 !important;
+        line-height: 1.4 !important;
+        letter-spacing: -0.005em;
         color: #1e293b;
     }
 
-    h1, h2, h3, h4, h5, h6 {
-        font-family: 'Be Vietnam Pro', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
-        letter-spacing: -0.015em;
+    /* 3. Bảng biểu & Ô dữ liệu (Table Th & Td) */
+    table th {
+        font-size: 0.75rem !important; /* 12px nhãn bảng */
+        font-weight: 700 !important;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #64748b;
+        line-height: 1.4;
+    }
+
+    table td {
+        font-size: 0.875rem !important; /* 14px chuẩn ô bảng */
+        font-weight: 400;
+        line-height: 1.5;
+        color: #0f172a;
+    }
+
+    /* 4. Form inputs, selects, textareas */
+    input, select, textarea, button {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-size: 0.875rem; /* 14px */
+        line-height: 1.4;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    /* 5. Tabular numbers cho số tiền, giờ khám, SĐT và thống kê */
+    .tabular-nums,
+    .font-mono,
+    .price,
+    .currency,
+    .phone,
+    .time,
+    .date,
+    .stat-number,
+    .stat-value,
+    .stat-count,
+    td.text-right,
+    input[type="number"],
+    input[type="tel"],
+    input[type="time"],
+    input[type="date"],
+    input[type="datetime-local"] {
+        font-variant-numeric: tabular-nums !important;
+        font-feature-settings: "tnum" 1 !important;
+    }
+}
+
+@layer components {
+    /* Midnight Emerald & Obsidian Theme Components */
+    .bg-midnight {
+        background-color: #081412;
+    }
+    .bg-obsidian-emerald {
+        background-color: #0B1A17;
+    }
+    .bg-card-midnight {
+        background-color: #0F2420;
+    }
+    .bg-card-midnight-light {
+        background-color: #142E29;
+    }
+
+    /* Dark Glassmorphism */
+    .glass-midnight {
+        background: rgba(9, 22, 20, 0.85);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+    }
+    .glass-midnight-card {
+        background: rgba(15, 36, 32, 0.85);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(212, 175, 55, 0.25);
+    }
+
+    /* Light Mode Frosted Glass */
+    .glass-frosted-light {
+        background: rgba(239, 252, 249, 0.85);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border-bottom: 1px solid rgba(15, 62, 54, 0.08);
+    }
+
+    /* Gold Metallic Shimmer Sweep (User Token) */
+    .gold-shimmer-badge,
+    .gold-btn-shimmer {
+        background: linear-gradient(110deg, #d4af37 0%, #fff7d6 25%, #d4af37 50%, #b8972e 100%);
+        background-size: 200% 100%;
+        animation: goldShimmerSweep 4.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        color: #081412 !important;
+        font-weight: 700;
+        transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+    }
+    .gold-btn-shimmer:hover {
+        box-shadow: 0 8px 25px rgba(212, 175, 55, 0.45);
+        transform: translateY(-2px);
+    }
+    .gold-btn-shimmer:active,
+    .gold-shimmer-badge:active {
+        transform: scale(0.97);
+    }
+
+    /* Subtle Gold Pulse (Hào quang thở & Phát sáng nhịp nhàng) */
+    .gold-pulse {
+        animation: subtleGoldPulse 3.5s ease-in-out infinite;
+    }
+
+    /* Micro-interactions: Service & Doctor Cards */
+    .service-card,
+    .doctor-card {
+        transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                    box-shadow 0.35s ease,
+                    border-color 0.35s ease;
+        will-change: transform, box-shadow, border-color;
+    }
+    .service-card:hover,
+    .service-card:active,
+    .doctor-card:hover,
+    .doctor-card:active {
+        transform: translateY(-3px) scale(1.012);
+        border-color: rgba(212, 175, 55, 0.6) !important;
+        box-shadow: 0 12px 28px -6px rgba(15, 62, 54, 0.12), 0 0 18px rgba(212, 175, 55, 0.25) !important;
+    }
+
+    /* Ambient Floating (Nổi nhẹ thư thái) */
+    .float-subtle {
+        animation: ambientFloat 5s ease-in-out infinite;
+    }
+
+    /* Scroll Reveal & Transition */
+    .reveal-item {
+        opacity: 0;
+        transform: translateY(18px);
+        transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        will-change: opacity, transform;
+    }
+    .reveal-item.active {
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+    }
+
+    /* Card Midnight Interactive */
+    .card-midnight {
+        background-color: #0F2420;
+        border: 1px solid rgba(212, 175, 55, 0.25);
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        will-change: transform, box-shadow, border-color;
+    }
+    .card-midnight:hover {
+        background-color: #142E29;
+        transform: translateY(-4px);
+        border-color: rgba(212, 175, 55, 0.55);
+        box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.7), 0 0 25px rgba(212, 175, 55, 0.12);
+    }
+
+    .card-midnight-subtle {
+        background-color: #142E29;
+        border: 1px solid rgba(212, 175, 55, 0.18);
+        transition: all 0.25s ease;
+    }
+    .card-midnight-subtle:hover {
+        background-color: #173731;
+        transform: translateY(-2px);
+        border-color: rgba(212, 175, 55, 0.4);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 0 15px rgba(212, 175, 55, 0.08);
+    }
+
+    /* Royal Gold CTA Button */
+    .btn-gold-royal {
+        background: linear-gradient(135deg, #F3E5AB 0%, #D4AF37 50%, #B89028 100%);
+        color: #081412 !important;
+        font-weight: 700;
+        box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+        border: 1px solid rgba(243, 229, 171, 0.6);
+        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .btn-gold-royal:hover {
+        background: linear-gradient(135deg, #FFFFFF 0%, #F3E5AB 40%, #D4AF37 100%);
+        box-shadow: 0 6px 25px rgba(212, 175, 55, 0.5), 0 0 15px rgba(243, 229, 171, 0.4);
+        transform: translateY(-1.5px);
+    }
+    .btn-gold-royal:active {
+        transform: scale(0.97);
+    }
+
+    /* Subtle Ambient Radial Glows */
+    .ambient-glow-gold {
+        background: radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.15) 0%, rgba(212, 175, 55, 0) 70%);
+    }
+    .ambient-glow-emerald {
+        background: radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.12) 0%, rgba(11, 26, 23, 0) 70%);
+    }
+
+    /* Luxury Card Hover & Elevation */
+    .card-interactive {
+        transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.28s ease;
+        will-change: transform, box-shadow;
+    }
+    .card-interactive:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 16px 32px -8px rgba(0, 0, 0, 0.6), 0 0 20px rgba(212, 175, 55, 0.15);
+        border-color: rgba(212, 175, 55, 0.5);
+    }
+
+    .card-interactive-subtle {
+        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+    .card-interactive-subtle:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px -4px rgba(0, 0, 0, 0.5);
+        border-color: rgba(212, 175, 55, 0.35);
+    }
+
+    /* Image zoom on hover */
+    .img-zoom-container {
+        overflow: hidden;
+    }
+    .img-zoom-container img {
+        transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        will-change: transform;
+    }
+    .img-zoom-container:hover img {
+        transform: scale(1.04);
+    }
+
+    /* Button Press Micro-interactions */
+    .btn-press {
+        transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.15s ease, background-color 0.2s ease;
+    }
+    .btn-press:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px -2px rgba(6, 59, 48, 0.25);
+    }
+    .btn-press:active {
+        transform: scale(0.97);
+    }
+
+    /* Button Shimmer / Sheen Animation */
+    .btn-shimmer {
+        position: relative;
+        overflow: hidden;
+    }
+    .btn-shimmer::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -80%;
+        width: 50%;
+        height: 200%;
+        background: linear-gradient(
+            to right,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0.28) 50%,
+            rgba(255, 255, 255, 0) 100%
+        );
+        transform: rotate(25deg);
+        transition: all 0.75s ease;
+    }
+    .btn-shimmer:hover::after {
+        left: 140%;
+    }
+
+    /* Pulsing Live Dots for Status & Badges */
+    .pulse-dot {
+        position: relative;
+        display: inline-flex;
+        width: 8px;
+        height: 8px;
+        border-radius: 9999px;
+    }
+    .pulse-dot::before {
+        content: '';
+        position: absolute;
+        inset: -3px;
+        border-radius: 9999px;
+        animation: pulse-ring 2s cubic-bezier(0.24, 0, 0.38, 1) infinite;
+    }
+    .pulse-dot-emerald {
+        background-color: #10b981;
+    }
+    .pulse-dot-emerald::before {
+        background-color: rgba(16, 185, 129, 0.4);
+    }
+    .pulse-dot-amber {
+        background-color: #f59e0b;
+    }
+    .pulse-dot-amber::before {
+        background-color: rgba(245, 158, 11, 0.4);
+    }
+    .pulse-dot-rose {
+        background-color: #f43f5e;
+    }
+    .pulse-dot-rose::before {
+        background-color: rgba(244, 63, 94, 0.4);
+    }
+
+    /* Table Spotlight & Hover Indicator */
+    .table-spotlight tbody tr {
+        transition: background-color 0.18s ease, transform 0.15s ease;
+    }
+    .table-spotlight tbody tr:hover {
+        background-color: #F6FAF8 !important;
+    }
+
+    /* Luxury Glassmorphism Container */
+    .glass-luxury-card {
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border: 1px solid rgba(197, 168, 128, 0.3);
+    }
+
+    /* Floating soft animation */
+    .float-gentle {
+        animation: float-gentle 4s ease-in-out infinite;
+    }
+
+    /* 7. Thanh tiến độ cuộn trang chuẩn y khoa (Medical Teal Scroll Progress) */
+    .scroll-progress-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 3px;
+        width: 0%;
+        z-index: 60;
+        background: linear-gradient(90deg, #0F766E 0%, #0D9488 50%, #0284C7 100%);
+        box-shadow: 0 1px 8px rgba(13, 148, 136, 0.45);
+        transition: width 0.08s linear;
+        pointer-events: none;
+    }
+
+    /* Medical Clinic Primary CTA Button (Deep Teal #0f3e36 in Light Mode) */
+    .btn-clinic-primary {
+        background: linear-gradient(135deg, #0f3e36 0%, #145348 100%);
+        color: #FFFFFF !important;
+        font-weight: 600;
+        box-shadow: 0 4px 16px rgba(15, 62, 54, 0.25);
+        transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, background 0.2s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    .btn-clinic-primary:hover {
+        background: linear-gradient(135deg, #145348 0%, #0f3e36 100%);
+        box-shadow: 0 8px 24px rgba(15, 62, 54, 0.35);
+        transform: translateY(-1.5px);
+    }
+    .btn-clinic-primary:active {
+        transform: scale(0.97);
+    }
+
+    /* Clean White Clinical Card — Serene Dental Atelier Floating White Surface */
+    .clinic-card {
+        position: relative;
+        overflow: hidden;
+        background-color: #FFFFFF;
+        border: 1px solid rgba(15, 62, 54, 0.05);
+        box-shadow: 0 4px 22px -4px rgba(15, 62, 54, 0.06), 0 1px 3px rgba(15, 62, 54, 0.03);
+        transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.32s ease, border-color 0.32s ease;
+    }
+    .clinic-card::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -120%;
+        width: 55%;
+        height: 100%;
+        background: linear-gradient(
+            105deg,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(204, 251, 241, 0.25) 45%,
+            rgba(255, 255, 255, 0.65) 50%,
+            rgba(204, 251, 241, 0.25) 55%,
+            rgba(255, 255, 255, 0) 100%
+        );
+        transform: skewX(-20deg);
+        transition: left 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        pointer-events: none;
+        z-index: 1;
+    }
+    .clinic-card:hover {
+        transform: translateY(-5px);
+        border-color: rgba(13, 148, 136, 0.16);
+        box-shadow: 0 18px 36px -10px rgba(13, 148, 136, 0.15), 0 4px 12px -2px rgba(15, 23, 42, 0.05);
+    }
+    .clinic-card:hover::after {
+        left: 145%;
+    }
+
+    /* Spring Icon Pop on Card Hover */
+    .icon-pop {
+        transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.25s ease;
+    }
+    .clinic-card:hover .icon-pop,
+    .group:hover .icon-pop {
+        transform: scale(1.12) rotate(-4deg);
+    }
+
+    /* Directional & Scale Scroll Reveal Variants */
+    .reveal-scale {
+        opacity: 0;
+        transform: scale(0.95) translateY(14px);
+        transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+        will-change: opacity, transform;
+    }
+    .reveal-scale.active {
+        opacity: 1 !important;
+        transform: scale(1) translateY(0) !important;
+    }
+
+    /* Subtle Phone Ring Animation for Floating Hotline */
+    .phone-ring-subtle {
+        animation: phoneRing 4.5s ease-in-out infinite;
+    }
+
+    /* Back-to-Top Floating Button */
+    .back-to-top-btn {
+        opacity: 0;
+        transform: translateY(14px) scale(0.9);
+        pointer-events: none;
+        transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease;
+    }
+    .back-to-top-btn.visible {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        pointer-events: auto;
+    }
+
+    /* Subtle Champagne Gold Accent on Service Cards in Light Mode */
+    .service-card {
+        border: 1px solid rgba(212, 175, 55, 0.22);
+    }
+    .service-card:hover,
+    .service-card:active {
+        border-color: rgba(212, 175, 55, 0.6) !important;
+    }
+
+    /* 3D Showcase Stage (Hero Centerpiece matching Stitch screen) */
+    .stage-3d-dental {
+        background: radial-gradient(circle at 50% 42%, rgba(20, 75, 65, 0.85) 0%, #0b1f1b 55%, #071311 100%);
+        position: relative;
+        overflow: hidden;
+    }
+    .stage-3d-orbit {
+        animation: orbitSpin 12s linear infinite;
+        transform-origin: center;
+    }
+    .stage-3d-tooth {
+        animation: toothFloat3D 4.8s ease-in-out infinite;
+        filter: drop-shadow(0 16px 28px rgba(212, 175, 55, 0.25));
+    }
+
+    /* Theme Toggle Button */
+    .theme-toggle-btn {
+        transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+    }
+    .theme-toggle-btn:hover {
+        transform: scale(1.06);
+    }
+    .theme-toggle-btn:active {
+        transform: scale(0.94);
+    }
+
+    /* Clean Frosted Medical Header — Light Mode (Serene Dental Atelier) */
+    .clinic-header {
+        background: rgba(239, 252, 249, 0.85);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border-bottom: 1px solid rgba(15, 62, 54, 0.08);
+    }
+    .clinic-header.navbar-scrolled {
+        background: rgba(239, 252, 249, 0.94) !important;
+        box-shadow: 0 8px 28px -6px rgba(15, 62, 54, 0.1) !important;
+        border-bottom-color: rgba(15, 62, 54, 0.08) !important;
+    }
+
+    /* Mobile Bottom Tab Bar Glassmorphism */
+    .clinic-tab-bar {
+        background: rgba(239, 252, 249, 0.85);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border-top: 1px solid rgba(15, 62, 54, 0.08);
+    }
+
+    /* Clean Medical Nav Link Underline */
+    .nav-link-clinic {
+        position: relative;
+    }
+    .nav-link-clinic::after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        bottom: 4px;
+        width: 0;
+        height: 2px;
+        background: linear-gradient(90deg, #0D9488, #0284C7);
+        transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1), left 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        border-radius: 9999px;
+    }
+    .nav-link-clinic:hover::after {
+        width: 72%;
+        left: 14%;
+    }
+
+    /* Clean Medical Input Focus — Soft Border */
+    .input-clinic {
+        background-color: #F8FAFC;
+        border: 1px solid rgba(148, 163, 184, 0.32);
+        color: #0F172A;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+    }
+    .input-clinic:focus {
+        outline: none;
+        background-color: #FFFFFF;
+        border-color: rgba(13, 148, 136, 0.55);
+        box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.12);
+    }
+
+    /* Clinical Animated Gradient Text (Light Mode: Serene Deep Teal & Subtle Gold) */
+    .text-clinic-gradient {
+        background: linear-gradient(120deg, #0f3e36 0%, #1c6b5e 38%, #c59b27 68%, #0f3e36 100%);
+        background-size: 220% auto;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: clinicGradientFlow 6.5s ease-in-out infinite;
+    }
+
+    /* Subtle Clinical Pulse Ring for Emergency / Hotline */
+    .clinic-pulse {
+        animation: clinicPulse 3s ease-in-out infinite;
+    }
+
+    /* Clean Light Scrollbar */
+    .clinic-scrollbar::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+    .clinic-scrollbar::-webkit-scrollbar-track {
+        background: #F1F5F9;
+    }
+    .clinic-scrollbar::-webkit-scrollbar-thumb {
+        background: #94A3B8;
+        border-radius: 9999px;
+        border: 2px solid #F1F5F9;
+    }
+    .clinic-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: #0D9488;
+    }
+
+    /* 8. Chữ Ánh Kim Chuyển Động (Animated Metallic Gold Text) */
+    .text-gold-shimmer {
+        background: linear-gradient(110deg, #D4AF37 0%, #FFF7D6 22%, #F3E5AB 45%, #D4AF37 70%, #B89028 100%);
+        background-size: 220% auto;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: goldShimmerSweep 5.5s ease-in-out infinite;
+    }
+
+    /* 9. Vệt Sáng Quét Qua Thẻ Khi Hover (Porcelain / Veneer Gloss Sweep) */
+    .card-gloss {
+        position: relative;
+        overflow: hidden;
+    }
+    .card-gloss::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -120%;
+        width: 65%;
+        height: 100%;
+        background: linear-gradient(
+            105deg,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(243, 229, 171, 0.05) 40%,
+            rgba(255, 247, 214, 0.14) 50%,
+            rgba(243, 229, 171, 0.05) 60%,
+            rgba(255, 255, 255, 0) 100%
+        );
+        transform: skewX(-20deg);
+        transition: left 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+        pointer-events: none;
+        z-index: 2;
+    }
+    .card-gloss:hover::before {
+        left: 150%;
+    }
+
+    /* 10. Đường Kẻ Phân Cách Ánh Kim (Luxury Hairline Gold Divider) */
+    .gold-divider {
+        height: 1px;
+        width: 100%;
+        background: linear-gradient(90deg, transparent 0%, rgba(212, 175, 55, 0.45) 50%, transparent 100%);
+        position: relative;
+    }
+    .gold-divider::after {
+        content: '✦';
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #081412;
+        color: #D4AF37;
+        font-size: 10px;
+        padding: 0 10px;
+        line-height: 1;
+    }
+
+    /* 11. Gạch Chân Ánh Kim Từ Tâm Cho Link Điều Hướng */
+    .nav-link-luxury {
+        position: relative;
+    }
+    .nav-link-luxury::after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        bottom: 4px;
+        width: 0;
+        height: 1.5px;
+        background: linear-gradient(90deg, transparent, #F3E5AB, #D4AF37, transparent);
+        transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1), left 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        border-radius: 9999px;
+    }
+    .nav-link-luxury:hover::after {
+        width: 72%;
+        left: 14%;
+    }
+
+    /* 12. Ánh Sáng Nền Trôi Nhẹ (Ambient Orb Drift) */
+    .orb-drift-slow {
+        animation: orbDrift 18s ease-in-out infinite alternate;
+    }
+    .orb-drift-reverse {
+        animation: orbDriftReverse 22s ease-in-out infinite alternate;
+    }
+
+    /* 13. Khung Ảnh Cao Cấp Viền Ánh Kim Mờ */
+    .luxury-photo-frame {
+        position: relative;
+        box-shadow: 0 20px 45px -12px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(212, 175, 55, 0.3);
+        transition: box-shadow 0.4s ease, border-color 0.4s ease;
+    }
+    .luxury-photo-frame:hover {
+        box-shadow: 0 24px 55px -12px rgba(0, 0, 0, 0.85), 0 0 28px rgba(212, 175, 55, 0.22), 0 0 0 1px rgba(243, 229, 171, 0.55);
+    }
+
+    /* 14. Scroll Reveal Stagger Delays */
+    .reveal-delay-1 { transition-delay: 80ms; }
+    .reveal-delay-2 { transition-delay: 160ms; }
+    .reveal-delay-3 { transition-delay: 240ms; }
+    .reveal-delay-4 { transition-delay: 320ms; }
+
+    /* 15. Navbar Scrolled Deepening */
+    .navbar-scrolled {
+        background: rgba(6, 16, 14, 0.94) !important;
+        box-shadow: 0 10px 35px rgba(0, 0, 0, 0.65), 0 1px 0 rgba(212, 175, 55, 0.3) !important;
+    }
+
+    /* 16. Luxury Midnight Input Focus Glow */
+    .input-midnight {
+        background-color: #081412;
+        border: 1px solid rgba(212, 175, 55, 0.28);
+        color: #F9F6EE;
+        transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+    }
+    .input-midnight:focus {
+        outline: none;
+        border-color: #D4AF37;
+        box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.18), 0 0 16px rgba(212, 175, 55, 0.12);
+        background-color: #0B1A17;
+    }
+}
+
+@layer utilities {
+    /* Nhãn phụ & Badge chuẩn 12px font-weight 500-600 */
+    .badge-label,
+    .text-sub,
+    .label-sub {
+        font-size: 0.75rem !important; /* 12px */
+        font-weight: 600 !important;
+        line-height: 1.25 !important;
+    }
+
+    .tabular-numbers {
+        font-variant-numeric: tabular-nums !important;
+        font-feature-settings: "tnum" 1 !important;
+    }
+
+    /* Gradient Text & Metallic Gold */
+    .text-gradient-gold {
+        background: linear-gradient(135deg, #B38E5A 0%, #D4AF37 50%, #8E6D3E 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .text-gradient-emerald {
+        background: linear-gradient(135deg, #063B30 0%, #0F6E56 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    /* Custom Luxury Scrollbar */
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: #F1EFEA;
+        border-radius: 9999px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #063B30;
+        border-radius: 9999px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: #04241D;
+    }
+
+    /* Midnight Obsidian & Gold Global Scrollbar */
+    .midnight-scrollbar::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+    .midnight-scrollbar::-webkit-scrollbar-track {
+        background: #081412;
+    }
+    .midnight-scrollbar::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg, rgba(212, 175, 55, 0.45), rgba(184, 144, 40, 0.65));
+        border-radius: 9999px;
+        border: 2px solid #081412;
+    }
+    .midnight-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(180deg, #F3E5AB, #D4AF37);
+    }
+}
+
+/* Global Keyframe Animations */
+@keyframes clinicPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.28); }
+    50% { box-shadow: 0 0 0 8px rgba(13, 148, 136, 0); }
+}
+
+@keyframes clinicGradientFlow {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+@keyframes phoneRing {
+    0%, 82%, 100% { transform: rotate(0deg); }
+    85% { transform: rotate(12deg); }
+    88% { transform: rotate(-10deg); }
+    91% { transform: rotate(8deg); }
+    94% { transform: rotate(-6deg); }
+    97% { transform: rotate(0deg); }
+}
+
+@keyframes orbitSpin {
+    0% { transform: rotate(-16deg) scale(1); opacity: 0.75; }
+    50% { transform: rotate(-10deg) scale(1.04); opacity: 1; }
+    100% { transform: rotate(-16deg) scale(1); opacity: 0.75; }
+}
+
+@keyframes toothFloat3D {
+    0%, 100% { transform: translateY(0) rotateY(0deg); }
+    50% { transform: translateY(-7px) rotateY(8deg); }
+}
+
+@keyframes orbDrift {
+    0% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(28px, -18px) scale(1.06); }
+    100% { transform: translate(-18px, 22px) scale(0.96); }
+}
+
+@keyframes orbDriftReverse {
+    0% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(-26px, 20px) scale(1.08); }
+    100% { transform: translate(20px, -16px) scale(0.95); }
+}
+@keyframes goldShimmerSweep {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+@keyframes subtleGoldPulse {
+    0%, 100% { box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.3), 0 4px 20px rgba(212, 175, 55, 0.15); }
+    50% { box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.6), 0 8px 30px rgba(212, 175, 55, 0.3); }
+}
+
+@keyframes ambientFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+}
+
+@keyframes pulse-ring {
+    0% {
+        transform: scale(0.9);
+        opacity: 0.8;
+    }
+    50% {
+        transform: scale(1.8);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1.8);
+        opacity: 0;
+    }
+}
+
+@keyframes float-gentle {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-4px);
+    }
+}
+
+@keyframes shimmer-sweep {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+/* ============================================================
+   CLINIC DARK MODE (html.dark-clinic)
+   Obsidian & Gilded Flora (#081412 / #0f2420 / #d4af37)
+   ============================================================ */
+html.dark-clinic,
+html.dark-clinic body {
+    background-color: #081412 !important;
+    color: #B0C4BE !important;
+    color-scheme: dark;
+}
+
+/* Luxury Dark Glassmorphism (Header & Tab Bar) */
+html.dark-clinic .clinic-header {
+    background: rgba(9, 22, 20, 0.85) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.2) !important;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4) !important;
+}
+html.dark-clinic .clinic-header.navbar-scrolled {
+    background: rgba(9, 22, 20, 0.94) !important;
+    box-shadow: 0 8px 34px rgba(0, 0, 0, 0.55) !important;
+}
+html.dark-clinic .clinic-tab-bar {
+    background: rgba(9, 22, 20, 0.85) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border-top: 1px solid rgba(212, 175, 55, 0.2) !important;
+    box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.4) !important;
+}
+
+html.dark-clinic .bg-slate-50,
+html.dark-clinic .bg-slate-50\/70,
+html.dark-clinic .bg-\[\#effcf9\] {
+    background-color: #081412 !important;
+}
+html.dark-clinic .bg-white,
+html.dark-clinic .bg-white\/95 {
+    background-color: #0f2420 !important;
+}
+html.dark-clinic .bg-teal-50,
+html.dark-clinic .bg-teal-50\/50,
+html.dark-clinic .bg-teal-50\/60,
+html.dark-clinic .bg-teal-50\/70,
+html.dark-clinic .bg-teal-50\/80 {
+    background-color: #142e29 !important;
+}
+html.dark-clinic .bg-sky-50,
+html.dark-clinic .bg-sky-50\/70 {
+    background-color: #142e29 !important;
+}
+html.dark-clinic .bg-emerald-50 {
+    background-color: #142e29 !important;
+}
+html.dark-clinic .bg-indigo-50 {
+    background-color: #142e29 !important;
+}
+html.dark-clinic .bg-amber-50 {
+    background-color: rgba(212, 175, 55, 0.14) !important;
+}
+html.dark-clinic .bg-rose-50 {
+    background-color: rgba(244, 63, 94, 0.14) !important;
+}
+html.dark-clinic .bg-slate-100,
+html.dark-clinic .bg-slate-100\/80,
+html.dark-clinic .bg-gray-50,
+html.dark-clinic .bg-gray-100 {
+    background-color: #142e29 !important;
+}
+html.dark-clinic .border-gray-100,
+html.dark-clinic .border-gray-200 {
+    border-color: rgba(212, 175, 55, 0.18) !important;
+}
+html.dark-clinic .text-gray-900,
+html.dark-clinic .text-gray-800 {
+    color: #F9F6EE !important;
+}
+html.dark-clinic .text-gray-700,
+html.dark-clinic .text-gray-600 {
+    color: #B0C4BE !important;
+}
+html.dark-clinic .text-gray-500 {
+    color: #8BA39C !important;
+}
+html.dark-clinic .text-blue-600,
+html.dark-clinic .text-blue-700 {
+    color: #F3E5AB !important;
+}
+html.dark-clinic .prose strong,
+html.dark-clinic .prose b {
+    color: #F9F6EE !important;
+}
+html.dark-clinic .hover\:bg-slate-50:hover,
+html.dark-clinic .hover\:bg-slate-100:hover,
+html.dark-clinic .hover\:bg-slate-100\/80:hover,
+html.dark-clinic .hover\:bg-slate-200:hover,
+html.dark-clinic .hover\:bg-teal-50:hover,
+html.dark-clinic .hover\:bg-teal-50\/40:hover,
+html.dark-clinic .hover\:bg-teal-50\/30:hover,
+html.dark-clinic .hover\:bg-teal-100:hover,
+html.dark-clinic .hover\:bg-teal-100\/80:hover {
+    background-color: #183832 !important;
+}
+
+/* Hero & Section Light Gradients -> Obsidian Emerald Canvas (#081412 - #091614) */
+html.dark-clinic .bg-gradient-to-b {
+    background-image: linear-gradient(to bottom, #0b1e1b 0%, #091614 55%, #081412 100%) !important;
+}
+html.dark-clinic .from-teal-50\/70,
+html.dark-clinic .from-teal-50\/80,
+html.dark-clinic .from-\[\#effcf9\] {
+    --tw-gradient-from: #0b1e1b var(--tw-gradient-from-position) !important;
+    --tw-gradient-via: #091614 var(--tw-gradient-via-position) !important;
+    --tw-gradient-to: #081412 var(--tw-gradient-to-position) !important;
+}
+html.dark-clinic .bg-\[\#effcf9\]\/80 {
+    background-color: #142e29 !important;
+}
+html.dark-clinic .text-\[\#0f3e36\]\/70,
+html.dark-clinic .text-\[\#0f3e36\]\/75 {
+    color: #D4AF37 !important;
+}
+html.dark-clinic .bg-amber-100 {
+    background-color: rgba(212, 175, 55, 0.2) !important;
+}
+html.dark-clinic .text-amber-700 {
+    color: #F3E5AB !important;
+}
+html.dark-clinic select option {
+    background-color: #0f2420;
+    color: #F9F6EE;
+}
+
+/* Clinical Cards in Dark Mode (#0f2420 & #142e29 + Gold Hover Highlight) */
+html.dark-clinic .clinic-card {
+    background-color: #0f2420 !important;
+    border-color: rgba(212, 175, 55, 0.18) !important;
+    box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.5) !important;
+}
+html.dark-clinic .clinic-card:hover {
+    background-color: #142e29 !important;
+    border-color: rgba(212, 175, 55, 0.6) !important;
+    box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.55), 0 0 18px rgba(212, 175, 55, 0.2) !important;
+}
+html.dark-clinic .clinic-card::after {
+    background: linear-gradient(
+        105deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(243, 229, 171, 0.06) 45%,
+        rgba(255, 247, 214, 0.14) 50%,
+        rgba(243, 229, 171, 0.06) 55%,
+        rgba(255, 255, 255, 0) 100%
+    );
+}
+
+/* Primary CTA in Dark Mode -> Royal Gold Metallic Shimmer */
+html.dark-clinic .btn-clinic-primary {
+    background: linear-gradient(110deg, #d4af37 0%, #fff7d6 25%, #d4af37 50%, #b8972e 100%) !important;
+    background-size: 200% 100% !important;
+    animation: goldShimmerSweep 4.5s cubic-bezier(0.4, 0, 0.2, 1) infinite !important;
+    color: #081412 !important;
+    font-weight: 700 !important;
+    box-shadow: 0 4px 20px rgba(212, 175, 55, 0.28) !important;
+}
+html.dark-clinic .btn-clinic-primary:hover {
+    box-shadow: 0 8px 28px rgba(212, 175, 55, 0.45) !important;
+}
+
+/* Scroll Progress Bar -> Gold in Dark Mode */
+html.dark-clinic .scroll-progress-bar {
+    background: linear-gradient(90deg, #b8972e 0%, #d4af37 50%, #fff7d6 100%) !important;
+    box-shadow: 0 0 12px rgba(212, 175, 55, 0.7) !important;
+}
+
+/* Typography Contrast in Dark Mode (Ivory #F9F6EE & Gold #D4AF37 / #F3E5AB) */
+html.dark-clinic h1,
+html.dark-clinic h2,
+html.dark-clinic h3,
+html.dark-clinic h4,
+html.dark-clinic .text-slate-900 {
+    color: #F9F6EE !important;
+}
+html.dark-clinic .text-slate-800 {
+    color: #EAE4D3 !important;
+}
+html.dark-clinic .text-slate-700 {
+    color: #D2DED9 !important;
+}
+html.dark-clinic .text-slate-600 {
+    color: #B0C4BE !important;
+}
+html.dark-clinic .text-slate-500 {
+    color: #8BA39C !important;
+}
+html.dark-clinic .text-teal-900,
+html.dark-clinic .text-teal-800,
+html.dark-clinic .text-teal-700,
+html.dark-clinic .text-\[\#0f3e36\] {
+    color: #F3E5AB !important;
+}
+html.dark-clinic .text-sky-900,
+html.dark-clinic .text-sky-700 {
+    color: #F3E5AB !important;
+}
+html.dark-clinic .text-emerald-800,
+html.dark-clinic .text-emerald-700 {
+    color: #6EE7B7 !important;
+}
+html.dark-clinic .text-indigo-700 {
+    color: #F3E5AB !important;
+}
+html.dark-clinic .text-amber-800 {
+    color: #F3E5AB !important;
+}
+html.dark-clinic .text-rose-700 {
+    color: #FDA4AF !important;
+}
+html.dark-clinic .text-clinic-gradient {
+    background: linear-gradient(110deg, #d4af37 0%, #fff7d6 25%, #f3e5ab 50%, #d4af37 75%, #b8972e 100%) !important;
+    background-size: 200% auto !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    animation: goldShimmerSweep 4.5s cubic-bezier(0.4, 0, 0.2, 1) infinite !important;
+}
+
+/* Nav link underline -> Gold in Dark Mode */
+html.dark-clinic .nav-link-clinic::after {
+    background: linear-gradient(90deg, transparent, #f3e5ab, #d4af37, transparent) !important;
+}
+
+/* Preserve white/dark text on solid badges & CTA buttons */
+html.dark-clinic .bg-teal-600,
+html.dark-clinic .bg-teal-700,
+html.dark-clinic .bg-teal-900 {
+    background-color: #142e29 !important;
+    color: #F3E5AB !important;
+}
+html.dark-clinic .bg-white.text-teal-900 {
+    background: linear-gradient(110deg, #d4af37 0%, #fff7d6 25%, #d4af37 50%, #b8972e 100%) !important;
+    background-size: 200% 100% !important;
+    animation: goldShimmerSweep 4.5s cubic-bezier(0.4, 0, 0.2, 1) infinite !important;
+    color: #081412 !important;
+}
+
+/* Inputs, Tables & Borders in Dark Mode */
+html.dark-clinic .input-clinic {
+    background-color: #142e29 !important;
+    border-color: rgba(212, 175, 55, 0.25) !important;
+    color: #F9F6EE !important;
+}
+html.dark-clinic .input-clinic::placeholder {
+    color: #7A938C !important;
+}
+html.dark-clinic .input-clinic:focus {
+    background-color: #0f2420 !important;
+    border-color: #d4af37 !important;
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2) !important;
+}
+html.dark-clinic .table-spotlight tbody tr:hover {
+    background-color: #142e29 !important;
+}
+html.dark-clinic table th {
+    color: #F3E5AB !important;
+}
+html.dark-clinic table td {
+    color: #D2DED9 !important;
+}
+html.dark-clinic .divide-slate-100\/60 > :not([hidden]) ~ :not([hidden]) {
+    border-color: rgba(212, 175, 55, 0.12) !important;
+}
+html.dark-clinic .border-slate-200\/40,
+html.dark-clinic .border-slate-200\/45,
+html.dark-clinic .border-slate-100\/70,
+html.dark-clinic .border-teal-500\/15,
+html.dark-clinic .border-teal-500\/10 {
+    border-color: rgba(212, 175, 55, 0.2) !important;
+}
+
+/* Dark Mode Mockup Details: Gold Step Badges, Reviews Card & Concierge */
+html.dark-clinic .step-badge-teal,
+html.dark-clinic .step-badge-gold {
+    background-color: #d4af37 !important;
+    color: #081412 !important;
+}
+html.dark-clinic .reviews-showcase-card {
+    background-color: #0f2420 !important;
+    border: 1px solid rgba(212, 175, 55, 0.22) !important;
+}
+html.dark-clinic .review-inner-card,
+html.dark-clinic .dark-inner-tile {
+    background-color: #142e29 !important;
+    border: 1px solid rgba(212, 175, 55, 0.16) !important;
+}
+html.dark-clinic footer {
+    background-color: #050d0c !important;
+    border-top: 1px solid rgba(212, 175, 55, 0.2) !important;
+}
+
+/* Dark Scrollbar (Obsidian & Gold) */
+html.dark-clinic .clinic-scrollbar::-webkit-scrollbar-track {
+    background: #081412;
+}
+html.dark-clinic .clinic-scrollbar::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, rgba(212, 175, 55, 0.45), rgba(184, 151, 46, 0.7));
+    border-color: #081412;
+}
+html.dark-clinic .clinic-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #f3e5ab, #d4af37);
+}
+
+/* 6. Tối Ưu Truy Cập (Accessibility - Motion Safety) */
+@media (prefers-reduced-motion: reduce) {
+    *, ::before, ::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
     }
 }

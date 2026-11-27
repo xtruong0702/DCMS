@@ -204,8 +204,11 @@
                 const status = el.getAttribute('data-apt-status');
                 if (status !== 'pending' && status !== 'confirmed') return;
 
-                const aptTime = parseInt(el.getAttribute('data-apt-time'), 10);
-                if (!aptTime) return;
+                const rawTime = el.getAttribute('data-apt-time');
+                if (!rawTime) return;
+                const parsedMs = /^\d+$/.test(rawTime) ? parseInt(rawTime, 10) * 1000 : Date.parse(rawTime);
+                if (isNaN(parsedMs)) return;
+                const aptTime = Math.floor(parsedMs / 1000);
 
                 const badgeContainer = el.querySelector('.apt-time-badge');
                 if (!badgeContainer) return;
@@ -215,6 +218,9 @@
                 }
                 else if (now >= aptTime - 30 * 60 && now <= aptTime + 15 * 60) {
                     badgeContainer.innerHTML = '<span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-[10px] font-bold bg-[#FEF3C7] text-[#92400E] animate-pulse">🔔 Đến giờ hẹn</span>';
+                }
+                else {
+                    badgeContainer.innerHTML = '';
                 }
             });
         }
