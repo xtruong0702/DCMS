@@ -96,7 +96,7 @@ class PatientController extends Controller
             return back()->with('error', 'Chỉ có thể hủy lịch hẹn khi đang ở trạng thái chờ xác nhận hoặc đã xác nhận.');
         }
 
-        if ($appointment->appointment_time && $appointment->appointment_time->isPast()) {
+        if ($appointment->appointment_time && \Carbon\Carbon::parse($appointment->appointment_time)->isPast()) {
             return back()->with('error', 'Không thể hủy lịch hẹn đã quá thời gian khám.');
         }
 

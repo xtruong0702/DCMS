@@ -163,9 +163,15 @@ class AppointmentController extends Controller
         }
 
         $targetDoctorId = array_key_exists('doctor_id', $updateData) ? $updateData['doctor_id'] : $appointment->doctor_id;
-        $targetTime = array_key_exists('appointment_time', $updateData) ? \Carbon\Carbon::parse($updateData['appointment_time']) : $appointment->appointment_time;
+        $rawTargetTime = array_key_exists('appointment_time', $updateData) ? $updateData['appointment_time'] : $appointment->appointment_time;
+        $targetTime = $rawTargetTime ? \Carbon\Carbon::parse($rawTargetTime) : null;
 
-        if ($targetDoctorId && $targetTime && in_array($request->status, ['pending', 'confirmed', 'waiting', 'in_progress'])) {
+        $isChangingDoctorOrTime = (
+            (array_key_exists('doctor_id', $updateData) && (string) $updateData['doctor_id'] !== (string) $appointment->doctor_id)
+            || array_key_exists('appointment_time', $updateData)
+        );
+
+        if ($isChangingDoctorOrTime && $targetDoctorId && $targetTime && in_array($request->status, ['pending', 'confirmed', 'waiting', 'in_progress'])) {
             $conflict = Appointment::where('doctor_id', $targetDoctorId)
                 ->where('id', '!=', $appointment->id)
                 ->whereIn('status', ['pending', 'confirmed', 'waiting', 'in_progress'])

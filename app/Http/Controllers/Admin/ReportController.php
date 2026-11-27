@@ -22,17 +22,34 @@ class ReportController extends Controller
         $endDate = Carbon::create($year, $month, 1)->endOfMonth();
 
         // 1. Lấy các hóa đơn đã thanh toán trong tháng kèm chi tiết để tách Doanh thu Dịch vụ & Thuốc
-        $paidInvoices = Invoice::with('details')
+        $paidInvoices = Invoice::with(['details', 'payments', 'appointment.doctor.user'])
             ->where('status', 'paid')
             ->whereBetween('created_at', [$startDate, $endDate])
             ->get();
 
         $totalRevenue = $paidInvoices->sum('final_amount');
         $totalVat = $paidInvoices->sum('vat_amount');
+        $totalDiscount = $paidInvoices->sum('discount');
+        $paidInvoiceCount = $paidInvoices->count();
+
+        $unpaidAmount = Invoice::where('status', 'unpaid')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->sum('final_amount');
+        $unpaidInvoiceCount = Invoice::where('status', 'unpaid')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->count();
 
         $serviceRevenue = 0;
         $medicineRevenue = 0;
         $medicinePrefixes = ['thuốc:', 'đơn thuốc:', 'gói thuốc'];
+
+        $serviceBreakdown = [];
+        $doctorBreakdown = [];
+        $paymentMethods = [
+            'VietQR / Chuyển khoản' => 0,
+            'Tiền mặt' => 0,
+            'Khác' => 0,
+        ];
 
         foreach ($paidInvoices as $inv) {
             foreach ($inv->details as $detail) {
@@ -44,21 +61,61 @@ class ReportController extends Controller
                         break;
                     }
                 }
+                $lineTotal = floatval($detail->total_price);
                 if ($isMedicine) {
-                    $medicineRevenue += floatval($detail->total_price);
+                    $medicineRevenue += $lineTotal;
                 } else {
-                    $serviceRevenue += floatval($detail->total_price);
+                    $serviceRevenue += $lineTotal;
+                    $cleanServiceName = preg_replace('/^(Dịch vụ\/Thủ thuật:|Dịch vụ:)\s*/iu', '', trim($detail->item_name));
+                    if (!isset($serviceBreakdown[$cleanServiceName])) {
+                        $serviceBreakdown[$cleanServiceName] = ['name' => $cleanServiceName, 'qty' => 0, 'revenue' => 0];
+                    }
+                    $serviceBreakdown[$cleanServiceName]['qty'] += max(1, intval($detail->quantity));
+                    $serviceBreakdown[$cleanServiceName]['revenue'] += $lineTotal;
                 }
             }
+
+            // Phân bổ phương thức thanh toán
+            foreach ($inv->payments->where('status', 'completed') as $pay) {
+                $m = mb_strtolower(trim((string) $pay->payment_method));
+                $amt = floatval($pay->amount);
+                if (str_contains($m, 'qr') || str_contains($m, 'chuyển khoản') || str_contains($m, 'bank') || str_contains($m, 'vietqr')) {
+                    $paymentMethods['VietQR / Chuyển khoản'] += $amt;
+                } elseif (str_contains($m, 'cash') || str_contains($m, 'tiền mặt')) {
+                    $paymentMethods['Tiền mặt'] += $amt;
+                } else {
+                    $paymentMethods['Khác'] += $amt;
+                }
+            }
+
+            // Hiệu suất doanh thu theo Bác sĩ
+            if ($inv->appointment && $inv->appointment->doctor) {
+                $doc = $inv->appointment->doctor;
+                $docId = $doc->id;
+                if (!isset($doctorBreakdown[$docId])) {
+                    $doctorBreakdown[$docId] = [
+                        'name' => $doc->user->name ?? ('Bác sĩ #' . $docId),
+                        'specialty' => $doc->specialty ?? 'Răng Hàm Mặt',
+                        'cases' => 0,
+                        'revenue' => 0,
+                    ];
+                }
+                $doctorBreakdown[$docId]['cases'] += 1;
+                $doctorBreakdown[$docId]['revenue'] += floatval($inv->final_amount);
+            }
         }
+
+        $topServices = collect($serviceBreakdown)->sortByDesc('revenue')->take(6)->values();
+        $doctorStats = collect($doctorBreakdown)->sortByDesc('revenue')->values();
 
         // 2. Bệnh nhân mới trong tháng
         $newPatients = Patient::whereBetween('created_at', [$startDate, $endDate])->count();
 
-        // 3. Số lượt khám hoàn thành
+        // 3. Số lượt khám hoàn thành & tổng lượt khám trong tháng
         $completedAppointments = Appointment::where('status', 'completed')
             ->whereBetween('appointment_time', [$startDate, $endDate])
             ->count();
+        $totalAppointmentsMonth = Appointment::whereBetween('appointment_time', [$startDate, $endDate])->count();
 
         // 4. Doanh thu theo từng ngày trong tháng
         $dailyRevenue = Invoice::selectRaw('DATE(created_at) as date, COUNT(*) as invoice_count, SUM(vat_amount) as vat_total, SUM(final_amount) as total')
@@ -67,6 +124,9 @@ class ReportController extends Controller
             ->groupBy('date')
             ->orderBy('date')
             ->get();
+
+        $dailyChartLabels = $dailyRevenue->map(fn ($d) => Carbon::parse($d->date)->format('d/m'))->values()->toArray();
+        $dailyChartTotals = $dailyRevenue->map(fn ($d) => round(floatval($d->total)))->values()->toArray();
 
         // 5. Cảnh báo thuốc sắp hết tồn kho
         $lowStockMedicines = Medicine::where('stock_quantity', '<=', 20)
@@ -80,9 +140,19 @@ class ReportController extends Controller
             'serviceRevenue',
             'medicineRevenue',
             'totalVat',
+            'totalDiscount',
+            'paidInvoiceCount',
+            'unpaidAmount',
+            'unpaidInvoiceCount',
             'newPatients',
             'completedAppointments',
+            'totalAppointmentsMonth',
             'dailyRevenue',
+            'dailyChartLabels',
+            'dailyChartTotals',
+            'paymentMethods',
+            'topServices',
+            'doctorStats',
             'lowStockMedicines'
         ));
     }

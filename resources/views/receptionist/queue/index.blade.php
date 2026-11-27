@@ -36,6 +36,15 @@
                 </div>
             @endif
 
+            @if(session('error') || $errors->any())
+                <div class="bg-rose-50 border border-rose-200 text-rose-800 px-4 py-3 rounded-2xl flex items-center justify-between text-xs font-semibold" role="alert">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+                        <span>{{ session('error') ?? $errors->first() }}</span>
+                    </div>
+                </div>
+            @endif
+
             <!-- 4 Thẻ Thống kê KPI dot indicator -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div class="bg-white p-4 rounded-2xl border border-slate-200/90 shadow-xs">

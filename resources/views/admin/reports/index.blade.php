@@ -134,6 +134,110 @@
             </div>
         @endif
 
+        <!-- Hàng Biểu đồ: Doanh thu theo ngày + Cơ cấu Doanh thu & Phương thức thanh toán -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200/90 shadow-xs p-5">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700">📈 Biểu đồ Doanh thu theo ngày (Tháng {{ $month }}/{{ $year }})</h3>
+                        <p class="text-[11px] text-slate-400 mt-0.5">{{ $paidInvoiceCount ?? 0 }} hóa đơn đã thu • Công nợ chưa thu: <strong class="text-amber-600">{{ number_format($unpaidAmount ?? 0, 0, ',', '.') }} đ</strong> ({{ $unpaidInvoiceCount ?? 0 }} HĐ)</p>
+                    </div>
+                </div>
+                <div class="h-64">
+                    <canvas id="monthlyDailyRevenueChart"></canvas>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs p-5 flex flex-col justify-between">
+                <div>
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700 mb-3">💳 Cơ cấu & Kênh Thanh Toán</h3>
+                    <div class="h-40 flex items-center justify-center">
+                        <canvas id="revenueSplitChart"></canvas>
+                    </div>
+                </div>
+                <div class="mt-4 pt-3 border-t border-slate-100 space-y-2 text-xs">
+                    @foreach(($paymentMethods ?? []) as $methodLabel => $methodVal)
+                        @if($methodVal > 0 || $methodLabel !== 'Khác')
+                            <div class="flex items-center justify-between">
+                                <span class="text-slate-600 font-medium">{{ $methodLabel }}</span>
+                                <span class="font-bold text-slate-900 tabular-nums">{{ number_format($methodVal, 0, ',', '.') }} đ</span>
+                            </div>
+                        @endif
+                    @endforeach
+                    <div class="flex items-center justify-between pt-1.5 border-t border-slate-100">
+                        <span class="text-slate-500">Tổng ưu đãi / chiết khấu</span>
+                        <span class="font-semibold text-rose-600 tabular-nums">-{{ number_format($totalDiscount ?? 0, 0, ',', '.') }} đ</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hàng Phân tích: Top Dịch vụ & Hiệu suất Bác sĩ -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Top Dịch vụ -->
+            <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden">
+                <div class="px-5 py-3.5 bg-slate-50/70 border-b border-slate-200/90">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700">🦷 Top Dịch vụ Tạo Doanh Thu Cao Nhất</h3>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="border-b border-slate-100 text-slate-400 font-bold text-[11px] uppercase">
+                                <th class="py-2.5 px-5">Dịch vụ / Thủ thuật</th>
+                                <th class="py-2.5 px-4 text-center">Số lượt</th>
+                                <th class="py-2.5 px-5 text-right">Doanh thu</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            @forelse(($topServices ?? collect()) as $srv)
+                                <tr class="hover:bg-slate-50/70">
+                                    <td class="py-2.5 px-5 font-semibold text-slate-800">{{ $srv['name'] }}</td>
+                                    <td class="py-2.5 px-4 text-center font-bold text-slate-600">{{ $srv['qty'] }}</td>
+                                    <td class="py-2.5 px-5 text-right font-bold text-[#0D7A68] tabular-nums">{{ number_format($srv['revenue'], 0, ',', '.') }} đ</td>
+                                </tr>
+                            @empty
+                                <tr><td colspan="3" class="py-8 text-center text-slate-400">Chưa có dữ liệu dịch vụ trong tháng này.</td></tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Hiệu suất Bác sĩ -->
+            <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden">
+                <div class="px-5 py-3.5 bg-slate-50/70 border-b border-slate-200/90">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700">👨‍⚕️ Hiệu Suất Bác Sĩ Trong Tháng</h3>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="border-b border-slate-100 text-slate-400 font-bold text-[11px] uppercase">
+                                <th class="py-2.5 px-5">Bác sĩ phụ trách</th>
+                                <th class="py-2.5 px-4 text-center">Ca đã thu</th>
+                                <th class="py-2.5 px-5 text-right">Doanh số (Gồm VAT)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            @forelse(($doctorStats ?? collect()) as $doc)
+                                <tr class="hover:bg-slate-50/70">
+                                    <td class="py-2.5 px-5">
+                                        <div class="font-bold text-slate-800">{{ $doc['name'] }}</div>
+                                        <div class="text-[11px] text-slate-400 truncate max-w-[220px]">{{ $doc['specialty'] }}</div>
+                                    </td>
+                                    <td class="py-2.5 px-4 text-center">
+                                        <span class="px-2 py-0.5 rounded-full bg-teal-50 text-teal-700 font-bold">{{ $doc['cases'] }} ca</span>
+                                    </td>
+                                    <td class="py-2.5 px-5 text-right font-bold text-[#0D7A68] tabular-nums">{{ number_format($doc['revenue'], 0, ',', '.') }} đ</td>
+                                </tr>
+                            @empty
+                                <tr><td colspan="3" class="py-8 text-center text-slate-400">Chưa có dữ liệu bác sĩ trong tháng này.</td></tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
         <!-- Bảng chi tiết doanh thu theo ngày -->
         <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden">
             <div class="px-5 py-4 bg-slate-50/70 border-b border-slate-200/90 flex items-center justify-between">
@@ -167,4 +271,76 @@
             </div>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const dailyCtx = document.getElementById('monthlyDailyRevenueChart');
+            if (dailyCtx) {
+                new Chart(dailyCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: @json($dailyChartLabels ?? []),
+                        datasets: [{
+                            label: 'Doanh thu thực thu (VNĐ)',
+                            data: @json($dailyChartTotals ?? []),
+                            backgroundColor: 'rgba(13, 122, 104, 0.85)',
+                            borderRadius: 6,
+                            maxBarThickness: 32,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: (ctx) => new Intl.NumberFormat('vi-VN').format(ctx.parsed.y) + ' đ'
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: (v) => v >= 1000000 ? (v / 1000000) + 'tr' : new Intl.NumberFormat('vi-VN').format(v)
+                                },
+                                grid: { color: '#f1f5f9' }
+                            },
+                            x: { grid: { display: false } }
+                        }
+                    }
+                });
+            }
+
+            const splitCtx = document.getElementById('revenueSplitChart');
+            if (splitCtx) {
+                new Chart(splitCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Dịch vụ khám', 'Tiền thuốc', 'Thuế VAT'],
+                        datasets: [{
+                            data: [{{ round($serviceRevenue ?? 0) }}, {{ round($medicineRevenue ?? 0) }}, {{ round($totalVat ?? 0) }}],
+                            backgroundColor: ['#0D7A68', '#3B82F6', '#F59E0B'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '64%',
+                        plugins: {
+                            legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 11 } } },
+                            tooltip: {
+                                callbacks: {
+                                    label: (ctx) => ctx.label + ': ' + new Intl.NumberFormat('vi-VN').format(ctx.parsed) + ' đ'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
 </x-app-layout>

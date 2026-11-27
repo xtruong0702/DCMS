@@ -792,6 +792,8 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
+        $this->call(RealisticClinicSeeder::class);
+
         $this->command->info('=== KHỞI TẠO DỮ LIỆU SEEDER THÀNH CÔNG ===');
         $this->command->info('- Quản trị viên: admin@smile.com (Mật khẩu: password)');
         $this->command->info('- Bác sĩ (4): bacsi@smile.com, nam.le@smile.com, ha.nguyen@smile.com, trong.vu@smile.com');

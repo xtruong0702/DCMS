@@ -38,6 +38,13 @@
                 </div>
             @endif
 
+            @if(session('error') || $errors->any())
+                <div class="bg-rose-50 border border-rose-200 text-rose-800 px-4 py-3 rounded-2xl text-xs font-bold flex items-center gap-2 shadow-xs">
+                    <span class="w-5 h-5 rounded-full bg-rose-600 text-white flex items-center justify-center text-xs">!</span>
+                    <span>{{ session('error') ?? $errors->first() }}</span>
+                </div>
+            @endif
+
             <!-- 5 Thẻ Thống Kê Nghiệp Vụ (Designed to match Stitch UI) -->
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5">
                 <!-- Thẻ 1: Lịch hẹn chờ duyệt -->
