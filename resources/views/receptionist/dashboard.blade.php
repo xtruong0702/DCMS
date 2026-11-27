@@ -406,7 +406,7 @@
                     </div>
 
                     <!-- KHỐI 2: Yêu cầu tư vấn từ Website -->
-                    <div class="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-xs">
+                    <div class="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-xs" x-data="{ activeInquiry: null }">
                         <div class="flex items-center justify-between pb-3 border-b border-slate-100">
                             <h2 class="text-sm font-bold text-slate-900">Yêu cầu tư vấn từ Website</h2>
                             <span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-500">
@@ -428,24 +428,48 @@
                         @else
                             <div class="space-y-3 mt-3 max-h-[340px] overflow-y-auto pr-1">
                                 @foreach($contactInquiries as $inq)
+                                    @php
+                                        $inqPayload = [
+                                            'id' => $inq['id'] ?? '',
+                                            'name' => $inq['name'] ?? 'Khách hàng',
+                                            'phone' => $inq['phone'] ?? '',
+                                            'email' => $inq['email'] ?? '',
+                                            'topic' => $inq['topic'] ?? 'Tư vấn dịch vụ nha khoa',
+                                            'message' => $inq['message'] ?? '',
+                                            'status' => $inq['status'] ?? 'pending',
+                                            'resolved_by' => $inq['resolved_by'] ?? null,
+                                            'resolved_at' => $inq['resolved_at'] ?? null,
+                                            'created_at' => $inq['created_at'] ?? '',
+                                            'resolve_url' => route('contact-inquiries.resolve', $inq['id']),
+                                            'book_url' => route('receptionist.appointments.create', ['name' => $inq['name'] ?? '', 'phone' => $inq['phone'] ?? '']),
+                                        ];
+                                    @endphp
                                     <div class="p-3 border rounded-xl text-xs space-y-1.5 {{ ($inq['status'] ?? 'pending') === 'pending' ? 'border-amber-200 bg-amber-50/30' : 'border-slate-200 bg-slate-50/50' }}">
-                                        <div class="flex items-center justify-between">
-                                            <span class="font-bold text-slate-900">{{ $inq['name'] ?? 'Khách hàng' }}</span>
-                                            <span class="text-[10px] text-slate-400">{{ $inq['created_at'] ?? '' }}</span>
+                                        <div class="flex items-center justify-between gap-2">
+                                            <span class="font-bold text-slate-900 truncate">{{ $inq['name'] ?? 'Khách hàng' }}</span>
+                                            <span class="text-[10px] text-slate-400 shrink-0">{{ $inq['created_at'] ?? '' }}</span>
                                         </div>
-                                        <div class="text-indigo-600 font-semibold font-mono">{{ $inq['phone'] ?? '' }}</div>
-                                        <p class="text-slate-600 line-clamp-2 text-[11px] leading-relaxed">{{ $inq['message'] ?? '' }}</p>
+                                        <div class="flex items-center justify-between gap-2">
+                                            <span class="text-indigo-600 font-semibold font-mono">{{ $inq['phone'] ?? '' }}</span>
+                                            @if(!empty($inq['topic']))
+                                                <span class="px-1.5 py-0.5 rounded bg-teal-50 text-teal-700 text-[10px] font-semibold truncate max-w-[160px]">{{ $inq['topic'] }}</span>
+                                            @endif
+                                        </div>
+                                        <p @click='activeInquiry = @json($inqPayload)' class="text-slate-600 line-clamp-2 text-[11px] leading-relaxed cursor-pointer hover:text-slate-900" title="Nhấn để xem toàn bộ nội dung">{{ $inq['message'] ?? '' }}</p>
                                         <div class="flex items-center justify-end gap-1.5 pt-1">
+                                            <button type="button" @click='activeInquiry = @json($inqPayload)' class="px-2 py-0.5 rounded bg-teal-50 hover:bg-teal-100 text-teal-800 border border-teal-200 font-semibold text-[10px] transition">
+                                                👁️ Chi tiết
+                                            </button>
                                             @if(($inq['status'] ?? 'pending') === 'pending')
                                                 <form action="{{ route('contact-inquiries.resolve', $inq['id']) }}" method="POST">
                                                     @csrf
                                                     @method('PATCH')
-                                                    <button type="submit" class="px-2 py-0.5 rounded bg-emerald-600 text-white font-bold text-[10px]">
+                                                    <button type="submit" class="px-2 py-0.5 rounded bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[10px] transition">
                                                         ✓ Đã tư vấn
                                                     </button>
                                                 </form>
                                             @endif
-                                            <a href="{{ route('receptionist.appointments.create', ['name' => $inq['name'] ?? '', 'phone' => $inq['phone'] ?? '']) }}" class="px-2 py-0.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-[10px]">
+                                            <a href="{{ route('receptionist.appointments.create', ['name' => $inq['name'] ?? '', 'phone' => $inq['phone'] ?? '']) }}" class="px-2 py-0.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-[10px] transition">
                                                 Đặt lịch
                                             </a>
                                         </div>
@@ -453,6 +477,70 @@
                                 @endforeach
                             </div>
                         @endif
+
+                        <!-- Modal Xem Chi Tiết Yêu Cầu Tư Vấn -->
+                        <div x-show="activeInquiry !== null" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-xs p-4" @keydown.escape.window="activeInquiry = null" @click.self="activeInquiry = null">
+                            <template x-if="activeInquiry">
+                                <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-lg w-full overflow-hidden">
+                                    <div class="px-5 py-4 bg-gradient-to-r from-[#09473d] to-[#0D7A68] text-white flex items-center justify-between">
+                                        <div>
+                                            <span class="text-[10px] uppercase tracking-wider text-teal-200 font-bold">Chi tiết yêu cầu tư vấn</span>
+                                            <h3 class="text-base font-extrabold text-white" x-text="activeInquiry.name"></h3>
+                                        </div>
+                                        <button type="button" @click="activeInquiry = null" class="w-8 h-8 rounded-xl hover:bg-white/15 flex items-center justify-center text-white font-bold">✕</button>
+                                    </div>
+                                    <div class="p-5 space-y-4 text-xs">
+                                        <div class="grid grid-cols-2 gap-3 bg-slate-50 p-3.5 rounded-xl border border-slate-200/70">
+                                            <div>
+                                                <span class="text-[10px] uppercase text-slate-400 font-bold block">Số điện thoại</span>
+                                                <a :href="'tel:' + activeInquiry.phone" class="font-mono font-bold text-indigo-700 hover:underline text-sm" x-text="activeInquiry.phone || '---'"></a>
+                                            </div>
+                                            <div>
+                                                <span class="text-[10px] uppercase text-slate-400 font-bold block">Email</span>
+                                                <span class="font-semibold text-slate-800 break-all" x-text="activeInquiry.email || 'Không cung cấp'"></span>
+                                            </div>
+                                            <div>
+                                                <span class="text-[10px] uppercase text-slate-400 font-bold block">Chủ đề quan tâm</span>
+                                                <span class="font-bold text-[#0D7A68]" x-text="activeInquiry.topic"></span>
+                                            </div>
+                                            <div>
+                                                <span class="text-[10px] uppercase text-slate-400 font-bold block">Thời gian gửi</span>
+                                                <span class="font-semibold text-slate-700" x-text="activeInquiry.created_at"></span>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <span class="text-[11px] uppercase text-slate-500 font-bold block mb-1.5">Nội dung chi tiết khách hàng gửi:</span>
+                                            <div class="p-4 rounded-xl bg-teal-50/40 border border-teal-200/70 text-slate-800 text-xs leading-relaxed whitespace-pre-line" x-text="activeInquiry.message"></div>
+                                        </div>
+
+                                        <template x-if="activeInquiry.status === 'resolved'">
+                                            <div class="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold">
+                                                ✓ Đã tư vấn bởi <strong x-text="activeInquiry.resolved_by || 'Nhân viên'"></strong>
+                                                <span x-show="activeInquiry.resolved_at"> lúc <span x-text="activeInquiry.resolved_at"></span></span>
+                                            </div>
+                                        </template>
+                                    </div>
+                                    <div class="px-5 py-3.5 bg-slate-50 border-t border-slate-200/80 flex flex-wrap items-center justify-end gap-2">
+                                        <button type="button" @click="activeInquiry = null" class="px-3.5 py-2 rounded-xl bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 font-semibold text-xs transition">
+                                            Đóng
+                                        </button>
+                                        <a :href="activeInquiry.book_url" class="px-3.5 py-2 rounded-xl bg-white border border-teal-300 hover:bg-teal-50 text-teal-800 font-bold text-xs transition">
+                                            📅 Đặt lịch cho khách
+                                        </a>
+                                        <template x-if="activeInquiry.status === 'pending'">
+                                            <form :action="activeInquiry.resolve_url" method="POST">
+                                                @csrf
+                                                @method('PATCH')
+                                                <button type="submit" class="px-4 py-2 rounded-xl bg-[#0D7A68] hover:bg-[#0B6858] text-white font-bold text-xs shadow-xs transition">
+                                                    ✓ Đánh dấu Đã tư vấn
+                                                </button>
+                                            </form>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
                     </div>
 
                 </div>
