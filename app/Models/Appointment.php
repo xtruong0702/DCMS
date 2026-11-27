@@ -82,4 +82,89 @@ class Appointment extends Model
         }
         return 'normal';
     }
+
+    /**
+     * Tính thời lượng (phút) của 1 lịch hẹn dựa theo dịch vụ (mặc định 30 phút)
+     */
+    public static function resolveDurationMinutes(?int $serviceId): int
+    {
+        if ($serviceId) {
+            $service = Service::find($serviceId);
+            if ($service && intval($service->duration_minutes) > 0) {
+                return max(15, intval($service->duration_minutes));
+            }
+        }
+        return 30;
+    }
+
+    /**
+     * Tìm lịch hẹn bị chồng lấn khung giờ [start, end) của cùng 1 bác sĩ theo thời lượng thực tế của dịch vụ
+     */
+    public static function findDoctorConflict(
+        int $doctorId,
+        \Carbon\Carbon $startTime,
+        ?int $serviceId = null,
+        ?int $ignoreAppointmentId = null
+    ): ?array {
+        $newDuration = self::resolveDurationMinutes($serviceId);
+        $newEnd = $startTime->copy()->addMinutes($newDuration);
+
+        $query = self::with('service')
+            ->where('doctor_id', $doctorId)
+            ->whereDate('appointment_time', $startTime->toDateString())
+            ->whereIn('status', ['pending', 'confirmed', 'waiting', 'in_progress']);
+
+        if ($ignoreAppointmentId) {
+            $query->where('id', '!=', $ignoreAppointmentId);
+        }
+
+        $existingAppointments = $query->orderBy('appointment_time')->get();
+
+        foreach ($existingAppointments as $existing) {
+            $exStart = \Carbon\Carbon::parse($existing->appointment_time);
+            $exDuration = max(15, intval($existing->service->duration_minutes ?? 30));
+            $exEnd = $exStart->copy()->addMinutes($exDuration);
+
+            if ($startTime->lt($exEnd) && $exStart->lt($newEnd)) {
+                return [
+                    'appointment' => $existing,
+                    'start' => $exStart->format('H:i'),
+                    'end' => $exEnd->format('H:i'),
+                    'duration' => $exDuration,
+                ];
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Trả về danh sách các khung giờ bác sĩ đã có lịch trong ngày
+     */
+    public static function getDoctorBusySlots(int $doctorId, string $date): array
+    {
+        $appointments = self::with('service')
+            ->where('doctor_id', $doctorId)
+            ->whereDate('appointment_time', $date)
+            ->whereIn('status', ['pending', 'confirmed', 'waiting', 'in_progress'])
+            ->orderBy('appointment_time')
+            ->get();
+
+        $slots = [];
+        foreach ($appointments as $apt) {
+            $start = \Carbon\Carbon::parse($apt->appointment_time);
+            $duration = max(15, intval($apt->service->duration_minutes ?? 30));
+            $end = $start->copy()->addMinutes($duration);
+
+            $slots[] = [
+                'start' => $start->format('H:i'),
+                'end' => $end->format('H:i'),
+                'start_minutes' => $start->hour * 60 + $start->minute,
+                'end_minutes' => $end->hour * 60 + $end->minute,
+                'duration' => $duration,
+            ];
+        }
+
+        return $slots;
+    }
 }

@@ -19,6 +19,7 @@ Route::get('/lien-he', [\App\Http\Controllers\PublicController::class, 'contact'
 Route::post('/lien-he', [\App\Http\Controllers\PublicController::class, 'storeContact'])->name('public.contact.store');
 Route::get('/dat-lich', [\App\Http\Controllers\PublicController::class, 'booking'])->name('public.booking');
 Route::get('/booking', [\App\Http\Controllers\PublicController::class, 'booking'])->name('booking.index');
+Route::get('/dat-lich/khung-gio-ban', [\App\Http\Controllers\PublicController::class, 'doctorBusySlots'])->name('public.booking.busy-slots');
 Route::post('/dat-lich', [\App\Http\Controllers\PublicController::class, 'storeBooking'])->name('public.booking.store');
 Route::get('/tra-cuu', [\App\Http\Controllers\PublicController::class, 'lookup'])->name('public.lookup');
 
@@ -156,8 +157,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 Route::middleware(['auth', 'role:receptionist'])->prefix('receptionist')->name('receptionist.')->group(function () {
     Route::get('/dashboard', [ReceptionistController::class, 'dashboard'])->name('dashboard');
     
-    // Quản lý bệnh nhân
-    Route::resource('patients', \App\Http\Controllers\Receptionist\PatientController::class);
+    // Quản lý bệnh nhân (Lễ tân không được phép xóa hồ sơ bệnh nhân)
+    Route::resource('patients', \App\Http\Controllers\Receptionist\PatientController::class)->except(['destroy']);
     
     // Quản lý lịch hẹn & Check-in
     Route::resource('appointments', \App\Http\Controllers\Receptionist\AppointmentController::class)->except(['show', 'destroy']);

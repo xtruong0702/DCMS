@@ -44,8 +44,8 @@ class DatabaseSeeder extends Seeder
             'clinic_address' => '204 Trần Duy Hưng, Yên Hòa, Cầu Giấy, Hà Nội',
             'vat_percentage' => '10',
             'currency_unit' => 'VNĐ',
-            'bank_id' => 'TCB',
-            'bank_account_no' => '6362566666',
+            'bank_id' => 'MB',
+            'bank_account_no' => '1626262696969',
             'bank_account_name' => 'PHAM XUAN TRUONG',
         ];
         foreach ($settings as $key => $value) {

@@ -89,13 +89,6 @@
                                         <a href="{{ route('receptionist.patients.edit', $patient) }}" class="px-2.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-xl font-semibold text-xs transition">
                                             Sửa
                                         </a>
-                                        <form action="{{ route('receptionist.patients.destroy', $patient) }}" method="POST" class="inline-block" onsubmit="return confirm('Bạn có chắc chắn muốn xóa hồ sơ bệnh nhân này?');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="px-2.5 py-1.5 bg-white hover:bg-red-50 text-red-600 border border-slate-200 rounded-xl font-semibold text-xs transition">
-                                                Xóa
-                                            </button>
-                                        </form>
                                     </td>
                                 </tr>
                             @empty

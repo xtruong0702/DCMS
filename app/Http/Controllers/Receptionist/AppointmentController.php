@@ -93,17 +93,15 @@ class AppointmentController extends Controller
         }
 
         if ($request->doctor_id) {
-            $conflict = Appointment::where('doctor_id', $request->doctor_id)
-                ->whereIn('status', ['pending', 'confirmed', 'waiting', 'in_progress'])
-                ->whereBetween('appointment_time', [
-                    $parsedTime->copy()->subMinutes(29),
-                    $parsedTime->copy()->addMinutes(29),
-                ])
-                ->exists();
+            $conflict = Appointment::findDoctorConflict(
+                (int) $request->doctor_id,
+                $parsedTime,
+                $request->filled('service_id') ? (int) $request->service_id : null
+            );
 
             if ($conflict) {
                 return back()->withInput()->withErrors([
-                    'doctor_id' => 'Bác sĩ này đã có lịch hẹn khác trong khoảng thời gian đã chọn (cách nhau dưới 30 phút).'
+                    'doctor_id' => "Bác sĩ này đã có lịch hẹn trong khung giờ {$conflict['start']} – {$conflict['end']} ({$conflict['duration']} phút)."
                 ]);
             }
         }
@@ -163,27 +161,27 @@ class AppointmentController extends Controller
         }
 
         $targetDoctorId = array_key_exists('doctor_id', $updateData) ? $updateData['doctor_id'] : $appointment->doctor_id;
+        $targetServiceId = array_key_exists('service_id', $updateData) ? $updateData['service_id'] : $appointment->service_id;
         $rawTargetTime = array_key_exists('appointment_time', $updateData) ? $updateData['appointment_time'] : $appointment->appointment_time;
         $targetTime = $rawTargetTime ? \Carbon\Carbon::parse($rawTargetTime) : null;
 
         $isChangingDoctorOrTime = (
             (array_key_exists('doctor_id', $updateData) && (string) $updateData['doctor_id'] !== (string) $appointment->doctor_id)
             || array_key_exists('appointment_time', $updateData)
+            || (array_key_exists('service_id', $updateData) && (string) $updateData['service_id'] !== (string) $appointment->service_id)
         );
 
         if ($isChangingDoctorOrTime && $targetDoctorId && $targetTime && in_array($request->status, ['pending', 'confirmed', 'waiting', 'in_progress'])) {
-            $conflict = Appointment::where('doctor_id', $targetDoctorId)
-                ->where('id', '!=', $appointment->id)
-                ->whereIn('status', ['pending', 'confirmed', 'waiting', 'in_progress'])
-                ->whereBetween('appointment_time', [
-                    $targetTime->copy()->subMinutes(29),
-                    $targetTime->copy()->addMinutes(29),
-                ])
-                ->exists();
+            $conflict = Appointment::findDoctorConflict(
+                (int) $targetDoctorId,
+                $targetTime,
+                $targetServiceId ? (int) $targetServiceId : null,
+                $appointment->id
+            );
 
             if ($conflict) {
                 return back()->withInput()->withErrors([
-                    'doctor_id' => 'Bác sĩ này đã có lịch hẹn khác trong khoảng thời gian đã chọn (cách nhau dưới 30 phút).'
+                    'doctor_id' => "Bác sĩ này đã có lịch hẹn trong khung giờ {$conflict['start']} – {$conflict['end']} ({$conflict['duration']} phút)."
                 ]);
             }
         }

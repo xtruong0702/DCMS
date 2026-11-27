@@ -21,6 +21,3 @@ Route::post('/webhooks/payos', [PaymentWebhookController::class, 'handleWebhook'
 // API kiểm tra trạng thái thanh toán thời gian thực (cho trang Bệnh nhân & Lễ tân tự động đổi màu)
 Route::get('/invoices/{code}/status', [PaymentWebhookController::class, 'checkStatus'])->name('api.invoices.status');
 
-// API mô phỏng thanh toán (Test / Demo)
-Route::post('/payment/simulate', [PaymentWebhookController::class, 'simulate'])->name('api.payment.simulate');
-

@@ -135,6 +135,28 @@ class PublicController extends Controller
         return view('public.booking', compact('services', 'doctors'));
     }
 
+    public function doctorBusySlots(Request $request)
+    {
+        $doctorId = intval($request->query('doctor_id'));
+        $date = trim((string) $request->query('date', ''));
+
+        if ($doctorId <= 0 || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
+            return response()->json([
+                'success' => true,
+                'slots' => [],
+            ]);
+        }
+
+        $slots = Appointment::getDoctorBusySlots($doctorId, $date);
+
+        return response()->json([
+            'success' => true,
+            'doctor_id' => $doctorId,
+            'date' => $date,
+            'slots' => $slots,
+        ]);
+    }
+
     public function storeBooking(Request $request)
     {
         $request->validate([
@@ -161,17 +183,15 @@ class PublicController extends Controller
         }
 
         if ($request->filled('doctor_id')) {
-            $conflict = Appointment::where('doctor_id', $request->doctor_id)
-                ->whereIn('status', ['pending', 'confirmed', 'waiting', 'in_progress'])
-                ->whereBetween('appointment_time', [
-                    $parsedTime->copy()->subMinutes(29),
-                    $parsedTime->copy()->addMinutes(29),
-                ])
-                ->exists();
+            $conflict = Appointment::findDoctorConflict(
+                (int) $request->doctor_id,
+                $parsedTime,
+                $request->filled('service_id') ? (int) $request->service_id : null
+            );
 
             if ($conflict) {
                 return back()->withInput()->withErrors([
-                    'doctor_id' => 'Bác sĩ bạn chọn đã có lịch hẹn khác trong khung giờ này (cách nhau dưới 30 phút). Vui lòng chọn khung giờ khác hoặc bác sĩ khác.'
+                    'doctor_id' => "Bác sĩ bạn chọn đã có lịch hẹn trong khung giờ {$conflict['start']} – {$conflict['end']} ({$conflict['duration']} phút). Vui lòng chọn khung giờ khác hoặc bác sĩ khác."
                 ]);
             }
         }

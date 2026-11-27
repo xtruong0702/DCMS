@@ -29,10 +29,11 @@
         $rawAccNo = $settings['bank_account_no'] ?? '';
         $rawAccName = $settings['bank_account_name'] ?? '';
 
-        $bankId = (!empty($rawBankId) && $rawAccNo !== '0789169711') ? $rawBankId : 'TCB';
-        $accountNo = (!empty($rawAccNo) && $rawAccNo !== '0789169711') ? $rawAccNo : '6362566666';
-        $accountName = (!empty($rawAccName) && $rawAccName !== 'NHA KHOA SMILE') ? $rawAccName : 'PHAM XUAN TRUONG';
-        $bankDisplayName = $bankId === 'TCB' ? 'Techcombank (TCB)' : $bankId;
+        $bankId = !empty($rawBankId) ? strtoupper(trim($rawBankId)) : 'MB';
+        $accountNo = !empty($rawAccNo) ? trim($rawAccNo) : '1626262696969';
+        $accountName = !empty($rawAccName) ? trim($rawAccName) : 'PHAM XUAN TRUONG';
+        $bankLabels = ['MB' => 'MBBank (MB)', 'TCB' => 'Techcombank (TCB)', 'VCB' => 'Vietcombank (VCB)', 'ACB' => 'ACB'];
+        $bankDisplayName = $bankLabels[$bankId] ?? $bankId;
 
         $transferContent = 'THANH TOAN ' . $invoice->invoice_code;
         $vietQrUrl = "https://img.vietqr.io/image/{$bankId}-{$accountNo}-compact2.png?amount=" . round($invoice->final_amount) . "&addInfo=" . urlencode($transferContent) . "&accountName=" . urlencode($accountName);
@@ -462,14 +463,11 @@
                         </div>
 
                         @if($invoice->status !== 'paid' && $invoice->status !== 'cancelled')
-                            <div class="mt-3 flex items-center justify-between text-xs px-1">
+                            <div class="mt-3 flex items-center justify-center text-xs px-1">
                                 <span class="inline-flex items-center gap-1.5 text-teal-100">
                                     <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-                                    Lắng nghe Webhook tự động
+                                    Đang tự động chờ xác nhận chuyển khoản VietQR...
                                 </span>
-                                <button type="button" onclick="simulateReceptionistPayment('{{ $invoice->invoice_code }}')" class="text-amber-300 hover:text-white underline font-bold transition">
-                                    ⚡ Test Webhook QR
-                                </button>
                             </div>
                         @endif
                     </div>
@@ -594,7 +592,7 @@
         document.addEventListener('DOMContentLoaded', recalcShowSelector);
 
         @if($invoice->status !== 'paid' && $invoice->status !== 'cancelled')
-        // Tự động kiểm tra hóa đơn đã thanh toán qua Webhook chưa
+        // Tự động kiểm tra hóa đơn đã thanh toán qua Webhook ngân hàng chưa
         setInterval(async function () {
             try {
                 const res = await fetch('/api/invoices/{{ $invoice->invoice_code }}/status');
@@ -604,26 +602,6 @@
                 }
             } catch (e) {}
         }, 4000);
-
-        async function simulateReceptionistPayment(code) {
-            if (!confirm('Bạn có muốn mô phỏng Webhook Ngân hàng gửi giao dịch thanh toán thành công cho hóa đơn #' + code + '?')) return;
-            try {
-                const res = await fetch('/api/payment/simulate', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ invoice_code: code })
-                });
-                const data = await res.json();
-                if (data.success) {
-                    alert('Webhook xác nhận thành công! Hóa đơn đã tự động chuyển sang ĐÃ THANH TOÁN.');
-                    window.location.reload();
-                } else {
-                    alert(data.message || 'Mô phỏng thất bại.');
-                }
-            } catch (err) {
-                alert('Lỗi kết nối API: ' + err.message);
-            }
-        }
         @endif
     </script>
 </x-app-layout>

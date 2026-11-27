@@ -66,6 +66,9 @@
 
                 @php
                     $selectedDoctorId = old('doctor_id', request('doctor_id', ''));
+                    $selectedServiceId = old('service_id', request('service_id', ''));
+                    $initialAppointmentTime = old('appointment_time', \Carbon\Carbon::tomorrow()->format('Y-m-d\T09:00'));
+                    $serviceDurations = $services->mapWithKeys(fn($s) => [(string) $s->id => max(15, intval($s->duration_minutes ?? 30))])->toArray();
                     $doctorImages = [
                         'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=300&q=80',
                         'https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&w=300&q=80',
@@ -74,7 +77,49 @@
                     ];
                 @endphp
 
-                <form action="{{ route('public.booking.store') }}" method="POST" class="space-y-5" x-data="{ chosenDoctor: '{{ $selectedDoctorId }}' }">
+                <form action="{{ route('public.booking.store') }}" method="POST" class="space-y-5"
+                    x-data="{
+                        chosenDoctor: '{{ $selectedDoctorId }}',
+                        chosenService: '{{ $selectedServiceId }}',
+                        appointmentTime: '{{ $initialAppointmentTime }}',
+                        serviceDurations: @js($serviceDurations),
+                        busySlots: [],
+                        loadingSlots: false,
+                        busySlotsUrl: '{{ route('public.booking.busy-slots') }}',
+                        get selectedDate() {
+                            return (this.appointmentTime || '').split('T')[0] || '';
+                        },
+                        get selectedDuration() {
+                            return this.serviceDurations[String(this.chosenService)] || 30;
+                        },
+                        get hasConflict() {
+                            if (!this.chosenDoctor || !this.appointmentTime || !this.appointmentTime.includes('T')) return null;
+                            const timePart = this.appointmentTime.split('T')[1];
+                            if (!timePart) return null;
+                            const [h, m] = timePart.split(':').map(Number);
+                            if (isNaN(h) || isNaN(m)) return null;
+                            const startMin = h * 60 + m;
+                            const endMin = startMin + this.selectedDuration;
+                            return this.busySlots.find(s => startMin < s.end_minutes && s.start_minutes < endMin) || null;
+                        },
+                        async fetchBusySlots() {
+                            if (!this.chosenDoctor || !this.selectedDate) {
+                                this.busySlots = [];
+                                return;
+                            }
+                            this.loadingSlots = true;
+                            try {
+                                const res = await fetch(`${this.busySlotsUrl}?doctor_id=${encodeURIComponent(this.chosenDoctor)}&date=${encodeURIComponent(this.selectedDate)}`);
+                                const data = await res.json();
+                                this.busySlots = Array.isArray(data.slots) ? data.slots : [];
+                            } catch (e) {
+                                this.busySlots = [];
+                            } finally {
+                                this.loadingSlots = false;
+                            }
+                        }
+                    }"
+                    x-init="fetchBusySlots(); $watch('chosenDoctor', () => fetchBusySlots()); $watch('selectedDate', () => fetchBusySlots());">
                     @csrf
 
                     <!-- 1. Thông tin bệnh nhân -->
@@ -158,11 +203,11 @@
                             <label class="block text-xs font-semibold text-slate-700 mb-1.5">
                                 Dịch vụ quan tâm (Tùy chọn)
                             </label>
-                            <select name="service_id" class="input-clinic w-full rounded-xl text-sm py-2.5 px-3">
-                                <option value="">-- Khám tổng quát & Tư vấn --</option>
+                            <select name="service_id" x-model="chosenService" class="input-clinic w-full rounded-xl text-sm py-2.5 px-3">
+                                <option value="">-- Khám tổng quát & Tư vấn (30 phút) --</option>
                                 @foreach($services as $service)
                                     <option value="{{ $service->id }}" @selected(old('service_id', request('service_id')) == $service->id)>
-                                        {{ $service->name }} ({{ number_format($service->price, 0, ',', '.') }} đ)
+                                        {{ $service->name }} ({{ number_format($service->price, 0, ',', '.') }} đ • {{ max(15, intval($service->duration_minutes ?? 30)) }} phút)
                                     </option>
                                 @endforeach
                             </select>
@@ -174,11 +219,50 @@
                             </label>
                             <input type="datetime-local"
                                 name="appointment_time"
+                                x-model="appointmentTime"
                                 min="{{ \Carbon\Carbon::tomorrow()->format('Y-m-d\T08:00') }}"
-                                value="{{ old('appointment_time', \Carbon\Carbon::tomorrow()->format('Y-m-d\T09:00')) }}"
+                                value="{{ $initialAppointmentTime }}"
                                 required
                                 class="input-clinic w-full rounded-xl text-sm py-2.5 px-3 tabular-nums">
                         </div>
+                    </div>
+
+                    <!-- Trạng thái khung giờ bận / trống của Bác sĩ theo thời gian thực -->
+                    <div x-show="chosenDoctor !== ''" x-cloak class="p-3.5 rounded-xl border border-slate-200/70 bg-slate-50/70 space-y-2">
+                        <div class="flex items-center justify-between text-xs">
+                            <span class="font-bold text-slate-700">🕒 Lịch của Bác sĩ trong ngày <span class="font-mono text-teal-800" x-text="selectedDate ? selectedDate.split('-').reverse().join('/') : ''"></span>:</span>
+                            <span class="text-[11px] text-slate-500">Thời lượng dự kiến: <strong class="text-slate-700" x-text="selectedDuration + ' phút'"></strong></span>
+                        </div>
+
+                        <template x-if="loadingSlots">
+                            <p class="text-xs text-slate-500">Đang kiểm tra khung giờ trống của bác sĩ...</p>
+                        </template>
+
+                        <template x-if="!loadingSlots && busySlots.length === 0">
+                            <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold">
+                                <span>✓</span>
+                                <span>Bác sĩ còn trống toàn bộ khung giờ (08:00 – 20:00) trong ngày này.</span>
+                            </div>
+                        </template>
+
+                        <template x-if="!loadingSlots && busySlots.length > 0">
+                            <div class="space-y-2">
+                                <div class="flex flex-wrap items-center gap-1.5">
+                                    <span class="text-[11px] text-slate-500 mr-1">Khung giờ đã kín:</span>
+                                    <template x-for="slot in busySlots" :key="slot.start + '-' + slot.end">
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-[11px] font-bold tabular-nums">
+                                            <span>⛔</span>
+                                            <span x-text="slot.start + ' – ' + slot.end"></span>
+                                        </span>
+                                    </template>
+                                </div>
+                                <template x-if="hasConflict">
+                                    <div class="p-2.5 rounded-lg bg-rose-50 border border-rose-300 text-rose-800 text-xs font-semibold">
+                                        ⚠️ Giờ bạn chọn bị trùng với lịch đã kín (<span class="tabular-nums" x-text="hasConflict.start + ' – ' + hasConflict.end"></span>). Vui lòng chọn giờ khác hoặc đổi bác sĩ!
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
                     </div>
 
                     <!-- 4. Ghi chú -->

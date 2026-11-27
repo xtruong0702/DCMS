@@ -20,10 +20,11 @@
         $rawAccNo = $settings['bank_account_no'] ?? '';
         $rawAccName = $settings['bank_account_name'] ?? '';
 
-        $bankId = (!empty($rawBankId) && $rawAccNo !== '0789169711') ? $rawBankId : 'TCB';
-        $accountNo = (!empty($rawAccNo) && $rawAccNo !== '0789169711') ? $rawAccNo : '6362566666';
-        $accountName = (!empty($rawAccName) && $rawAccName !== 'NHA KHOA SMILE') ? $rawAccName : 'PHAM XUAN TRUONG';
-        $bankDisplayName = $bankId === 'TCB' ? 'Techcombank (TCB)' : $bankId;
+        $bankId = !empty($rawBankId) ? strtoupper(trim($rawBankId)) : 'MB';
+        $accountNo = !empty($rawAccNo) ? trim($rawAccNo) : '1626262696969';
+        $accountName = !empty($rawAccName) ? trim($rawAccName) : 'PHAM XUAN TRUONG';
+        $bankLabels = ['MB' => 'MBBank (MB)', 'TCB' => 'Techcombank (TCB)', 'VCB' => 'Vietcombank (VCB)', 'ACB' => 'ACB'];
+        $bankDisplayName = $bankLabels[$bankId] ?? $bankId;
 
         $transferContent = 'THANH TOAN ' . $invoice->invoice_code;
         $vietQrUrl = "https://img.vietqr.io/image/{$bankId}-{$accountNo}-compact2.png?amount=" . round($invoice->final_amount) . "&addInfo=" . urlencode($transferContent) . "&accountName=" . urlencode($accountName);
@@ -146,14 +147,11 @@
                             </div>
                         </div>
 
-                        <!-- Các nút tiện ích: Kiểm tra trạng thái & Mô phỏng test -->
+                        <!-- Nút kiểm tra trạng thái thanh toán -->
                         <div class="flex flex-wrap items-center gap-2 pt-2">
                             <button id="btn-check-payment" type="button" class="text-xs font-bold text-[#0D7A68] bg-teal-50 hover:bg-teal-100 border border-teal-200 rounded-xl px-3.5 py-2 flex items-center gap-1.5 transition shadow-2xs">
                                 <svg class="w-4 h-4 text-[#0D7A68]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                                 Tôi đã chuyển khoản xong
-                            </button>
-                            <button id="btn-simulate-payment" type="button" class="text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-xl px-3.5 py-2 flex items-center gap-1.5 transition shadow-2xs" title="Mô phỏng ngân hàng gửi webhook thanh toán thành công">
-                                ⚡ Mô phỏng Đã chuyển khoản (Test)
                             </button>
                         </div>
                     @else
@@ -246,35 +244,6 @@
         const btnCheck = document.getElementById('btn-check-payment');
         if (btnCheck) {
             btnCheck.addEventListener('click', () => checkInvoiceStatus(true));
-        }
-
-        // Nút mô phỏng thanh toán nhanh
-        const btnSimulate = document.getElementById('btn-simulate-payment');
-        if (btnSimulate) {
-            btnSimulate.addEventListener('click', async function () {
-                btnSimulate.disabled = true;
-                btnSimulate.innerText = 'Đang xử lý mô phỏng...';
-                try {
-                    const res = await fetch('/api/payment/simulate', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ invoice_code: invoiceCode })
-                    });
-                    const result = await res.json();
-                    if (result.success) {
-                        showSuccessModal();
-                        setTimeout(() => window.location.reload(), 1200);
-                    } else {
-                        alert(result.message || 'Mô phỏng thất bại.');
-                        btnSimulate.disabled = false;
-                        btnSimulate.innerText = '⚡ Mô phỏng Đã chuyển khoản (Test)';
-                    }
-                } catch (e) {
-                    alert('Lỗi kết nối mô phỏng: ' + e.message);
-                    btnSimulate.disabled = false;
-                    btnSimulate.innerText = '⚡ Mô phỏng Đã chuyển khoản (Test)';
-                }
-            });
         }
 
         function showSuccessModal() {

@@ -62,17 +62,15 @@ class AppointmentController extends Controller
         }
 
         if ($request->doctor_id) {
-            $conflict = Appointment::where('doctor_id', $request->doctor_id)
-                ->whereIn('status', ['pending', 'confirmed', 'waiting', 'in_progress'])
-                ->whereBetween('appointment_time', [
-                    $parsedTime->copy()->subMinutes(29),
-                    $parsedTime->copy()->addMinutes(29),
-                ])
-                ->exists();
+            $conflict = Appointment::findDoctorConflict(
+                (int) $request->doctor_id,
+                $parsedTime,
+                $request->filled('service_id') ? (int) $request->service_id : null
+            );
 
             if ($conflict) {
                 return back()->withInput()->withErrors([
-                    'doctor_id' => 'Bác sĩ đã có lịch hẹn khác trong khung giờ này (cách nhau dưới 30 phút).'
+                    'doctor_id' => "Bác sĩ đã có lịch hẹn trong khung giờ {$conflict['start']} – {$conflict['end']} ({$conflict['duration']} phút)."
                 ]);
             }
         }
@@ -119,18 +117,16 @@ class AppointmentController extends Controller
         }
 
         if ($request->doctor_id && in_array($request->status, ['pending', 'confirmed', 'waiting', 'in_progress'])) {
-            $conflict = Appointment::where('doctor_id', $request->doctor_id)
-                ->where('id', '!=', $appointment->id)
-                ->whereIn('status', ['pending', 'confirmed', 'waiting', 'in_progress'])
-                ->whereBetween('appointment_time', [
-                    $parsedTime->copy()->subMinutes(29),
-                    $parsedTime->copy()->addMinutes(29),
-                ])
-                ->exists();
+            $conflict = Appointment::findDoctorConflict(
+                (int) $request->doctor_id,
+                $parsedTime,
+                $request->filled('service_id') ? (int) $request->service_id : null,
+                $appointment->id
+            );
 
             if ($conflict) {
                 return back()->withInput()->withErrors([
-                    'doctor_id' => 'Bác sĩ đã có lịch hẹn khác trong khung giờ này (cách nhau dưới 30 phút).'
+                    'doctor_id' => "Bác sĩ đã có lịch hẹn trong khung giờ {$conflict['start']} – {$conflict['end']} ({$conflict['duration']} phút)."
                 ]);
             }
         }

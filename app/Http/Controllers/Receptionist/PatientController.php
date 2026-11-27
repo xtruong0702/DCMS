@@ -84,11 +84,6 @@ class PatientController extends Controller
 
     public function destroy(Patient $patient)
     {
-        if ($patient->appointments()->exists() || $patient->medicalRecords()->exists() || $patient->invoices()->exists()) {
-            return redirect()->route('receptionist.patients.index')->with('error', 'Không thể xóa hồ sơ bệnh nhân đã có lịch hẹn, bệnh án hoặc hóa đơn trong hệ thống.');
-        }
-
-        $patient->delete();
-        return redirect()->route('receptionist.patients.index')->with('success', 'Xóa bệnh nhân thành công.');
+        abort(403, 'Lễ tân không có quyền xóa hồ sơ bệnh nhân.');
     }
 }
