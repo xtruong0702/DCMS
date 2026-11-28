@@ -140,8 +140,12 @@ class PublicController extends Controller
         return redirect()->route('public.contact')->with('success', 'Cảm ơn bạn đã liên hệ! Yêu cầu tư vấn của bạn đã được chuyển đến bộ phận Lễ tân & CSKH Nha Khoa Smile và sẽ được phản hồi trong thời gian sớm nhất.');
     }
 
-    public function booking()
+    public function booking(Request $request)
     {
+        if (!\Illuminate\Support\Facades\Auth::check()) {
+            session(['url.intended' => $request->fullUrl()]);
+        }
+
         $services = Service::where('is_active', true)->get();
         $doctors = $this->getAllDoctors();
         return view('public.booking', compact('services', 'doctors'));
@@ -171,6 +175,12 @@ class PublicController extends Controller
 
     public function storeBooking(Request $request)
     {
+        if (!\Illuminate\Support\Facades\Auth::check()) {
+            session(['url.intended' => route('public.booking')]);
+            return redirect()->route('patient.register')
+                ->withErrors(['auth' => 'Vui lòng tạo tài khoản hoặc đăng nhập để đặt lịch khám trực tuyến.']);
+        }
+
         $request->validate([
             'name' => 'required|string|max:255',
             'phone' => 'required|string|max:20',

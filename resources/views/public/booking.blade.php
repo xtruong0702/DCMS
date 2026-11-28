@@ -64,6 +64,30 @@
                     </div>
                 @endif
 
+                @guest
+                    <div class="rounded-2xl border border-teal-500/20 bg-teal-50/40 p-6 sm:p-8 text-center space-y-5">
+                        <div class="w-14 h-14 mx-auto rounded-2xl bg-[#0f3e36] text-[#f3e5ab] flex items-center justify-center text-2xl shadow-md border border-[#d4af37]/30">
+                            🔐
+                        </div>
+                        <div class="space-y-2 max-w-md mx-auto">
+                            <h3 class="font-heading-clinic !text-lg font-bold text-slate-900">
+                                Vui lòng tạo tài khoản để đặt lịch khám
+                            </h3>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                Để đảm bảo giữ đúng khung giờ và giúp quý khách dễ dàng theo dõi trạng thái xác nhận lịch khám, hồ sơ bệnh án điện tử, đơn thuốc và hóa đơn VietQR, quý khách vui lòng tạo tài khoản hoặc đăng nhập trước khi đặt lịch.
+                            </p>
+                        </div>
+                        <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-1">
+                            <a href="{{ route('patient.register') }}" class="btn-press btn-clinic-primary w-full sm:w-auto px-6 py-3 rounded-xl text-xs font-bold inline-flex items-center justify-center gap-2">
+                                <span>✨ Tạo tài khoản bệnh nhân</span>
+                                <span>&rarr;</span>
+                            </a>
+                            <a href="{{ route('patient.login') }}" class="w-full sm:w-auto px-6 py-3 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-800 text-xs font-bold inline-flex items-center justify-center gap-2 transition">
+                                <span>Đã có tài khoản? Đăng nhập</span>
+                            </a>
+                        </div>
+                    </div>
+                @else
                 @php
                     $selectedDoctorId = old('doctor_id', request('doctor_id', ''));
                     $selectedServiceId = old('service_id', request('service_id', ''));
@@ -131,7 +155,7 @@
                             <label class="block text-xs font-semibold text-slate-700 mb-1.5">
                                 Số điện thoại liên hệ <span class="text-rose-500">*</span>
                             </label>
-                            <input type="text" name="phone" value="{{ old('phone') }}" required
+                            <input type="text" name="phone" value="{{ old('phone', auth()->user()->phone ?? auth()->user()->patient?->phone ?? '') }}" required
                                 placeholder="Ví dụ: 0986 667 788"
                                 class="input-clinic w-full rounded-xl text-sm py-2.5 px-3.5 tabular-nums">
                         </div>
@@ -273,6 +297,7 @@
                         <span>📅 Xác Nhận Đặt Lịch Khám</span>
                     </button>
                 </form>
+                @endguest
             </div>
 
             <!-- Cột quy trình & Hotline (5 cột) -->

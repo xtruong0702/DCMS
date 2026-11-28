@@ -274,6 +274,24 @@
                     </div>
                 @endif
 
+                @guest
+                    <div class="rounded-2xl border border-teal-500/20 bg-teal-50/40 p-6 text-center space-y-4">
+                        <div class="text-2xl">🔐</div>
+                        <div class="space-y-1.5">
+                            <h3 class="font-heading-clinic !text-base font-bold text-slate-900">Tạo tài khoản để đặt lịch khám</h3>
+                            <p class="text-xs text-slate-600 leading-relaxed">Quý khách vui lòng đăng ký tài khoản bệnh nhân hoặc đăng nhập để đặt lịch và theo dõi hồ sơ khám trực tuyến.</p>
+                        </div>
+                        <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+                            <a href="{{ route('patient.register') }}" class="btn-press btn-clinic-primary w-full sm:w-auto px-5 py-2.5 rounded-xl text-xs font-bold inline-flex items-center justify-center gap-1.5">
+                                <span>✨ Tạo tài khoản mới</span>
+                                <span>&rarr;</span>
+                            </a>
+                            <a href="{{ route('patient.login') }}" class="w-full sm:w-auto px-5 py-2.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-800 text-xs font-bold inline-flex items-center justify-center transition">
+                                Đăng nhập ngay
+                            </a>
+                        </div>
+                    </div>
+                @else
                 <form action="{{ route('public.booking.store') }}" method="POST" class="space-y-4">
                     @csrf
                     <div>
@@ -283,7 +301,7 @@
 
                     <div>
                         <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-1.5">Số điện thoại <span class="text-rose-500">*</span></label>
-                        <input type="text" name="phone" required value="{{ old('phone') }}" placeholder="Nhập số điện thoại liên hệ..." class="input-clinic w-full rounded-xl px-3.5 py-2.5 text-xs tabular-nums">
+                        <input type="text" name="phone" required value="{{ old('phone', auth()->user()->phone ?? auth()->user()->patient?->phone ?? '') }}" placeholder="Nhập số điện thoại liên hệ..." class="input-clinic w-full rounded-xl px-3.5 py-2.5 text-xs tabular-nums">
                     </div>
 
                     <div>
@@ -324,6 +342,7 @@
                         Gửi Đăng Ký Tư Vấn & Đặt Lịch
                     </button>
                 </form>
+                @endguest
 
                 <div class="pt-3 border-t border-slate-100/70 text-center text-[11px] text-slate-500">
                     📍 {{ $clinicSettings['clinic_address'] }} • 📞 Hotline: <a href="tel:{{ $clinicHotlineTel }}" class="font-bold text-[#0f3e36] hover:underline tabular-nums">{{ $clinicSettings['clinic_hotline'] }}</a>
