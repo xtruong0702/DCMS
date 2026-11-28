@@ -300,7 +300,7 @@
                     <span class="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-400 border-2 border-[#0a584b]"></span>
                 </div>
                 <div class="min-w-0">
-                    <h3 class="text-[14.5px] font-extrabold tracking-tight text-white truncate">Trợ lý AI Nha Khoa Smile</h3>
+                    <h3 class="text-[14.5px] font-extrabold tracking-tight text-white truncate">Trợ lý AI {{ $clinicSettings['clinic_name'] }}</h3>
                     <p class="text-[11.5px] text-teal-100/90 flex items-center gap-1.5 mt-0.5">
                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse"></span>
                         <span>Tư vấn Y khoa 24/7 • Trực tuyến</span>
@@ -431,7 +431,7 @@
         const makeWelcome = () => ({
             role: 'assistant',
             time: nowTime(),
-            text: 'Kính chào Quý khách đến với **Nha Khoa Smile**!\nEm là **Trợ lý Tư vấn Y khoa AI 24/7**, sẵn sàng hỗ trợ Anh/Chị về triệu chứng răng miệng, bảng giá niêm yết, đội ngũ Bác sĩ, lịch trống và thanh toán VietQR.',
+            text: 'Kính chào Quý khách đến với **' + @js($clinicSettings['clinic_name']) + '**!\nEm là **Trợ lý Tư vấn Y khoa AI 24/7**, sẵn sàng hỗ trợ Anh/Chị về triệu chứng răng miệng, bảng giá niêm yết, đội ngũ Bác sĩ, lịch trống và thanh toán VietQR.',
             actions: [
                 { label: '📅 Đặt lịch khám ngay', url: '{{ route('public.booking') }}', primary: true },
                 { label: '💰 Xem bảng giá', url: '{{ route('public.services') }}', primary: false },
@@ -543,16 +543,16 @@
                         this.messages.push({
                             role: 'assistant',
                             time: nowTime(),
-                            text: data.message || 'Xin lỗi Anh/Chị, trợ lý đang bận xử lý. Anh/Chị vui lòng thử lại hoặc gọi Hotline **0775 761 388** để được hỗ trợ ngay ạ!',
-                            actions: [{ label: '📞 Gọi 0775 761 388', url: 'tel:0775761388', primary: true }],
+                            text: data.message || 'Xin lỗi Anh/Chị, trợ lý đang bận xử lý. Anh/Chị vui lòng thử lại hoặc gọi Hotline **' + @js($clinicSettings['clinic_hotline']) + '** để được hỗ trợ ngay ạ!',
+                            actions: [{ label: '📞 Gọi ' + @js($clinicSettings['clinic_hotline']), url: 'tel:' + @js($clinicHotlineTel), primary: true }],
                         });
                     }
                 } catch (err) {
                     this.messages.push({
                         role: 'assistant',
                         time: nowTime(),
-                        text: 'Không thể kết nối đến máy chủ lúc này. Anh/Chị vui lòng gọi Hotline **0775 761 388** để Lễ tân hỗ trợ trực tiếp ạ!',
-                        actions: [{ label: '📞 Gọi 0775 761 388', url: 'tel:0775761388', primary: true }],
+                        text: 'Không thể kết nối đến máy chủ lúc này. Anh/Chị vui lòng gọi Hotline **' + @js($clinicSettings['clinic_hotline']) + '** để Lễ tân hỗ trợ trực tiếp ạ!',
+                        actions: [{ label: '📞 Gọi ' + @js($clinicSettings['clinic_hotline']), url: 'tel:' + @js($clinicHotlineTel), primary: true }],
                     });
                 } finally {
                     this.loading = false;

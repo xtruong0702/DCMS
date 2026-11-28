@@ -15,4 +15,14 @@ class InvoiceDetail extends Model
     {
         return $this->belongsTo(Invoice::class);
     }
+
+    public function medicine()
+    {
+        return $this->belongsTo(Medicine::class);
+    }
+
+    public function service()
+    {
+        return $this->belongsTo(Service::class);
+    }
 }

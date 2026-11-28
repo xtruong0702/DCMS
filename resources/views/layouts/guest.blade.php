@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Đăng nhập - Nha Khoa Smile') }}</title>
+        <title>Đăng nhập - {{ $clinicSettings['clinic_name'] }}</title>
 
         <!-- Fonts chuẩn Tiếng Việt (Be Vietnam Pro cho tiêu đề & Inter cho nội dung) -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -36,7 +36,7 @@
             </div>
             <div class="mt-6 text-center">
                 <a href="{{ route('home') }}" class="text-sm font-semibold text-slate-500 hover:text-blue-600 transition-colors">
-                    &larr; Quay về trang chủ Nha Khoa Smile
+                    &larr; Quay về trang chủ {{ $clinicSettings['clinic_name'] }}
                 </a>
             </div>
         </div>

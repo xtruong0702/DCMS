@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hóa đơn #{{ $invoice->invoice_code }} - {{ $settings['clinic_name'] ?? 'Nha Khoa Smile' }}</title>
+    <title>Hóa đơn #{{ $invoice->invoice_code }} - {{ $clinicSettings['clinic_name'] }}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,600;0,700;1,600&family=Inter:wght@400;500;600;700&subset=vietnamese&display=swap" rel="stylesheet">
@@ -30,17 +30,22 @@
 </head>
 <body class="bg-gray-100 p-4 md:p-8">
     @php
-        $rawBankId = $settings['bank_id'] ?? '';
-        $rawAccNo = $settings['bank_account_no'] ?? '';
-        $rawAccName = $settings['bank_account_name'] ?? '';
+        $rawBankId = $settings['bank_id'] ?? ($clinicSettings['bank_id'] ?? 'MB');
+        $rawAccNo = $settings['bank_account_no'] ?? ($clinicSettings['bank_account_no'] ?? '1626262696969');
+        $rawAccName = $settings['bank_account_name'] ?? ($clinicSettings['bank_account_name'] ?? 'PHAM XUAN TRUONG');
 
-        $bankId = (!empty($rawBankId) && $rawAccNo !== '0789169711') ? $rawBankId : 'TCB';
-        $accountNo = (!empty($rawAccNo) && $rawAccNo !== '0789169711') ? $rawAccNo : '6362566666';
-        $accountName = (!empty($rawAccName) && $rawAccName !== 'NHA KHOA SMILE') ? $rawAccName : 'PHAM XUAN TRUONG';
-        $bankDisplayName = $bankId === 'TCB' ? 'Techcombank (TCB)' : $bankId;
+        $bankId = !empty($rawBankId) ? strtoupper(trim($rawBankId)) : 'MB';
+        $accountNo = !empty($rawAccNo) ? trim($rawAccNo) : '1626262696969';
+        $accountName = !empty($rawAccName) ? trim($rawAccName) : 'PHAM XUAN TRUONG';
+        $bankLabels = ['MB' => 'MBBank (MB)', 'TCB' => 'Techcombank (TCB)', 'VCB' => 'Vietcombank (VCB)', 'ICB' => 'VietinBank (CTG)', 'BIDV' => 'BIDV', 'ACB' => 'ACB', 'TPB' => 'TPBank (TPB)', 'VPB' => 'VPBank (VPB)'];
+        $bankDisplayName = $bankLabels[$bankId] ?? $bankId;
+
+        $paidAmount = (float) $invoice->payments->where('status', 'completed')->sum('amount');
+        $remainingAmount = max(0, (float) $invoice->final_amount - $paidAmount);
+        $qrAmount = $remainingAmount > 0 ? round($remainingAmount) : round($invoice->final_amount);
 
         $transferContent = 'THANH TOAN ' . $invoice->invoice_code;
-        $vietQrUrl = "https://img.vietqr.io/image/{$bankId}-{$accountNo}-compact2.png?amount=" . round($invoice->final_amount) . "&addInfo=" . urlencode($transferContent) . "&accountName=" . urlencode($accountName);
+        $vietQrUrl = "https://img.vietqr.io/image/{$bankId}-{$accountNo}-compact2.png?amount=" . $qrAmount . "&addInfo=" . urlencode($transferContent) . "&accountName=" . urlencode($accountName);
     @endphp
 
     <!-- Thanh nút thao tác (ẩn khi in) -->
@@ -63,12 +68,10 @@
         <!-- Header -->
         <div class="flex justify-between items-start border-b-2 border-indigo-600 pb-6 mb-6">
             <div>
-                <h1 class="text-2xl font-black text-indigo-800 uppercase tracking-tight">{{ $settings['clinic_name'] ?? 'Nha Khoa Smile' }}</h1>
-                <p class="text-xs text-gray-600 mt-1">{{ $settings['clinic_address'] ?? '123 Nguyễn Văn Cừ, Quận 5, TP.HCM' }}</p>
-                <p class="text-xs text-gray-600">Hotline: <span class="font-bold text-gray-800">{{ $settings['clinic_hotline'] ?? '0775 761 388' }}</span></p>
-                @if(!empty($settings['clinic_email']))
-                    <p class="text-xs text-gray-600">Email: {{ $settings['clinic_email'] }}</p>
-                @endif
+                <h1 class="text-2xl font-black text-indigo-800 uppercase tracking-tight">{{ $clinicSettings['clinic_name'] }}</h1>
+                <p class="text-xs text-gray-600 mt-1">{{ $clinicSettings['clinic_address'] }}</p>
+                <p class="text-xs text-gray-600">Hotline: <span class="font-bold text-gray-800">{{ $clinicSettings['clinic_hotline'] }}</span></p>
+                <p class="text-xs text-gray-600">Email: {{ $clinicSettings['clinic_email'] }}</p>
             </div>
             <div class="text-right">
                 <h2 class="text-xl font-bold uppercase tracking-wider text-gray-900">HÓA ĐƠN DỊCH VỤ</h2>
@@ -233,7 +236,7 @@
         </div>
 
         <div class="mt-8 text-center text-[10px] text-gray-400 border-t border-gray-100 pt-3">
-            Cảm ơn Quý khách đã tin tưởng và sử dụng dịch vụ tại {{ $settings['clinic_name'] ?? 'Nha Khoa Smile' }}!
+            Cảm ơn Quý khách đã tin tưởng và sử dụng dịch vụ tại {{ $clinicSettings['clinic_name'] }}!
         </div>
     </div>
 </body>

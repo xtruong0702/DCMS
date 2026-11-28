@@ -37,7 +37,7 @@ class Invoice extends Model
      */
     public function deductMedicineStock(): int
     {
-        $this->loadMissing(['details', 'appointment.medicalRecord.prescription.details']);
+        $this->loadMissing(['details.medicine', 'appointment.medicalRecord.prescription.details']);
 
         $alreadyDeductedIds = [];
         $prescription = $this->appointment->medicalRecord->prescription ?? null;
@@ -49,26 +49,26 @@ class Invoice extends Model
             }
         }
 
-        $medicines = Medicine::all();
-        $deductedCount = 0;
-
+        $quantities = [];
         foreach ($this->details as $detail) {
-            $itemLower = mb_strtolower(trim($detail->item_name));
-            if (!str_contains($itemLower, 'thuốc') && !str_contains($itemLower, 'gói thuốc')) {
+            $medicineId = (int) $detail->medicine_id;
+            if (!$medicineId || in_array($medicineId, $alreadyDeductedIds, true)) {
                 continue;
             }
-            foreach ($medicines as $med) {
-                $medLower = mb_strtolower(trim($med->name));
-                if ($medLower !== '' && str_contains($itemLower, $medLower)) {
-                    if (!in_array((int) $med->id, $alreadyDeductedIds, true)) {
-                        $qty = max(1, intval($detail->quantity));
-                        $med->stock_quantity = max(0, intval($med->stock_quantity) - $qty);
-                        $med->save();
-                        $deductedCount++;
-                    }
-                    break;
-                }
+            $quantities[$medicineId] = ($quantities[$medicineId] ?? 0) + max(1, (int) $detail->quantity);
+        }
+
+        $deductedCount = 0;
+        foreach ($quantities as $medicineId => $quantity) {
+            $medicine = Medicine::whereKey($medicineId)->lockForUpdate()->first();
+            if (!$medicine) {
+                continue;
             }
+            if ((int) $medicine->stock_quantity < $quantity) {
+                throw new \RuntimeException("Không đủ tồn kho thuốc [{$medicine->name}] để hoàn tất hóa đơn.");
+            }
+            $medicine->decrement('stock_quantity', $quantity);
+            $deductedCount++;
         }
 
         return $deductedCount;

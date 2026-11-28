@@ -4,12 +4,31 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
+use Closure;
 
 class Appointment extends Model
 {
     use HasFactory;
 
     protected $guarded = ['id'];
+
+    public static function withDoctorScheduleLock(int|array|null $doctorIds, Closure $callback): mixed
+    {
+        return DB::transaction(function () use ($doctorIds, $callback) {
+            $doctorIds = array_values(array_unique(array_filter(array_map(
+                'intval',
+                is_array($doctorIds) ? $doctorIds : [$doctorIds]
+            ))));
+            sort($doctorIds);
+
+            foreach ($doctorIds as $doctorId) {
+                \App\Models\Doctor::whereKey($doctorId)->lockForUpdate()->firstOrFail();
+            }
+
+            return $callback();
+        });
+    }
 
     public function patient()
     {

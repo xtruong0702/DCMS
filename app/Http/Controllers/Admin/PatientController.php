@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Patient;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Log;
 
 class PatientController extends Controller
 {
@@ -71,7 +73,14 @@ class PatientController extends Controller
 
     public function edit(Patient $patient)
     {
-        return view('admin.patients.edit', compact('patient'));
+        $patientAccounts = User::whereHas('role', fn ($query) => $query->whereRaw('LOWER(name) = ?', ['patient']))
+            ->where(function ($query) use ($patient) {
+                $query->whereDoesntHave('patient')->orWhere('id', $patient->user_id);
+            })
+            ->orderBy('name')
+            ->get();
+
+        return view('admin.patients.edit', compact('patient', 'patientAccounts'));
     }
 
     public function update(Request $request, Patient $patient)
@@ -87,12 +96,25 @@ class PatientController extends Controller
             'allergy_history' => 'nullable|string',
             'medical_history' => 'nullable|string',
             'contact_person' => 'nullable|string|max:255',
+            'user_id' => ['nullable', 'integer', 'exists:users,id', Rule::unique('patients', 'user_id')->ignore($patient->id)],
         ]);
+
+        if ($request->filled('user_id') && !User::whereKey($request->user_id)
+            ->whereHas('role', fn ($query) => $query->whereRaw('LOWER(name) = ?', ['patient']))
+            ->exists()) {
+            return back()->withInput()->withErrors(['user_id' => 'Chỉ có thể liên kết hồ sơ với tài khoản bệnh nhân.']);
+        }
 
         $patient->update($request->only([
             'name', 'phone', 'gender', 'dob', 'job', 
-            'address', 'email', 'allergy_history', 'medical_history', 'contact_person'
+            'address', 'email', 'allergy_history', 'medical_history', 'contact_person', 'user_id'
         ]));
+
+        Log::info('Patient account link updated by admin.', [
+            'patient_id' => $patient->id,
+            'user_id' => $patient->user_id,
+            'admin_user_id' => auth()->id(),
+        ]);
 
         return redirect()->route('admin.patients.index')->with('success', 'Cập nhật thông tin bệnh nhân thành công!');
     }

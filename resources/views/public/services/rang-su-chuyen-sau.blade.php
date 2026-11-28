@@ -47,12 +47,5 @@
         ['title' => 'Gắn Cố Định & Hướng Dẫn Chăm Sóc', 'desc' => 'Gắn cố định bằng xi măng nha khoa chuyên dụng, cấp thẻ bảo hành chính hãng và hẹn tái khám định kỳ.'],
     ],
     'priceTitle' => 'Bảng Giá Bọc Răng Sứ & Veneer Niêm Yết',
-    'priceRows' => [
-        ['name' => 'Răng sứ Titan', 'desc' => 'Sườn hợp kim Titan – phủ sứ Ceramco, bền chắc', 'warranty' => '5 năm', 'price' => '2.000.000 đ / răng'],
-        ['name' => 'Răng toàn sứ Zirconia', 'desc' => 'Toàn sứ Đức, không đen viền nướu, chịu lực tốt', 'warranty' => '10 năm', 'price' => '3.500.000 đ / răng'],
-        ['name' => 'Răng toàn sứ Cercon HT', 'desc' => 'Sứ Dentsply Đức, độ trong mờ tự nhiên cao', 'warranty' => '12 năm', 'price' => '4.000.000 đ / răng', 'badge' => 'Phổ biến'],
-        ['name' => 'Răng toàn sứ Lava Plus 3M', 'desc' => 'Công nghệ 3M Hoa Kỳ, chịu lực vượt trội 1200 MPa', 'warranty' => '15 năm', 'price' => '6.500.000 đ / răng'],
-        ['name' => 'Mặt dán sứ Veneer Emax', 'desc' => 'Ivoclar Vivadent Đức, siêu mỏng 0.2mm bảo tồn răng thật', 'warranty' => '15 năm', 'price' => '7.500.000 đ / răng', 'badge' => 'Khuyên dùng', 'featured' => true],
-        ['name' => 'Răng sứ Orodent High Translucent', 'desc' => 'Sứ Ý cao cấp, độ trong quang học & thẩm mỹ tối ưu', 'warranty' => 'Trọn đời', 'price' => '9.000.000 đ / răng', 'featured' => true],
-    ],
+    'priceRows' => $packageRows,
 ])

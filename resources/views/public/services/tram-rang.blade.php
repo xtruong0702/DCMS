@@ -47,9 +47,5 @@
         ['title' => 'Mài Chỉnh Khớp Cắn & Đánh Bóng', 'desc' => 'Thử giấy cắn đảm bảo ăn nhai êm ái không cộm vướng và đánh bóng mịn đẹp bề mặt.'],
     ],
     'priceTitle' => 'Bảng Giá Trám Răng Thẩm Mỹ Niêm Yết',
-    'priceRows' => [
-        ['name' => 'Trám răng sâu thông thường (Composite 3M)', 'desc' => 'Trám lỗ sâu mặt nhai, mòn cổ răng bằng Composite Mỹ', 'warranty' => '6 tháng', 'price' => '300.000 đ / răng', 'badge' => 'Phổ biến', 'featured' => true],
-        ['name' => 'Trám răng thẩm mỹ răng cửa / đóng khe thưa', 'desc' => 'Composite Nano thẩm mỹ cao, trùng màu men răng gốc', 'warranty' => '12 tháng', 'price' => '500.000 đ / răng', 'featured' => true],
-        ['name' => 'Trám Inlay / Onlay sứ (Răng hàm vỡ lớn)', 'desc' => 'Chế tác miếng trám sứ CAD/CAM 3D siêu bền chắc', 'warranty' => '5 năm', 'price' => '3.000.000 đ / răng'],
-    ],
+    'priceRows' => $packageRows,
 ])

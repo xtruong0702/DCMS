@@ -21,30 +21,10 @@ Route::get('/dat-lich', [\App\Http\Controllers\PublicController::class, 'booking
 Route::get('/booking', [\App\Http\Controllers\PublicController::class, 'booking'])->name('booking.index');
 Route::get('/dat-lich/khung-gio-ban', [\App\Http\Controllers\PublicController::class, 'doctorBusySlots'])->name('public.booking.busy-slots');
 Route::post('/dat-lich', [\App\Http\Controllers\PublicController::class, 'storeBooking'])->name('public.booking.store');
-Route::get('/tra-cuu', [\App\Http\Controllers\PublicController::class, 'lookup'])->name('public.lookup');
+Route::get('/tra-cuu', [\App\Http\Controllers\PublicController::class, 'lookup'])->middleware('throttle:10,1')->name('public.lookup');
 
-// Route dọn dẹp cache hệ thống (chỉ dành cho Admin)
-Route::get('/clear-cache', function () {
-    try {
-        \Illuminate\Support\Facades\Artisan::call('view:clear');
-        \Illuminate\Support\Facades\Artisan::call('route:clear');
-        \Illuminate\Support\Facades\Artisan::call('config:clear');
-        \Illuminate\Support\Facades\Artisan::call('cache:clear');
-        return response()->json([
-            'success' => true,
-            'message' => 'Đã dọn dẹp toàn bộ View, Route và Config Cache thành công!',
-        ]);
-    } catch (\Throwable $e) {
-        \Illuminate\Support\Facades\Log::error('Clear cache failed: ' . $e->getMessage());
-        return response()->json([
-            'success' => false,
-            'error' => 'Không thể dọn dẹp cache hệ thống.',
-        ], 500);
-    }
-})->middleware(['auth', 'role:admin']);
-
-// Route nạp dữ liệu mẫu (chỉ dành cho Admin và không chạy trên Production)
-Route::get('/seed-database', function () {
+// Dữ liệu mẫu chỉ được nạp qua yêu cầu có CSRF, ngoài production.
+Route::post('/seed-database', function () {
     if (app()->isProduction()) {
         abort(403, 'Không được phép chạy seed trên môi trường Production.');
     }
@@ -88,13 +68,6 @@ Route::middleware('auth')->group(function () {
     
     // Redirect /dashboard based on role
     Route::get('/dashboard', function () {
-        try {
-            if (\App\Models\Patient::count() === 0 && \Illuminate\Support\Facades\Schema::hasTable('patients')) {
-                \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
-            }
-        } catch (\Throwable $e) {
-            \Illuminate\Support\Facades\Log::warning('Auto seed failed: ' . $e->getMessage());
-        }
         $role = strtolower(auth()->user()->role->name ?? '');
         if ($role === 'admin') return redirect()->route('admin.dashboard');
         if ($role === 'doctor') return redirect()->route('doctor.dashboard');
@@ -212,5 +185,10 @@ Route::middleware(['auth', 'role:patient'])->prefix('patient')->name('patient.')
     Route::get('/invoices', [\App\Http\Controllers\PatientController::class, 'invoices'])->name('invoices');
     Route::get('/invoices/{id}', [\App\Http\Controllers\PatientController::class, 'invoiceShow'])->name('invoices.show');
 });
+
+Route::middleware(['auth', 'role:patient,receptionist', 'throttle:30,1'])->get(
+    '/invoices/{code}/status',
+    [\App\Http\Controllers\PatientController::class, 'invoiceStatus']
+)->name('invoices.status');
 
 require __DIR__.'/auth.php';

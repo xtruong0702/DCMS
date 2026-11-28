@@ -4,7 +4,7 @@
             NK
         </div>
         <h2 class="text-2xl font-bold text-slate-800">Quên mật khẩu</h2>
-        <p class="text-gray-500 mt-1 text-sm">Hệ thống DCMS - Nha Khoa Smile</p>
+        <p class="text-gray-500 mt-1 text-sm">Hệ thống DCMS - {{ $clinicSettings['clinic_name'] }}</p>
     </div>
 
     <div class="mb-5 text-sm text-gray-600 leading-relaxed bg-blue-50/70 p-4 rounded-xl border border-blue-100/80">

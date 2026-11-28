@@ -3,25 +3,55 @@
 namespace App\Support;
 
 use Illuminate\Support\Collection;
+use App\Models\ContactInquiry;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 
 class ContactInquiryStore
 {
-    protected static string $filePath = 'contact_inquiries.json';
-
     public static function all(): Collection
     {
-        if (!Storage::disk('local')->exists(self::$filePath)) {
-            return collect();
+        self::importLegacyFile();
+        return ContactInquiry::query()->latest()->get();
+    }
+
+    private static function importLegacyFile(): void
+    {
+        $disk = Storage::disk('local');
+        $filePath = 'contact_inquiries.json';
+        if (!$disk->exists($filePath)) {
+            return;
         }
 
-        $raw = Storage::disk('local')->get(self::$filePath);
-        $decoded = json_decode($raw, true);
-        if (!is_array($decoded)) {
-            return collect();
+        $rows = json_decode($disk->get($filePath), true);
+        if (!is_array($rows)) {
+            return;
         }
 
-        return collect($decoded)->sortByDesc('created_at')->values();
+        $now = now();
+        $rows = collect($rows)->filter(fn ($row) => is_array($row) && !empty($row['id']))
+            ->map(fn ($row) => [
+                'id' => (string) $row['id'],
+                'name' => (string) ($row['name'] ?? ''),
+                'phone' => (string) ($row['phone'] ?? ''),
+                'email' => ($row['email'] ?? '') ?: null,
+                'topic' => ($row['topic'] ?? '') ?: null,
+                'message' => (string) ($row['message'] ?? ''),
+                'status' => in_array($row['status'] ?? '', ['pending', 'resolved'], true) ? $row['status'] : 'pending',
+                'resolved_by' => $row['resolved_by'] ?? null,
+                'resolved_at' => $row['resolved_at'] ?? null,
+                'created_at' => $row['created_at'] ?? $now,
+                'updated_at' => $now,
+            ])->values()->all();
+
+        if ($rows) {
+            ContactInquiry::upsert($rows, ['id'], [
+                'name', 'phone', 'email', 'topic', 'message', 'status', 'resolved_by',
+                'resolved_at', 'created_at', 'updated_at',
+            ]);
+        }
+
+        $disk->delete($filePath);
     }
 
     public static function pending(): Collection
@@ -31,57 +61,29 @@ class ContactInquiryStore
 
     public static function add(array $data): array
     {
-        $items = self::all()->all();
-
-        $newItem = [
-            'id' => 'LH' . date('YmdHis') . rand(10, 99),
+        return ContactInquiry::create([
+            'id' => 'LH' . now()->format('YmdHis') . Str::upper(Str::random(6)),
             'name' => trim($data['name'] ?? ''),
             'phone' => trim($data['phone'] ?? ''),
-            'email' => trim($data['email'] ?? ''),
+            'email' => trim($data['email'] ?? '') ?: null,
             'topic' => trim($data['topic'] ?? 'Tư vấn dịch vụ nha khoa'),
             'message' => trim($data['message'] ?? ''),
             'status' => 'pending',
-            'resolved_by' => null,
-            'resolved_at' => null,
-            'created_at' => now()->format('Y-m-d H:i:s'),
-        ];
-
-        array_unshift($items, $newItem);
-        Storage::disk('local')->put(self::$filePath, json_encode($items, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
-
-        return $newItem;
+        ])->toArray();
     }
 
     public static function resolve(string $id, ?string $resolvedBy = null): bool
     {
-        $items = self::all()->all();
-        $updated = false;
-
-        foreach ($items as &$item) {
-            if (($item['id'] ?? '') === $id) {
-                $item['status'] = 'resolved';
-                $item['resolved_by'] = $resolvedBy ?: 'Nhân viên tư vấn';
-                $item['resolved_at'] = now()->format('Y-m-d H:i:s');
-                $updated = true;
-                break;
-            }
-        }
-
-        if ($updated) {
-            Storage::disk('local')->put(self::$filePath, json_encode($items, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
-        }
-
-        return $updated;
+        return ContactInquiry::whereKey($id)->update([
+            'status' => 'resolved',
+            'resolved_by' => $resolvedBy ?: 'Nhân viên tư vấn',
+            'resolved_at' => now(),
+        ]) > 0;
     }
 
     public static function delete(string $id): bool
     {
-        $items = self::all();
-        $filtered = $items->reject(fn($item) => ($item['id'] ?? '') === $id)->values()->all();
-
-        Storage::disk('local')->put(self::$filePath, json_encode($filtered, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
-
-        return true;
+        return ContactInquiry::whereKey($id)->delete() > 0;
     }
 }
 

@@ -43,9 +43,9 @@
                         </svg>
                     </div>
                     <div>
-                        <h2 class="font-black text-2xl tracking-tight text-slate-800 uppercase">Nha Khoa Smile</h2>
-                        <p class="text-xs text-slate-500 font-medium mt-0.5">123 Nguyễn Văn Cừ, Quận 5, TP.HCM</p>
-                        <p class="text-xs text-slate-500 font-medium">0775 761 388 - nhakhoasmile.com</p>
+                        <h2 class="font-black text-2xl tracking-tight text-slate-800 uppercase">{{ $clinicSettings['clinic_name'] }}</h2>
+                        <p class="text-xs text-slate-500 font-medium mt-0.5">{{ $clinicSettings['clinic_address'] }}</p>
+                        <p class="text-xs text-slate-500 font-medium">{{ $clinicSettings['clinic_hotline'] }} - {{ $clinicSettings['clinic_website'] }}</p>
                     </div>
                 </div>
                 <div class="md:text-right flex flex-col justify-center">

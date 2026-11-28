@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', ($pageTitle ?? 'Dịch Vụ Nha Khoa') . ' - Nha Khoa Smile')
+@section('title', ($pageTitle ?? 'Dịch Vụ Nha Khoa') . ' - ' . $clinicSettings['clinic_name'])
 
 @section('content')
 <div class="bg-[#effcf9]">
@@ -180,7 +180,7 @@
             <div class="text-center max-w-2xl mx-auto space-y-1.5 reveal-item">
                 <span class="block text-[11px] font-bold uppercase tracking-[0.18em] text-[#0f3e36] opacity-75">MINH BẠCH CHI PHÍ ĐIỀU TRỊ</span>
                 <h2 class="font-heading-clinic !text-2xl sm:!text-3xl font-bold text-[#0f3e36] uppercase">{{ $priceTitle }}</h2>
-                <p class="text-xs sm:text-sm text-slate-500">Chi phí niêm yết công khai, không phát sinh chi phí ẩn và hỗ trợ thanh toán VietQR.</p>
+                <p class="text-xs sm:text-sm text-slate-500">Giá lấy từ danh mục dịch vụ hiện hành; VAT được tính theo thiết lập trên hóa đơn. Chi phí điều trị được xác nhận trước khi thực hiện.</p>
             </div>
 
             <div class="bg-white rounded-2xl border border-slate-200/40 shadow-sm overflow-hidden">
@@ -210,7 +210,7 @@
                                     <td class="py-3.5 px-4 text-center font-semibold text-slate-700 whitespace-nowrap">{{ $row['warranty'] }}</td>
                                     <td class="py-3.5 px-4 text-right font-heading-clinic font-extrabold text-[#0f3e36] whitespace-nowrap tabular-nums">{{ $row['price'] }}</td>
                                     <td class="py-3.5 px-4 text-right whitespace-nowrap">
-                                        <a href="#service-booking-form" class="btn-press {{ !empty($row['featured']) ? 'gold-btn-shimmer' : 'btn-clinic-primary' }} inline-flex items-center px-3.5 py-1.5 rounded-lg text-[11px] font-bold">
+                                        <a href="#service-booking-form" onclick="document.querySelector('#service-booking-form select[name=service_id]').value='{{ $row['service_id'] ?? '' }}'" class="btn-press {{ !empty($row['featured']) ? 'gold-btn-shimmer' : 'btn-clinic-primary' }} inline-flex items-center px-3.5 py-1.5 rounded-lg text-[11px] font-bold">
                                             Chọn
                                         </a>
                                     </td>
@@ -227,7 +227,7 @@
     <section class="py-14 bg-[#effcf9]">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
             <div class="text-center max-w-2xl mx-auto space-y-1.5 reveal-item">
-                <h2 class="font-heading-clinic !text-2xl sm:!text-3xl font-bold text-[#0f3e36] uppercase">Vì Sao Chọn Nha Khoa Smile?</h2>
+                <h2 class="font-heading-clinic !text-2xl sm:!text-3xl font-bold text-[#0f3e36] uppercase">Vì Sao Chọn {{ $clinicSettings['clinic_name'] }}?</h2>
                 <p class="text-xs sm:text-sm text-slate-600">Cam kết chất lượng điều trị, vô trùng tuyệt đối và đồng hành cùng sức khỏe răng miệng của bạn.</p>
             </div>
 
@@ -258,7 +258,7 @@
                         Tư Vấn Trực Tiếp Cùng Bác Sĩ
                     </span>
                     <h2 class="font-heading-clinic !text-2xl font-bold text-[#0f3e36] uppercase">Đăng Ký Tư Vấn & Đặt Lịch Khám</h2>
-                    <p class="text-xs text-slate-600">Điền thông tin bên dưới để nhận lịch hẹn ưu tiên và báo giá chi tiết từ Nha Khoa Smile.</p>
+                    <p class="text-xs text-slate-600">Điền thông tin bên dưới để nhận lịch hẹn ưu tiên và báo giá chi tiết từ {{ $clinicSettings['clinic_name'] }}.</p>
                 </div>
 
                 @if(session('success'))
@@ -326,7 +326,7 @@
                 </form>
 
                 <div class="pt-3 border-t border-slate-100/70 text-center text-[11px] text-slate-500">
-                    📍 204 Trần Duy Hưng, Yên Hòa, Cầu Giấy, Hà Nội • 📞 Hotline: <a href="tel:0775761388" class="font-bold text-[#0f3e36] hover:underline tabular-nums">0775 761 388</a>
+                    📍 {{ $clinicSettings['clinic_address'] }} • 📞 Hotline: <a href="tel:{{ $clinicHotlineTel }}" class="font-bold text-[#0f3e36] hover:underline tabular-nums">{{ $clinicSettings['clinic_hotline'] }}</a>
                 </div>
             </div>
         </div>

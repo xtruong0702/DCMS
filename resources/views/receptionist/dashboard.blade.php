@@ -372,7 +372,7 @@
                                 <div class="border-t border-slate-200 pt-2 flex items-baseline justify-between">
                                     <div>
                                         <div class="text-xs text-slate-600 font-medium">Tổng cần thanh toán</div>
-                                        <div class="text-[10px] text-slate-400">(đã bao gồm VAT 10%)</div>
+                                        <div class="text-[10px] text-slate-400">(VAT theo thiết lập hóa đơn)</div>
                                     </div>
                                     <div class="text-xl font-black text-slate-900">
                                         {{ number_format($firstInvoice->final_amount, 0, ',', '.') }} đ

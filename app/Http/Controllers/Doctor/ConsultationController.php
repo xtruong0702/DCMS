@@ -53,23 +53,40 @@ class ConsultationController extends Controller
         ]);
 
         $appointment = Appointment::findOrFail($id);
-        
-        // Ensure this doctor owns the appointment (or assign this doctor if unassigned)
         $doctorId = auth()->user()->doctor->id ?? null;
-        if ($appointment->doctor_id && $appointment->doctor_id !== $doctorId) {
+        if (!$doctorId) {
+            return back()->with('error', 'Không tìm thấy hồ sơ bác sĩ của tài khoản này.');
+        }
+
+        $conflict = Appointment::withDoctorScheduleLock($doctorId, function () use ($id, $doctorId, $request) {
+            $appointment = Appointment::whereKey($id)->lockForUpdate()->firstOrFail();
+            if ($appointment->doctor_id && (int) $appointment->doctor_id !== (int) $doctorId) {
+                return ['forbidden' => true];
+            }
+
+            $nextStatus = $request->input('status', $appointment->status);
+            if (!$appointment->doctor_id && in_array($nextStatus, ['pending', 'confirmed', 'waiting', 'in_progress'], true)) {
+                $conflict = Appointment::findDoctorConflict(
+                    (int) $doctorId,
+                    \Carbon\Carbon::parse($appointment->appointment_time),
+                    $appointment->service_id ? (int) $appointment->service_id : null,
+                    $appointment->id
+                );
+                if ($conflict) {
+                    return ['conflict' => $conflict];
+                }
+                $appointment->doctor_id = $doctorId;
+            }
+
+            $appointment->update($request->filled('status') ? ['doctor_id' => $appointment->doctor_id, 'status' => $nextStatus] : ['doctor_id' => $appointment->doctor_id]);
+            return null;
+        });
+
+        if (is_array($conflict) && !empty($conflict['forbidden'])) {
             return back()->with('error', 'Bạn không có quyền thao tác trên cuộc hẹn này.');
         }
-
-        $updateData = [];
-        if (!$appointment->doctor_id && $doctorId) {
-            $updateData['doctor_id'] = $doctorId;
-        }
-        if ($request->filled('status')) {
-            $updateData['status'] = $request->status;
-        }
-
-        if (!empty($updateData)) {
-            $appointment->update($updateData);
+        if (is_array($conflict) && isset($conflict['conflict'])) {
+            return back()->with('error', 'Khung giờ đã được xếp cho cuộc hẹn khác. Vui lòng chuyển lễ tân điều phối lại lịch.');
         }
 
         if ($request->status === 'in_progress') {
@@ -85,16 +102,42 @@ class ConsultationController extends Controller
 
     public function show($id)
     {
-        $appointment = Appointment::with(['patient', 'service'])->findOrFail($id);
-        
+        $appointment = Appointment::findOrFail($id);
         $doctorId = auth()->user()->doctor->id ?? null;
-        if ($appointment->doctor_id && $appointment->doctor_id !== $doctorId) {
-            return redirect()->route('doctor.dashboard')->with('error', 'Bạn không có quyền xem cuộc hẹn này.');
+        if (!$doctorId) {
+            return redirect()->route('doctor.dashboard')->with('error', 'Không tìm thấy hồ sơ bác sĩ của tài khoản này.');
         }
 
-        if (!$appointment->doctor_id && $doctorId) {
-            $appointment->update(['doctor_id' => $doctorId]);
+        $claimResult = Appointment::withDoctorScheduleLock($doctorId, function () use ($id, $doctorId) {
+            $appointment = Appointment::whereKey($id)->lockForUpdate()->firstOrFail();
+            if ($appointment->doctor_id && (int) $appointment->doctor_id !== (int) $doctorId) {
+                return ['forbidden' => true];
+            }
+
+            if (!$appointment->doctor_id) {
+                $conflict = Appointment::findDoctorConflict(
+                    (int) $doctorId,
+                    \Carbon\Carbon::parse($appointment->appointment_time),
+                    $appointment->service_id ? (int) $appointment->service_id : null,
+                    $appointment->id
+                );
+                if ($conflict) {
+                    return ['conflict' => $conflict];
+                }
+                $appointment->update(['doctor_id' => $doctorId]);
+            }
+
+            return null;
+        });
+
+        if (is_array($claimResult) && !empty($claimResult['forbidden'])) {
+            return redirect()->route('doctor.dashboard')->with('error', 'Bạn không có quyền xem cuộc hẹn này.');
         }
+        if (is_array($claimResult) && isset($claimResult['conflict'])) {
+            return redirect()->route('doctor.dashboard')->with('error', 'Khung giờ đã được xếp cho cuộc hẹn khác. Vui lòng liên hệ lễ tân để điều phối.');
+        }
+
+        $appointment = Appointment::with(['patient', 'service'])->findOrFail($id);
 
         // Get or create medical record for this appointment
         $medicalRecord = MedicalRecord::with(['materialUsages.supply', 'details.service'])->firstOrCreate(
@@ -143,7 +186,27 @@ class ConsultationController extends Controller
             return back()->with('error', 'Bạn không có quyền hoàn thành ca khám này.');
         }
 
-        DB::transaction(function () use ($appointment, $doctorId) {
+        $result = Appointment::withDoctorScheduleLock($doctorId, function () use ($appointment, $doctorId) {
+            $appointment = Appointment::with(['patient', 'service'])
+                ->whereKey($appointment->id)
+                ->lockForUpdate()
+                ->firstOrFail();
+            if ($appointment->doctor_id && (int) $appointment->doctor_id !== (int) $doctorId) {
+                return ['error' => 'forbidden'];
+            }
+
+            if (!$appointment->doctor_id) {
+                $conflict = Appointment::findDoctorConflict(
+                    (int) $doctorId,
+                    \Carbon\Carbon::parse($appointment->appointment_time),
+                    $appointment->service_id ? (int) $appointment->service_id : null,
+                    $appointment->id
+                );
+                if ($conflict) {
+                    return ['error' => 'conflict'];
+                }
+            }
+
             $updateData = ['status' => 'completed'];
             if (!$appointment->doctor_id) {
                 $updateData['doctor_id'] = $doctorId;
@@ -162,6 +225,7 @@ class ConsultationController extends Controller
                 // 1. Dịch vụ khám chính của lịch hẹn
                 if ($appointment->service) {
                     $items[] = [
+                        'service_id' => $appointment->service->id,
                         'item_name' => $appointment->service->name,
                         'unit_price' => floatval($appointment->service->price),
                         'quantity' => 1,
@@ -177,6 +241,7 @@ class ConsultationController extends Controller
                                 $itemLabel .= ' (' . $detail->note . ')';
                             }
                             $items[] = [
+                                'service_id' => $detail->service->id,
                                 'item_name' => $itemLabel,
                                 'unit_price' => floatval($detail->service->price),
                                 'quantity' => max(1, intval($detail->quantity)),
@@ -198,6 +263,7 @@ class ConsultationController extends Controller
                             $medPrice = ($matchedMed && floatval($matchedMed->price) > 0) ? floatval($matchedMed->price) : 15000;
                         }
                         $items[] = [
+                            'medicine_id' => $presDetail->medicine_id,
                             'item_name' => 'Thuốc: ' . $presDetail->medicine_name . ' (' . $unitLabel . ')',
                             'unit_price' => $medPrice,
                             'quantity' => max(1, intval($presDetail->quantity)),
@@ -205,13 +271,17 @@ class ConsultationController extends Controller
                     }
                 }
 
-                // Nếu chưa chọn dịch vụ nào, thêm phí khám tổng quát mặc định
+                // Nếu chưa chọn dịch vụ nào, dùng giá khám hiện hành trong danh mục.
                 if (empty($items)) {
-                    $items[] = [
-                        'item_name' => 'Khám và tư vấn nha khoa tổng quát',
-                        'unit_price' => 100000,
-                        'quantity' => 1,
-                    ];
+                    $consultation = Service::where('service_code', 'SV001')->where('is_active', true)->first();
+                    if ($consultation) {
+                        $items[] = [
+                            'service_id' => $consultation->id,
+                            'item_name' => $consultation->name,
+                            'unit_price' => (float) $consultation->price,
+                            'quantity' => 1,
+                        ];
+                    }
                 }
 
                 $totalAmount = 0;
@@ -240,6 +310,8 @@ class ConsultationController extends Controller
                 foreach ($items as $it) {
                     InvoiceDetail::create([
                         'invoice_id' => $invoice->id,
+                        'service_id' => $it['service_id'] ?? null,
+                        'medicine_id' => $it['medicine_id'] ?? null,
                         'item_name' => $it['item_name'],
                         'unit_price' => $it['unit_price'],
                         'quantity' => $it['quantity'],
@@ -247,7 +319,15 @@ class ConsultationController extends Controller
                     ]);
                 }
             }
+            return null;
         });
+
+        if ($result === ['error' => 'forbidden']) {
+            return back()->with('error', 'Bạn không có quyền hoàn thành ca khám này.');
+        }
+        if ($result === ['error' => 'conflict']) {
+            return back()->with('error', 'Khung giờ đã được xếp cho cuộc hẹn khác. Vui lòng liên hệ lễ tân để điều phối.');
+        }
 
         return redirect()->route('doctor.dashboard')->with('success', 'Đã hoàn thành ca khám và tự động chuyển hóa đơn sang bộ phận Thu ngân!');
     }

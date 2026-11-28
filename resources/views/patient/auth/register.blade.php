@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'Đăng ký tài khoản bệnh nhân - Nha Khoa Smile')
+@section('title', 'Đăng ký tài khoản bệnh nhân - ' . $clinicSettings['clinic_name'])
 
 @section('content')
 <div class="min-h-[calc(100vh-80px)] flex bg-[#effcf9]">
@@ -61,7 +61,7 @@
                 <div class="flex items-start pt-1">
                     <input id="terms" name="terms" type="checkbox" required class="h-4 w-4 text-teal-600 focus:ring-teal-500 border-slate-300 rounded mt-0.5">
                     <label for="terms" class="ml-2 block text-xs text-slate-600 leading-relaxed">
-                        Tôi đồng ý với chính sách bảo mật hồ sơ y tế điện tử của Nha Khoa Smile.
+                        Tôi đồng ý với chính sách bảo mật hồ sơ y tế điện tử của {{ $clinicSettings['clinic_name'] }}.
                     </label>
                 </div>
 
@@ -93,7 +93,7 @@
                     </svg>
                 </div>
                 <div>
-                    <span class="text-xs uppercase tracking-wider font-bold text-[#f3e5ab]">Nha Khoa Smile</span>
+                    <span class="text-xs uppercase tracking-wider font-bold text-[#f3e5ab]">{{ $clinicSettings['clinic_name'] }}</span>
                     <h2 class="font-heading-clinic text-xl font-bold !text-white">Hồ Sơ Điện Tử DCMS</h2>
                 </div>
             </div>

@@ -59,8 +59,8 @@
         <div class="flex items-center justify-between h-16 gap-2">
             <!-- Left: Brand + Primary Navigation -->
             <div class="flex items-center gap-3 lg:gap-4 shrink-0">
-                <!-- Logo Nha Khoa Smile -->
-                <a href="{{ route('dashboard') }}" class="shrink-0 flex items-center gap-2.5 group focus:outline-none pr-3 border-r border-slate-200" title="Bảng điều khiển Nha Khoa Smile">
+                <!-- Logo phòng khám -->
+                <a href="{{ route('dashboard') }}" class="shrink-0 flex items-center gap-2.5 group focus:outline-none pr-3 border-r border-slate-200" title="Bảng điều khiển {{ $clinicSettings['clinic_name'] }}">
                     <div class="w-9 h-9 bg-[#0D7A68] rounded-xl flex items-center justify-center text-white shadow-xs group-hover:scale-105 transition-transform duration-200 shrink-0">
                         <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M7 4C5 4 3 6 3 9C3 13 5 17 7 21C8 22 9 22 9.5 20.5L10.5 17C11 15 13 15 13.5 17L14.5 20.5C15 22 16 22 17 21C19 17 21 13 21 9C21 6 19 4 17 4C14.5 4 13.5 6 12 6C10.5 6 9.5 4 7 4Z"/>
@@ -68,7 +68,7 @@
                     </div>
                     <div class="flex flex-col whitespace-nowrap">
                         <div class="flex items-center gap-1.5">
-                            <span class="font-extrabold text-sm lg:text-[15px] leading-none tracking-tight text-slate-900">Nha Khoa Smile</span>
+                            <span class="font-extrabold text-sm lg:text-[15px] leading-none tracking-tight text-slate-900">{{ $clinicSettings['clinic_name'] }}</span>
                             <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-indigo-50 text-indigo-600 border border-indigo-100">DCMS Pro v2.4</span>
                         </div>
                         <span class="text-[11px] font-medium text-slate-400 mt-1 leading-none">

@@ -11,6 +11,13 @@ class Payment extends Model
 
     protected $guarded = ['id'];
 
+    protected function casts(): array
+    {
+        return [
+            'amount' => 'decimal:2',
+        ];
+    }
+
     public function invoice()
     {
         return $this->belongsTo(Invoice::class);

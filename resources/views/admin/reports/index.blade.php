@@ -102,7 +102,7 @@
                 <div class="flex items-center justify-between text-xs text-slate-500 font-medium mb-1">
                     <span class="flex items-center gap-1.5">
                         <span class="w-2 h-2 rounded-full bg-amber-500"></span>
-                        Thuế GTGT (VAT 10%)
+                        Thuế GTGT (theo hóa đơn)
                     </span>
                     <span class="text-[11px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full">+{{ $newPatients }} BN</span>
                 </div>

@@ -16,15 +16,6 @@ class AdminController extends Controller
 {
     public function dashboard(Request $request)
     {
-        // Tự động nạp dữ liệu mẫu nếu hệ thống chưa có dữ liệu bệnh nhân
-        try {
-            if (Patient::count() === 0 && \Illuminate\Support\Facades\Schema::hasTable('patients')) {
-                \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
-            }
-        } catch (\Throwable $e) {
-            \Illuminate\Support\Facades\Log::warning('Auto seed failed: ' . $e->getMessage());
-        }
-
         $prevMonthDate = now()->copy()->subMonthNoOverflow();
         $prevMonthRevenue = Invoice::where('status', 'paid')
             ->whereMonth('created_at', $prevMonthDate->month)

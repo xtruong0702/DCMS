@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'Nha Khoa Smile - Phòng Khám Răng Hàm Mặt Chuẩn Y Khoa')
+@section('title', $clinicSettings['clinic_name'] . ' - Phòng Khám Răng Hàm Mặt Chuẩn Y Khoa')
 
 @section('content')
 <div class="bg-[#effcf9]">
@@ -47,9 +47,9 @@
                             <span>📅</span>
                             <span>Đặt Lịch Khám Ngay</span>
                         </a>
-                        <a href="tel:0775761388" class="btn-press px-6 py-3.5 bg-white hover:bg-teal-50/70 text-[#0f3e36] font-bold rounded-xl border border-[#d4af37]/30 transition flex items-center justify-center gap-2 text-xs uppercase tracking-wider shadow-sm tabular-nums">
+                        <a href="tel:{{ $clinicHotlineTel }}" class="btn-press px-6 py-3.5 bg-white hover:bg-teal-50/70 text-[#0f3e36] font-bold rounded-xl border border-[#d4af37]/30 transition flex items-center justify-center gap-2 text-xs uppercase tracking-wider shadow-sm tabular-nums">
                             <span>📞</span>
-                            <span>Tư Vấn Bác Sĩ: 0775 761 388</span>
+                            <span>Tư Vấn Bác Sĩ: {{ $clinicSettings['clinic_hotline'] }}</span>
                         </a>
                     </div>
 
@@ -60,8 +60,8 @@
                             <span>Mở cửa 08:00 – 20:00 (Thứ 2 – Chủ Nhật)</span>
                         </span>
                         <span class="hidden sm:inline text-slate-300">•</span>
-                        <a href="https://www.google.com/maps/dir/?api=1&destination=204+Tr%E1%BA%A7n+Duy+H%C6%B0ng,+Y%C3%AAn+H%C3%B2a,+C%E1%BA%A7u+Gi%E1%BA%A5y,+H%C3%A0+N%E1%BB%99i" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-[#0f3e36] font-semibold hover:underline">
-                            <span>📍 204 Trần Duy Hưng, Cầu Giấy, Hà Nội</span>
+                        <a href="https://www.google.com/maps/search/?api=1&amp;query={{ urlencode($clinicSettings['clinic_address']) }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-[#0f3e36] font-semibold hover:underline">
+                            <span>📍 {{ $clinicSettings['clinic_address'] }}</span>
                         </a>
                     </div>
 
@@ -114,7 +114,7 @@
                             <!-- Ảnh SAU điều trị (nền full) -->
                             <img
                                 src="{{ asset('images/before-after/veneer-after.jpg') }}"
-                                alt="Sau khi dán sứ Veneer Emax tại Nha Khoa Smile"
+                                alt="Sau khi dán sứ Veneer Emax tại {{ $clinicSettings['clinic_name'] }}"
                                 draggable="false"
                                 style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; pointer-events: none;"
                             >
@@ -122,7 +122,7 @@
                             <!-- Ảnh TRƯỚC điều trị (cắt theo vị trí thanh trượt) -->
                             <img
                                 src="{{ asset('images/before-after/veneer-before.jpg') }}"
-                                alt="Trước khi dán sứ Veneer Emax tại Nha Khoa Smile"
+                                alt="Trước khi dán sứ Veneer Emax tại {{ $clinicSettings['clinic_name'] }}"
                                 draggable="false"
                                 :style="`position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; pointer-events: none; clip-path: inset(0 ${100 - pos}% 0 0);`"
                             >
@@ -190,7 +190,7 @@
                 <div class="space-y-1">
                     <span class="block text-[11px] font-bold uppercase tracking-[0.18em] text-[#0f3e36] opacity-75">DỊCH VỤ CHUYÊN KHOA</span>
                     <h2 class="font-heading-clinic !text-2xl sm:!text-3xl font-bold text-[#0f3e36]">Danh Mục Dịch Vụ Nha Khoa</h2>
-                    <p class="text-xs sm:text-sm text-slate-500">Điều trị toàn diện từ nha khoa tổng quát đến phục hình thẩm mỹ và cấy ghép chuyên sâu.</p>
+                    <p class="text-xs sm:text-sm text-slate-500">Điều trị toàn diện từ nha khoa tổng quát đến phục hình thẩm mỹ và cấy ghép chuyên sâu. VAT được tính theo thiết lập trên hóa đơn.</p>
                 </div>
                 <a href="{{ route('public.services') }}" class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#0f3e36] hover:opacity-80 shrink-0 group">
                     <span>Xem tất cả bảng giá</span>
@@ -203,11 +203,11 @@
                     [
                         'cat' => 'PHỤC HÌNH THẨM MỸ',
                         'tag' => 'Bảo hành chính hãng',
-                        'title' => 'Dán Sứ Veneer & Bọc Răng Sứ',
-                        'desc' => 'Khắc phục răng ố vàng, sứt mẻ, thưa kẽ bằng sứ Emax/Cercon siêu mỏng, bảo tồn răng thật tối đa và ăn nhai bền chắc.',
-                        'priceLabel' => 'Giá niêm yết từ:',
-                        'price' => '4.000.000 đ / răng',
-                        'param' => 'veneer',
+                        'title' => 'Dán Sứ Veneer Emax',
+                        'desc' => 'Khắc phục răng ố vàng, sứt mẻ hoặc thưa kẽ bằng sứ Emax siêu mỏng, bảo tồn răng thật và ăn nhai bền chắc.',
+                        'priceLabel' => 'Đơn giá Veneer Emax:',
+                        'serviceCode' => 'PKG-CROWN-VENEER-EMAX',
+                        'priceUnit' => '/ răng',
                         'primary' => true,
                     ],
                     [
@@ -216,28 +216,28 @@
                         'title' => 'Cấy Ghép Implant Straumann',
                         'desc' => 'Thay thế răng mất 1:1 bằng trụ Titanium sinh học tích hợp xương nhanh, ngăn tiêu xương hàm và khôi phục sức nhai như răng thật.',
                         'priceLabel' => 'Trọn gói trụ & mão:',
-                        'price' => '25.000.000 đ / trụ',
-                        'param' => 'implant',
+                        'serviceCode' => 'PKG-IMPLANT-STRAUMANN',
+                        'priceUnit' => '/ trụ',
                         'primary' => true,
                     ],
                     [
                         'cat' => 'CHỈNH NHA CHUYÊN SÂU',
                         'tag' => 'Trả góp 0%',
-                        'title' => 'Niềng Răng Mắc Cài & Invisalign',
-                        'desc' => 'Sắp đều răng khấp khểnh, hô, móm và điều chỉnh khớp cắn chuẩn sinh học bằng mắc cài tự buộc hoặc khay trong suốt Invisalign.',
+                        'title' => 'Niềng Răng Mắc Cài Kim Loại Tự Buộc',
+                        'desc' => 'Sắp đều răng khấp khểnh, hô, móm và điều chỉnh khớp cắn chuẩn sinh học bằng mắc cài kim loại tự buộc.',
                         'priceLabel' => 'Trọn gói phác đồ:',
-                        'price' => '32.000.000 đ / gói',
-                        'param' => 'invisalign',
+                        'serviceCode' => 'PKG-ORTHO-SELF-LIGATING',
+                        'priceUnit' => '/ gói',
                         'primary' => true,
                     ],
                     [
                         'cat' => 'THẨM MỸ NỤ CƯỜI',
-                        'tag' => 'Chỉ 45 phút',
+                        'tag' => 'Khoảng 60 phút',
                         'title' => 'Tẩy Trắng Răng Laser Whitening',
                         'desc' => 'Làm sáng răng bật 3–5 tone ngay trong 1 lần hẹn bằng ánh sáng lạnh sinh học dịu nhẹ, an toàn cho men răng và không ê buốt.',
                         'priceLabel' => 'Chi phí trọn gói:',
-                        'price' => '2.000.000 đ / ca',
-                        'param' => 'whitening',
+                        'serviceCode' => 'PKG-WHITENING-LASER',
+                        'priceUnit' => '/ ca',
                         'primary' => true,
                     ],
                     [
@@ -246,18 +246,18 @@
                         'title' => 'Nhổ Răng Khôn Không Đau',
                         'desc' => 'Ứng dụng máy siêu âm Piezotome nhẹ nhàng bóc tách chân răng mọc lệch, mọc ngầm, hạn chế sưng đau và lành thương nhanh.',
                         'priceLabel' => 'Chi phí từ:',
-                        'price' => '490.000 đ / răng',
-                        'param' => 'wisdom',
+                        'serviceCode' => 'PKG-WISDOM-STRAIGHT-UPPER',
+                        'priceUnit' => '/ răng',
                         'primary' => false,
                     ],
                     [
                         'cat' => 'NHA KHOA TỔNG QUÁT',
                         'tag' => 'Định kỳ 6 tháng',
-                        'title' => 'Khám Tổng Quát, Cạo Vôi & CT 3D',
-                        'desc' => 'Kiểm tra sức khỏe răng miệng, cạo vôi răng siêu âm, trám răng sâu, điều trị tủy và chụp phim 3D CT ConeBeam phát hiện bệnh lý sớm.',
-                        'priceLabel' => 'Khám & tư vấn:',
-                        'price' => 'Miễn phí khám',
-                        'param' => 'general',
+                        'title' => 'Khám Tổng Quát & Tư Vấn',
+                        'desc' => 'Kiểm tra sức khỏe răng miệng và tư vấn kế hoạch chăm sóc phù hợp với tình trạng của bạn.',
+                        'priceLabel' => 'Giá niêm yết:',
+                        'serviceCode' => 'SV001',
+                        'priceUnit' => '/ lượt',
                         'primary' => false,
                     ],
                 ];
@@ -278,9 +278,12 @@
                         <div class="pt-4 border-t border-slate-100/70 flex items-center justify-between gap-3">
                             <div>
                                 <span class="text-[10px] text-slate-500 block">{{ $item['priceLabel'] }}</span>
-                                <div class="font-heading-clinic text-sm sm:text-base font-bold text-[#0f3e36] tabular-nums">{{ $item['price'] }}</div>
+                                @php $priceService = $allServices->firstWhere('service_code', $item['serviceCode']); @endphp
+                                <div class="font-heading-clinic text-sm sm:text-base font-bold text-[#0f3e36] tabular-nums">
+                                    {{ $priceService ? number_format((float) $priceService->price, 0, ',', '.') . ' đ ' . $item['priceUnit'] : 'Liên hệ phòng khám' }}
+                                </div>
                             </div>
-                            <a href="{{ route('public.booking', ['service' => $item['param']]) }}"
+                            <a href="{{ route('public.booking', ['service_id' => $priceService?->id]) }}"
                                class="btn-press {{ $item['primary'] ? 'btn-clinic-primary' : 'bg-[#effcf9] hover:bg-[#0f3e36] text-[#0f3e36] hover:text-white border border-[#d4af37]/30' }} px-4 py-2 rounded-xl text-[11px] font-bold uppercase tracking-wider shrink-0 transition">
                                 Đặt Lịch
                             </a>
@@ -343,10 +346,10 @@
                 <div class="space-y-1">
                     <span class="block text-[11px] font-bold uppercase tracking-[0.18em] text-[#0f3e36] opacity-75">CƠ SỞ VẬT CHẤT CHUẨN QUỐC TẾ</span>
                     <h2 class="font-heading-clinic !text-2xl sm:!text-3xl font-bold text-[#0f3e36]">Không Gian &amp; Công Nghệ Nha Khoa 5 Sao</h2>
-                    <p class="text-xs sm:text-sm text-slate-600">Trải nghiệm thăm khám riêng tư, vô trùng tuyệt đối chuẩn Bộ Y Tế tại 204 Trần Duy Hưng, Hà Nội.</p>
+                    <p class="text-xs sm:text-sm text-slate-600">Trải nghiệm thăm khám riêng tư, vô trùng tuyệt đối chuẩn Bộ Y Tế tại {{ $clinicSettings['clinic_address'] }}.</p>
                 </div>
                 <a href="{{ route('public.about') }}" class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#0f3e36] hover:opacity-80 shrink-0 group">
-                    <span>Khám phá Nha Khoa Smile</span>
+                    <span>Khám phá {{ $clinicSettings['clinic_name'] }}</span>
                     <span class="group-hover:translate-x-1 transition-transform">&rarr;</span>
                 </a>
             </div>
@@ -354,7 +357,7 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="clinic-card rounded-2xl overflow-hidden img-zoom-container reveal-item">
                     <div class="relative overflow-hidden bg-slate-100" style="height: 230px;">
-                        <img src="{{ asset('images/clinic/clinic-vip-room.jpg') }}" alt="Phòng điều trị VIP Nha Khoa Smile" class="w-full h-full object-cover">
+                        <img src="{{ asset('images/clinic/clinic-vip-room.jpg') }}" alt="Phòng điều trị VIP {{ $clinicSettings['clinic_name'] }}" class="w-full h-full object-cover">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
                         <div class="absolute bottom-3 left-3 right-3">
                             <span class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#d4af37] text-[#081412] uppercase tracking-wider mb-1">1 BS : 1 Ghế Riêng Biệt</span>
@@ -376,7 +379,7 @@
 
                 <div class="clinic-card rounded-2xl overflow-hidden img-zoom-container reveal-item">
                     <div class="relative overflow-hidden bg-slate-100" style="height: 230px;">
-                        <img src="{{ asset('images/clinic/clinic-lounge.jpg') }}" alt="Sảnh tiếp đón khách hàng Nha Khoa Smile" class="w-full h-full object-cover">
+                        <img src="{{ asset('images/clinic/clinic-lounge.jpg') }}" alt="Sảnh tiếp đón khách hàng {{ $clinicSettings['clinic_name'] }}" class="w-full h-full object-cover">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
                         <div class="absolute bottom-3 left-3 right-3">
                             <span class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#0f3e36]/90 text-[#f3e5ab] border border-[#d4af37]/30 uppercase tracking-wider mb-1">Tiêu Chuẩn Thụy Sĩ</span>
@@ -523,9 +526,9 @@
                 <div class="pt-4 border-t border-slate-100/70 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500">
                     <span class="flex items-center gap-1.5">
                         <span>📍</span>
-                        <span>204 Trần Duy Hưng, Yên Hòa, Cầu Giấy, Hà Nội</span>
+                        <span>{{ $clinicSettings['clinic_address'] }}</span>
                     </span>
-                    <a href="https://www.google.com/maps/dir/?api=1&destination=204+Tr%E1%BA%A7n+Duy+H%C6%B0ng,+Y%C3%AAn+H%C3%B2a,+C%E1%BA%A7u+Gi%E1%BA%A5y,+H%C3%A0+N%E1%BB%99i" target="_blank" rel="noopener noreferrer" class="font-bold text-[#0f3e36] hover:underline shrink-0">
+                    <a href="https://www.google.com/maps/search/?api=1&amp;query={{ urlencode($clinicSettings['clinic_address']) }}" target="_blank" rel="noopener noreferrer" class="font-bold text-[#0f3e36] hover:underline shrink-0">
                         🗺️ Mở chỉ đường Google Maps &rarr;
                     </a>
                 </div>

@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>@yield('title', 'Nha Khoa Smile - Phòng Khám Răng Hàm Mặt Chuẩn Y Khoa')</title>
+        <title>@yield('title', $clinicSettings['clinic_name'] . ' - Phòng Khám Răng Hàm Mặt Chuẩn Y Khoa')</title>
 
         <!-- Google Fonts chuẩn Tiếng Việt đồng nhất toàn hệ thống: Be Vietnam Pro & Inter -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -70,15 +70,15 @@
                         <span class="tabular-nums text-teal-100">08:00 – 20:00 (Thứ 2 – Chủ Nhật)</span>
                     </span>
                     <span class="text-teal-300/60">|</span>
-                    <a href="https://www.google.com/maps/dir/?api=1&destination=204+Tr%E1%BA%A7n+Duy+H%C6%B0ng,+Y%C3%AAn+H%C3%B2a,+C%E1%BA%A7u+Gi%E1%BA%A5y,+H%C3%A0+N%E1%BB%99i" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-teal-100 hover:text-white transition" title="Mở chỉ đường Google Maps">
+                    <a href="https://www.google.com/maps/search/?api=1&amp;query={{ urlencode($clinicSettings['clinic_address']) }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-teal-100 hover:text-white transition" title="Mở chỉ đường Google Maps">
                         <svg class="w-3.5 h-3.5 text-teal-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                        <span>204 Trần Duy Hưng, Yên Hòa, Cầu Giấy, Hà Nội</span>
+                        <span>{{ $clinicSettings['clinic_address'] }}</span>
                     </a>
                 </div>
                 <div class="flex items-center gap-5">
-                    <a href="tel:0775761388" class="inline-flex items-center gap-1.5 font-semibold text-white hover:text-teal-200 transition tabular-nums">
+                    <a href="tel:{{ $clinicHotlineTel }}" class="inline-flex items-center gap-1.5 font-semibold text-white hover:text-teal-200 transition tabular-nums">
                         <svg class="w-3.5 h-3.5 text-teal-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
-                        <span>Hotline Cấp Cứu & Đặt Hẹn: 0775 761 388</span>
+                        <span>Hotline Cấp Cứu & Đặt Hẹn: {{ $clinicSettings['clinic_hotline'] }}</span>
                     </a>
                 </div>
             </div>
@@ -98,7 +98,7 @@
                             </svg>
                         </div>
                         <div class="flex flex-col">
-                            <span class="font-heading-clinic font-bold text-xl tracking-tight text-[#0f3e36] leading-none group-hover:opacity-85 transition-opacity">Nha Khoa Smile</span>
+                            <span class="font-heading-clinic font-bold text-xl tracking-tight text-[#0f3e36] leading-none group-hover:opacity-85 transition-opacity">{{ $clinicSettings['clinic_name'] }}</span>
                             <span class="text-[10px] font-semibold uppercase tracking-wider text-[#0f3e36]/70 mt-1">Phòng Khám Răng Hàm Mặt • DCMS</span>
                         </div>
                     </a>
@@ -218,7 +218,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
                             </svg>
                         </button>
-                        <a href="tel:0775761388" class="p-2 rounded-xl bg-teal-50 text-teal-700 border border-teal-500/15" title="Gọi Hotline 0775 761 388">
+                        <a href="tel:{{ $clinicHotlineTel }}" class="p-2 rounded-xl bg-teal-50 text-teal-700 border border-teal-500/15" title="Gọi Hotline {{ $clinicSettings['clinic_hotline'] }}">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
                         </a>
                         <a href="{{ route('patient.login') }}" class="p-2 rounded-xl bg-white text-slate-600 border border-slate-200/40" title="Cổng Bệnh Nhân">
@@ -272,7 +272,7 @@
                                 <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                             </div>
                             <div>
-                                <span class="font-heading-clinic font-bold text-xl text-white block leading-none">Nha Khoa Smile</span>
+                                <span class="font-heading-clinic font-bold text-xl text-white block leading-none">{{ $clinicSettings['clinic_name'] }}</span>
                                 <span class="text-[10px] font-semibold uppercase tracking-wider text-teal-400">Hệ Thống Nha Khoa DCMS</span>
                             </div>
                         </div>
@@ -303,8 +303,8 @@
                         <ul class="space-y-3 text-xs text-slate-400">
                             <li class="flex items-start gap-2.5">
                                 <span class="text-teal-400">📍</span>
-                                <a href="https://www.google.com/maps/dir/?api=1&destination=204+Tr%E1%BA%A7n+Duy+H%C6%B0ng,+Y%C3%AAn+H%C3%B2a,+C%E1%BA%A7u+Gi%E1%BA%A5y,+H%C3%A0+N%E1%BB%99i" target="_blank" rel="noopener noreferrer" class="hover:text-teal-300 transition">
-                                    204 Trần Duy Hưng, Yên Hòa, Cầu Giấy, Hà Nội
+                                <a href="https://www.google.com/maps/search/?api=1&amp;query={{ urlencode($clinicSettings['clinic_address']) }}" target="_blank" rel="noopener noreferrer" class="hover:text-teal-300 transition">
+                                    {{ $clinicSettings['clinic_address'] }}
                                     <span class="block text-[11px] text-teal-300 underline mt-0.5">🗺️ Xem chỉ đường Google Maps &rarr;</span>
                                 </a>
                             </li>
@@ -312,7 +312,7 @@
                                 <span class="text-teal-400">📞</span>
                                 <div>
                                     <span>Hotline Đặt Hẹn:</span>
-                                    <a href="tel:0775761388" class="font-bold text-white hover:text-teal-300 ml-1 tabular-nums">0775 761 388</a>
+                                    <a href="tel:{{ $clinicHotlineTel }}" class="font-bold text-white hover:text-teal-300 ml-1 tabular-nums">{{ $clinicSettings['clinic_hotline'] }}</a>
                                 </div>
                             </li>
                             <li class="flex items-center gap-2.5">
@@ -321,7 +321,7 @@
                             </li>
                             <li class="flex items-center gap-2.5">
                                 <span class="text-teal-400">✉️</span>
-                                <span>contact@nhakhoasmile.vn</span>
+                                <span>{{ $clinicSettings['clinic_email'] }}</span>
                             </li>
                         </ul>
                     </div>
@@ -338,7 +338,7 @@
                 </div>
 
                 <div class="flex flex-col sm:flex-row justify-between items-center text-xs text-slate-500 gap-4">
-                    <p>&copy; {{ date('Y') }} Nha Khoa Smile. Hệ thống Quản lý Phòng khám Nha khoa Kỹ thuật số DCMS.</p>
+                    <p>&copy; {{ date('Y') }} {{ $clinicSettings['clinic_name'] }}. Hệ thống Quản lý Phòng khám Nha khoa Kỹ thuật số DCMS.</p>
                     <div class="flex items-center gap-5">
                         <a href="{{ route('patient.login') }}" class="text-teal-400 hover:underline font-semibold">🔐 Cổng Bệnh Nhân</a>
                         <button type="button" @click="legalModal = 'privacy'" class="hover:text-white transition">Chính sách bảo mật</button>
@@ -351,7 +351,7 @@
             <div x-show="legalModal !== null" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm" @keydown.escape.window="legalModal = null">
                 <div @click.away="legalModal = null" class="bg-white text-slate-700 rounded-2xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl border border-slate-200/40 max-h-[85vh] overflow-y-auto">
                     <div class="flex items-center justify-between pb-4 border-b border-slate-200/40 mb-4">
-                        <h3 class="text-lg font-bold font-heading-clinic text-slate-900" x-text="legalModal === 'privacy' ? 'Chính Sách Bảo Mật Hồ Sơ Bệnh Án' : 'Cam Kết Chất Lượng Y Khoa - Nha Khoa Smile'"></h3>
+                        <h3 class="text-lg font-bold font-heading-clinic text-slate-900" x-text="legalModal === 'privacy' ? 'Chính Sách Bảo Mật Hồ Sơ Bệnh Án' : 'Cam Kết Chất Lượng Y Khoa - {{ addslashes($clinicSettings['clinic_name']) }}'"></h3>
                         <button type="button" @click="legalModal = null" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold flex items-center justify-center">✕</button>
                     </div>
                     <div x-show="legalModal === 'privacy'" class="space-y-3 text-xs text-slate-600 leading-relaxed">
@@ -371,11 +371,11 @@
 
         <!-- Floating Quick Action Dock (Desktop/Tablet: Hotline + Back to Top, stacked cleanly above AI Chat) -->
         <div class="hidden sm:flex flex-col items-end gap-2.5 fixed z-40" style="bottom: 88px; right: 22px;">
-            <a href="tel:0775761388" class="group flex items-center gap-2 bg-white/95 backdrop-blur-md pl-3.5 pr-4 py-2.5 rounded-full shadow-lg shadow-teal-900/10 hover:shadow-xl hover:shadow-teal-700/20 transition-all hover:-translate-y-0.5 clinic-pulse" title="Gọi Hotline Phòng Khám 0775 761 388">
+            <a href="tel:{{ $clinicHotlineTel }}" class="group flex items-center gap-2 bg-white/95 backdrop-blur-md pl-3.5 pr-4 py-2.5 rounded-full shadow-lg shadow-teal-900/10 hover:shadow-xl hover:shadow-teal-700/20 transition-all hover:-translate-y-0.5 clinic-pulse" title="Gọi Hotline Phòng Khám {{ $clinicSettings['clinic_hotline'] }}">
                 <span class="w-8 h-8 rounded-full bg-teal-600 text-white flex items-center justify-center phone-ring-subtle shadow-sm">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
                 </span>
-                <span class="text-xs font-bold text-teal-900 tabular-nums">0775 761 388</span>
+                <span class="text-xs font-bold text-teal-900 tabular-nums">{{ $clinicSettings['clinic_hotline'] }}</span>
             </a>
 
             <button type="button" id="back-to-top" aria-label="Lên đầu trang"

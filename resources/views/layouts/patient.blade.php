@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>@yield('title', 'Cổng Bệnh Nhân - Nha Khoa Smile')</title>
+        <title>@yield('title', 'Cổng Bệnh Nhân - ' . $clinicSettings['clinic_name'])</title>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600;1,700&family=Inter:wght@400;500;600;700&subset=vietnamese&display=swap" rel="stylesheet">
@@ -88,7 +88,7 @@
                                 </div>
                                 <div class="flex flex-col">
                                     <div class="flex items-center gap-2">
-                                        <span class="font-bold text-base leading-none tracking-tight text-slate-900">Nha Khoa Smile</span>
+                                        <span class="font-bold text-base leading-none tracking-tight text-slate-900">{{ $clinicSettings['clinic_name'] }}</span>
                                         <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#D1FAE5] text-[#065F46] border border-emerald-200">
                                             Bệnh nhân
                                         </span>
@@ -232,7 +232,7 @@
         <footer class="mt-auto border-t border-slate-200/90 bg-white py-3.5 px-6 text-xs text-slate-500">
             <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-center sm:text-left">
                 <div>
-                    Nha Khoa Smile DCMS • Hệ thống Quản lý Nha khoa Thông minh & Điều phối tiếp đón
+                    {{ $clinicSettings['clinic_name'] }} DCMS • Hệ thống Quản lý Nha khoa Thông minh & Điều phối tiếp đón
                 </div>
                 <div class="flex items-center gap-3 text-[11px] text-slate-400">
                     <span>Phiên bản v2.4.0-stable</span>

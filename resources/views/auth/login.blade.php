@@ -14,7 +14,7 @@
                 v2.4
             </span>
         </div>
-        <p class="text-slate-400 mt-1 text-xs">DCMS Pro • Hệ thống Quản trị Nha khoa Smile</p>
+        <p class="text-slate-400 mt-1 text-xs">DCMS Pro • Hệ thống Quản trị {{ $clinicSettings['clinic_name'] }}</p>
     </div>
 
     <form method="POST" action="{{ route('login') }}">

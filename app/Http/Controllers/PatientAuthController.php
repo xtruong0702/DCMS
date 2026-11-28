@@ -9,6 +9,7 @@ use App\Models\Role;
 use App\Traits\EnsuresClinicDataSeeded;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 use App\Mail\ResetPasswordOtpMail;
@@ -35,31 +36,25 @@ class PatientAuthController extends Controller
             ['description' => 'Bệnh nhân']
         );
 
-        // Tạo User
-        $user = User::create([
-            'name' => $request->name,
-            'phone' => $request->phone,
-            'password' => Hash::make($request->password),
-            'role_id' => $patientRole->id,
-            'is_active' => true,
-        ]);
+        // A phone number alone does not prove identity. Create a private profile
+        // for the new account; staff can link an existing clinical record later.
+        $user = DB::transaction(function () use ($request, $patientRole) {
+            $user = User::create([
+                'name' => $request->name,
+                'phone' => trim($request->phone),
+                'password' => Hash::make($request->password),
+                'role_id' => $patientRole->id,
+                'is_active' => true,
+            ]);
 
-        // Chỉ liên kết với hồ sơ bệnh nhân chưa gắn tài khoản nào
-        $patient = Patient::where('phone', $request->phone)
-            ->whereNull('user_id')
-            ->first();
-
-        if ($patient) {
-            $patient->update(['user_id' => $user->id]);
-        } else {
-            // Tạo mới Patient record với mã không trùng lặp
             Patient::create([
                 'patient_code' => 'BN' . date('YmdHis') . random_int(100, 999),
                 'name' => $request->name,
-                'phone' => $request->phone,
+                'phone' => trim($request->phone),
                 'user_id' => $user->id,
             ]);
-        }
+            return $user;
+        });
 
         Auth::login($user);
 
@@ -91,8 +86,9 @@ class PatientAuthController extends Controller
                 $request->session()->invalidate();
                 $request->session()->regenerateToken();
 
+                $hotline = \App\Models\SystemSetting::where('setting_key', 'clinic_hotline')->value('setting_value') ?: '0775 761 388';
                 return back()->withErrors([
-                    'login' => 'Tài khoản của bạn đã bị khóa. Vui lòng liên hệ Quản trị viên hoặc Hotline 0775 761 388.',
+                    'login' => "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ Quản trị viên hoặc Hotline {$hotline}.",
                 ])->onlyInput('login');
             }
 

@@ -61,28 +61,37 @@ class AppointmentController extends Controller
             ]);
         }
 
-        if ($request->doctor_id && in_array($request->status, ['pending', 'confirmed', 'waiting', 'in_progress'])) {
-            $conflict = Appointment::findDoctorConflict(
-                (int) $request->doctor_id,
-                $parsedTime,
-                $request->filled('service_id') ? (int) $request->service_id : null
-            );
+        $conflict = Appointment::withDoctorScheduleLock(
+            $request->doctor_id ? (int) $request->doctor_id : null,
+            function () use ($request, $parsedTime, $dateTime, $status) {
+                if ($request->doctor_id && in_array($status, ['pending', 'confirmed', 'waiting', 'in_progress'])) {
+                    $conflict = Appointment::findDoctorConflict(
+                        (int) $request->doctor_id,
+                        $parsedTime,
+                        $request->filled('service_id') ? (int) $request->service_id : null
+                    );
+                    if ($conflict) {
+                        return $conflict;
+                    }
+                }
 
-            if ($conflict) {
-                return back()->withInput()->withErrors([
-                    'doctor_id' => "Bác sĩ đã có lịch hẹn trong khung giờ {$conflict['start']} – {$conflict['end']} ({$conflict['duration']} phút)."
+                Appointment::create([
+                    'patient_id' => $request->patient_id,
+                    'doctor_id' => $request->doctor_id,
+                    'service_id' => $request->service_id,
+                    'appointment_time' => $dateTime,
+                    'status' => $status,
+                    'note' => $request->note,
                 ]);
+                return null;
             }
-        }
+        );
 
-        Appointment::create([
-            'patient_id' => $request->patient_id,
-            'doctor_id' => $request->doctor_id,
-            'service_id' => $request->service_id,
-            'appointment_time' => $dateTime,
-            'status' => $request->status,
-            'note' => $request->note,
-        ]);
+        if ($conflict) {
+            return back()->withInput()->withErrors([
+                'doctor_id' => "Bác sĩ đã có lịch hẹn trong khung giờ {$conflict['start']} – {$conflict['end']} ({$conflict['duration']} phút)."
+            ]);
+        }
 
         return redirect()->route('admin.appointments.index')->with('success', 'Tạo lịch hẹn thành công!');
     }
@@ -116,29 +125,38 @@ class AppointmentController extends Controller
             ]);
         }
 
-        if ($request->doctor_id && in_array($request->status, ['pending', 'confirmed', 'waiting', 'in_progress'])) {
-            $conflict = Appointment::findDoctorConflict(
-                (int) $request->doctor_id,
-                $parsedTime,
-                $request->filled('service_id') ? (int) $request->service_id : null,
-                $appointment->id
-            );
+        $conflict = Appointment::withDoctorScheduleLock(
+            array_filter([$appointment->doctor_id, $request->doctor_id]),
+            function () use ($request, $appointment, $parsedTime, $dateTime) {
+                if ($request->doctor_id && in_array($request->status, ['pending', 'confirmed', 'waiting', 'in_progress'])) {
+                    $conflict = Appointment::findDoctorConflict(
+                        (int) $request->doctor_id,
+                        $parsedTime,
+                        $request->filled('service_id') ? (int) $request->service_id : null,
+                        $appointment->id
+                    );
+                    if ($conflict) {
+                        return $conflict;
+                    }
+                }
 
-            if ($conflict) {
-                return back()->withInput()->withErrors([
-                    'doctor_id' => "Bác sĩ đã có lịch hẹn trong khung giờ {$conflict['start']} – {$conflict['end']} ({$conflict['duration']} phút)."
+                $appointment->update([
+                    'patient_id' => $request->patient_id,
+                    'doctor_id' => $request->doctor_id,
+                    'service_id' => $request->service_id,
+                    'appointment_time' => $dateTime,
+                    'status' => $request->status,
+                    'note' => $request->note,
                 ]);
+                return null;
             }
-        }
+        );
 
-        $appointment->update([
-            'patient_id' => $request->patient_id,
-            'doctor_id' => $request->doctor_id,
-            'service_id' => $request->service_id,
-            'appointment_time' => $dateTime,
-            'status' => $request->status,
-            'note' => $request->note,
-        ]);
+        if ($conflict) {
+            return back()->withInput()->withErrors([
+                'doctor_id' => "Bác sĩ đã có lịch hẹn trong khung giờ {$conflict['start']} – {$conflict['end']} ({$conflict['duration']} phút)."
+            ]);
+        }
 
         return redirect()->route('admin.appointments.index')->with('success', 'Cập nhật lịch hẹn thành công!');
     }

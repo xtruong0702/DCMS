@@ -47,10 +47,5 @@
         ['title' => 'Kê Đơn Thuốc & Hẹn Cắt Chỉ Sau 7 Ngày', 'desc' => 'Cắn gạc cầm máu, chườm lạnh tại chỗ, nhận đơn thuốc điện tử và hướng dẫn chăm sóc chi tiết.'],
     ],
     'priceTitle' => 'Bảng Giá Nhổ Răng Khôn Niêm Yết',
-    'priceRows' => [
-        ['name' => 'Nhổ răng khôn mọc thẳng (Hàm trên / Hàm dưới)', 'desc' => 'Đơn giản, thời gian thực hiện nhanh 10–15 phút', 'warranty' => 'Tái khám miễn phí', 'price' => '490.000 – 990.000 đ'],
-        ['name' => 'Nhổ răng khôn mọc lệch độ I – II (Piezotome)', 'desc' => 'Răng mọc nghiêng, kẹt một phần dưới nướu, siêu âm ít đau', 'warranty' => 'Cắt chỉ miễn phí', 'price' => '1.500.000 đ / răng', 'badge' => 'Phổ biến', 'featured' => true],
-        ['name' => 'Nhổ răng khôn mọc lệch 90° / mọc ngầm phức tạp', 'desc' => 'Sát dây thần kinh, chia chân răng bằng máy siêu âm Piezotome', 'warranty' => 'Cắt chỉ miễn phí', 'price' => '2.500.000 – 3.500.000 đ', 'featured' => true],
-        ['name' => 'Bổ sung màng huyết tương tự thân PRF', 'desc' => 'Hỗ trợ cầm máu nhanh, giảm sưng và đẩy nhanh lành xương', 'warranty' => 'Tùy chọn thêm', 'price' => '500.000 đ / lần'],
-    ],
+    'priceRows' => $packageRows,
 ])

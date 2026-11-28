@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'Tuyển Dụng & Cơ Hội Nghề Nghiệp - Nha Khoa Smile')
+@section('title', 'Tuyển Dụng & Cơ Hội Nghề Nghiệp - ' . $clinicSettings['clinic_name'])
 
 @section('content')
 <!-- Hero Tuyển Dụng -->
@@ -8,7 +8,7 @@
     <div class="max-w-4xl mx-auto px-4 sm:px-6 text-center relative z-10 space-y-4">
         <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-[#C5A880]/40 text-[#E6D5B8] text-[11px] font-bold uppercase tracking-widest shadow-2xs">
             <span class="text-[#C5A880]">✦</span>
-            <span>Gia Nhập Đội Ngũ Nha Khoa Smile</span>
+            <span>Gia Nhập Đội Ngũ {{ $clinicSettings['clinic_name'] }}</span>
         </div>
         <h1 class="font-serif-luxury text-3xl sm:text-5xl font-bold tracking-tight">
             Cơ Hội Nghề Nghiệp & <span class="italic font-normal text-[#E6D5B8]">Phát Triển Y Khoa</span>
@@ -57,7 +57,7 @@
                         <h4 class="font-bold text-sm text-slate-900">Bác Sĩ Răng Hàm Mặt Chuyên Sâu Implant / Sứ</h4>
                         <p class="text-xs text-slate-500 font-light mt-0.5">Toàn thời gian • Kinh nghiệm từ 3 năm • Thu nhập: 35 - 70 triệu++</p>
                     </div>
-                    <a href="mailto:tuyendung@nhakhoasmile.vn" class="px-4 py-2 bg-[#063B30] hover:bg-[#042A22] text-[#FDFBF7] rounded-xl text-xs font-bold transition text-center">
+                    <a href="mailto:{{ $clinicSettings['clinic_email'] }}" class="px-4 py-2 bg-[#063B30] hover:bg-[#042A22] text-[#FDFBF7] rounded-xl text-xs font-bold transition text-center">
                         Nộp Hồ Sơ
                     </a>
                 </div>
@@ -67,7 +67,7 @@
                         <h4 class="font-bold text-sm text-slate-900">Điều Dưỡng Nha Khoa (Dental Assistant)</h4>
                         <p class="text-xs text-slate-500 font-light mt-0.5">Toàn thời gian • Tốt nghiệp Y sĩ / Điều dưỡng • Thu nhập: 10 - 15 triệu</p>
                     </div>
-                    <a href="mailto:tuyendung@nhakhoasmile.vn" class="px-4 py-2 bg-[#063B30] hover:bg-[#042A22] text-[#FDFBF7] rounded-xl text-xs font-bold transition text-center">
+                    <a href="mailto:{{ $clinicSettings['clinic_email'] }}" class="px-4 py-2 bg-[#063B30] hover:bg-[#042A22] text-[#FDFBF7] rounded-xl text-xs font-bold transition text-center">
                         Nộp Hồ Sơ
                     </a>
                 </div>
@@ -77,14 +77,14 @@
                         <h4 class="font-bold text-sm text-slate-900">Nhân Viên Lễ Tân & Chăm Sóc Khách Hàng</h4>
                         <p class="text-xs text-slate-500 font-light mt-0.5">Nhanh nhẹn, giao tiếp tốt, sử dụng máy tính thành thạo • Thu nhập: 9 - 14 triệu</p>
                     </div>
-                    <a href="mailto:tuyendung@nhakhoasmile.vn" class="px-4 py-2 bg-[#063B30] hover:bg-[#042A22] text-[#FDFBF7] rounded-xl text-xs font-bold transition text-center">
+                    <a href="mailto:{{ $clinicSettings['clinic_email'] }}" class="px-4 py-2 bg-[#063B30] hover:bg-[#042A22] text-[#FDFBF7] rounded-xl text-xs font-bold transition text-center">
                         Nộp Hồ Sơ
                     </a>
                 </div>
             </div>
 
             <div class="pt-2 text-center text-xs text-slate-400">
-                Gửi CV và hồ sơ trực tiếp về: <a href="mailto:tuyendung@nhakhoasmile.vn" class="font-bold text-[#063B30] hover:underline">tuyendung@nhakhoasmile.vn</a> hoặc Hotline Tuyển Dụng: <strong>0775 761 388</strong>
+                Gửi CV và hồ sơ trực tiếp về: <a href="mailto:{{ $clinicSettings['clinic_email'] }}" class="font-bold text-[#063B30] hover:underline">{{ $clinicSettings['clinic_email'] }}</a> hoặc Hotline Tuyển Dụng: <strong>{{ $clinicSettings['clinic_hotline'] }}</strong>
             </div>
         </div>
     </div>

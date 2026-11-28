@@ -47,11 +47,5 @@
         ['title' => 'Gắn Mão Sứ Cố Định & Bảo Hành', 'desc' => 'Hoàn thiện răng sứ chuẩn khớp cắn, cấp thẻ bảo hành điện tử chính hãng và hẹn lịch kiểm tra định kỳ 6 tháng.'],
     ],
     'priceTitle' => 'Bảng Giá Trồng Răng Implant Niêm Yết',
-    'priceRows' => [
-        ['name' => 'Implant Osstem (Hàn Quốc)', 'desc' => 'Trụ Titanium + Abutment + Mão sứ Titanium, tích hợp tốt', 'warranty' => '10 năm', 'price' => '13.500.000 đ / trụ'],
-        ['name' => 'Implant Dentium SuperLine (Mỹ)', 'desc' => 'Trụ Titanium + Abutment + Mão toàn sứ Zirconia', 'warranty' => '15 năm', 'price' => '18.000.000 đ / trụ', 'badge' => 'Phổ biến'],
-        ['name' => 'Implant Tekka Global D (Pháp)', 'desc' => 'Thiết kế ren xoắn ổn định sơ khởi cao + Mão toàn sứ', 'warranty' => '20 năm', 'price' => '22.000.000 đ / trụ'],
-        ['name' => 'Implant Straumann SLA (Thụy Sĩ)', 'desc' => 'Thương hiệu số 1 Thụy Sĩ + Abutment chính hãng + Sứ Cercon', 'warranty' => 'Trọn đời', 'price' => '25.000.000 đ / trụ', 'badge' => 'Khuyên dùng', 'featured' => true],
-        ['name' => 'Implant Straumann SLActive (Thụy Sĩ)', 'desc' => 'Bề mặt hoạt hóa sinh học tích hợp siêu tốc 3–4 tuần', 'warranty' => 'Trọn đời', 'price' => '32.180.000 đ / trụ', 'badge' => 'Cao cấp nhất', 'featured' => true],
-    ],
+    'priceRows' => $packageRows,
 ])

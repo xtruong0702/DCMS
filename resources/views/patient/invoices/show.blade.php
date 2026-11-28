@@ -26,8 +26,12 @@
         $bankLabels = ['MB' => 'MBBank (MB)', 'TCB' => 'Techcombank (TCB)', 'VCB' => 'Vietcombank (VCB)', 'ACB' => 'ACB'];
         $bankDisplayName = $bankLabels[$bankId] ?? $bankId;
 
+        $paidAmount = (float) $invoice->payments->where('status', 'completed')->sum('amount');
+        $remainingAmount = max(0, (float) $invoice->final_amount - $paidAmount);
+        $qrAmount = $remainingAmount > 0 ? round($remainingAmount) : round($invoice->final_amount);
+
         $transferContent = 'THANH TOAN ' . $invoice->invoice_code;
-        $vietQrUrl = "https://img.vietqr.io/image/{$bankId}-{$accountNo}-compact2.png?amount=" . round($invoice->final_amount) . "&addInfo=" . urlencode($transferContent) . "&accountName=" . urlencode($accountName);
+        $vietQrUrl = "https://img.vietqr.io/image/{$bankId}-{$accountNo}-compact2.png?amount=" . $qrAmount . "&addInfo=" . urlencode($transferContent) . "&accountName=" . urlencode($accountName);
     @endphp
 
     <div class="bg-white rounded-2xl shadow-xs border border-slate-200/90 overflow-hidden">
@@ -45,9 +49,9 @@
                         </svg>
                     </div>
                     <div>
-                        <h2 class="font-extrabold text-xl tracking-tight uppercase mb-0.5">{{ $settings['clinic_name'] ?? 'Nha Khoa Smile' }}</h2>
-                        <p class="text-teal-100 text-xs font-medium">{{ $settings['clinic_address'] ?? '123 Nguyễn Văn Cừ, Quận 5, TP.HCM' }}</p>
-                        <p class="text-teal-100 text-xs font-medium">Hotline: {{ $settings['clinic_hotline'] ?? '0775 761 388' }}</p>
+                        <h2 class="font-extrabold text-xl tracking-tight uppercase mb-0.5">{{ $clinicSettings['clinic_name'] }}</h2>
+                        <p class="text-teal-100 text-xs font-medium">{{ $clinicSettings['clinic_address'] }}</p>
+                        <p class="text-teal-100 text-xs font-medium">Hotline: {{ $clinicSettings['clinic_hotline'] }}</p>
                     </div>
                 </div>
                 <div class="md:text-right flex flex-col justify-end">
@@ -126,6 +130,12 @@
             <div class="flex flex-col md:flex-row justify-between items-start gap-8 pt-4 border-t border-gray-100">
                 <div class="w-full md:w-1/2 space-y-4">
                     @if($invoice->status !== 'paid' && $invoice->status !== 'cancelled')
+                        @if($paidAmount > 0)
+                            <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 text-xs text-amber-900 space-y-1">
+                                <p class="font-bold text-amber-800">⚠️ Hóa đơn đã thanh toán một phần</p>
+                                <p>Hệ thống đã nhận <strong>{{ number_format($paidAmount, 0, ',', '.') }} đ</strong>. Số tiền còn thiếu là <strong class="text-rose-600">{{ number_format($remainingAmount, 0, ',', '.') }} đ</strong>. Mã VietQR bên dưới đã tự động cập nhật theo đúng số tiền còn thiếu.</p>
+                            </div>
+                        @endif
                         <!-- Khối quét VietQR trực tuyến cho Bệnh nhân -->
                         <div class="bg-gradient-to-br from-[#0D7A68] via-[#0B6858] to-[#08483d] p-5 rounded-2xl text-white shadow-md flex flex-col sm:flex-row items-center gap-5">
                             <div class="bg-white p-2 rounded-xl shrink-0">
@@ -142,6 +152,7 @@
                                 <p class="text-teal-100 mt-1">Ngân hàng: <span class="font-bold text-white">{{ $bankDisplayName }}</span></p>
                                 <p class="text-teal-100">Số TK: <span class="font-mono font-bold text-amber-300 text-sm">{{ $accountNo }}</span></p>
                                 <p class="text-teal-100">Chủ TK: <span class="font-bold text-white uppercase">{{ $accountName }}</span></p>
+                                <p class="text-teal-100">{{ $paidAmount > 0 ? 'Số tiền còn thiếu:' : 'Số tiền:' }} <span class="font-bold text-amber-300">{{ number_format($remainingAmount, 0, ',', '.') }} đ</span></p>
                                 <p class="text-teal-100">Nội dung: <span class="font-mono font-bold text-emerald-300">{{ $transferContent }}</span></p>
                                 <p class="text-[11px] text-teal-200 italic pt-1">Mở app Ngân hàng quét QR. Hệ thống sẽ tự động chuyển trạng thái khi tiền vào TK.</p>
                             </div>
@@ -164,13 +175,13 @@
                             <div class="space-y-1">
                                 <h4 class="text-base font-black text-emerald-900">Thanh toán thành công, cảm ơn quý khách!</h4>
                                 <p class="text-xs text-emerald-800 leading-relaxed">
-                                    Hóa đơn <strong class="font-mono">#{{ $invoice->invoice_code }}</strong> ({{ number_format($invoice->final_amount, 0, ',', '.') }} đ) đã được ghi nhận hoàn tất lúc {{ $invoice->updated_at->format('H:i d/m/Y') }}. Cảm ơn quý khách đã tin tưởng {{ $settings['clinic_name'] ?? 'Nha Khoa Smile' }}.
+                                    Hóa đơn <strong class="font-mono">#{{ $invoice->invoice_code }}</strong> ({{ number_format($invoice->final_amount, 0, ',', '.') }} đ) đã được ghi nhận hoàn tất lúc {{ $invoice->updated_at->format('H:i d/m/Y') }}. Cảm ơn quý khách đã tin tưởng {{ $clinicSettings['clinic_name'] }}.
                                 </p>
                             </div>
                         </div>
                     @else
                         <div class="bg-rose-50 border border-rose-200 p-4 rounded-xl text-rose-800 text-xs font-medium">
-                            Hóa đơn này đã bị hủy bỏ. Mọi thắc mắc vui lòng liên hệ Hotline {{ $settings['clinic_hotline'] ?? '0775 761 388' }}.
+                            Hóa đơn này đã bị hủy bỏ. Mọi thắc mắc vui lòng liên hệ Hotline {{ $clinicSettings['clinic_hotline'] }}.
                         </div>
                     @endif
                 </div>
@@ -206,6 +217,16 @@
                         <span class="font-black text-base text-slate-800 uppercase">Thành tiền:</span>
                         <span class="font-black text-2xl text-[#0D7A68] tracking-tight">{{ number_format($invoice->final_amount, 0, ',', '.') }} đ</span>
                     </div>
+                    @if($paidAmount > 0 && $invoice->status !== 'paid')
+                        <div class="flex justify-between text-emerald-700 font-semibold text-sm pt-2">
+                            <span>Đã thanh toán:</span>
+                            <span>-{{ number_format($paidAmount, 0, ',', '.') }} đ</span>
+                        </div>
+                        <div class="flex justify-between items-center border-t border-dashed border-rose-200 pt-2">
+                            <span class="font-black text-sm text-rose-600 uppercase">Còn thiếu:</span>
+                            <span class="font-black text-xl text-rose-600">{{ number_format($remainingAmount, 0, ',', '.') }} đ</span>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -230,19 +251,27 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const invoiceCode = '{{ $invoice->invoice_code }}';
+        const initialPaidAmount = {{ round($paidAmount) }};
         let isChecking = false;
 
         async function checkInvoiceStatus(manual = false) {
             if (isChecking) return;
             isChecking = true;
             try {
-                const res = await fetch(`/api/invoices/${invoiceCode}/status`);
+                const res = await fetch(`/invoices/${encodeURIComponent(invoiceCode)}/status`);
                 const data = await res.json();
                 if (data.is_paid) {
                     showSuccessModal();
                     setTimeout(() => window.location.reload(), 1500);
+                } else if (typeof data.paid_amount === 'number' && data.paid_amount !== initialPaidAmount) {
+                    window.location.reload();
                 } else if (manual) {
-                    alert('Hệ thống đang chờ giao dịch chuyển khoản cho hóa đơn #' + invoiceCode + ' từ Ngân hàng. Vui lòng thử lại sau vài giây!');
+                    if (data.paid_amount > 0 && data.remaining_amount > 0) {
+                        const fmt = (v) => new Intl.NumberFormat('vi-VN').format(v) + ' đ';
+                        alert('Hệ thống đã nhận ' + fmt(data.paid_amount) + '. Hóa đơn #' + invoiceCode + ' còn thiếu ' + fmt(data.remaining_amount) + '. Vui lòng quét mã QR để thanh toán nốt phần còn lại!');
+                    } else {
+                        alert('Hệ thống đang chờ giao dịch chuyển khoản cho hóa đơn #' + invoiceCode + ' từ Ngân hàng. Vui lòng thử lại sau vài giây!');
+                    }
                 }
             } catch (err) {
                 console.error('Lỗi kiểm tra hóa đơn:', err);

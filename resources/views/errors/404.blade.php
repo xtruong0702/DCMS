@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>404 Không tìm thấy trang - Nha Khoa Smile</title>
+        <title>404 Không tìm thấy trang - {{ $clinicSettings['clinic_name'] ?? 'Nha Khoa Smile' }}</title>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,600;0,700;1,600&family=Inter:wght@400;500;600&subset=vietnamese&display=swap" rel="stylesheet">

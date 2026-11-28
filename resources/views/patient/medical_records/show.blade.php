@@ -39,8 +39,8 @@
                         </div>
                     </div>
                     <div class="space-y-1">
-                        <p class="text-sm text-gray-600 font-medium">123 Nguyễn Văn Cừ, Quận 5, TP.HCM</p>
-                        <p class="text-sm text-gray-600 font-medium">Hotline: 0775 761 388 - Email: contact@nhakhoasmile.com</p>
+                        <p class="text-sm text-gray-600 font-medium">{{ $clinicSettings['clinic_address'] }}</p>
+                        <p class="text-sm text-gray-600 font-medium">{{ $clinicSettings['clinic_name'] }} · Hotline: {{ $clinicSettings['clinic_hotline'] }} · Email: {{ $clinicSettings['clinic_email'] }}</p>
                     </div>
                 </div>
                 <div class="md:text-right">

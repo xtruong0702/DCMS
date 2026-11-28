@@ -47,11 +47,5 @@
         ['title' => 'Tháo Niềng & Đeo Hàm Duy Trì', 'desc' => 'Đánh bóng men răng, bàn giao hàm duy trì trong suốt và hẹn lịch kiểm tra định kỳ miễn phí.'],
     ],
     'priceTitle' => 'Bảng Giá Niềng Răng & Invisalign Niêm Yết',
-    'priceRows' => [
-        ['name' => 'Niềng răng mắc cài kim loại tiêu chuẩn', 'desc' => 'Hiệu quả cao, tiết kiệm chi phí, phù hợp học sinh – sinh viên', 'warranty' => 'Cam kết phác đồ', 'price' => '26.000.000 đ / gói'],
-        ['name' => 'Niềng răng mắc cài kim loại tự buộc', 'desc' => 'Giảm ma sát, rút ngắn thời gian niềng 3–6 tháng', 'warranty' => 'Cam kết phác đồ', 'price' => '32.000.000 đ / gói', 'badge' => 'Phổ biến'],
-        ['name' => 'Niềng răng mắc cài sứ tự buộc', 'desc' => 'Mắc cài màu trùng răng tự nhiên, tăng tính thẩm mỹ', 'warranty' => 'Cam kết phác đồ', 'price' => '42.000.000 đ / gói'],
-        ['name' => 'Niềng răng trong suốt Invisalign Lite', 'desc' => 'Chính hãng Hoa Kỳ, dành cho các ca lệch lạc nhẹ – trung bình', 'warranty' => 'Chính hãng Mỹ', 'price' => '68.000.000 đ / gói'],
-        ['name' => 'Niềng răng Invisalign Comprehensive', 'desc' => 'Toàn diện mọi mức độ sai lệch, mô phỏng 3D ClinCheck', 'warranty' => 'Chính hãng Mỹ', 'price' => '104.000.000 đ / gói', 'badge' => 'Cao cấp nhất', 'featured' => true],
-    ],
+    'priceRows' => $packageRows,
 ])

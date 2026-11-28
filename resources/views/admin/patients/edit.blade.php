@@ -53,6 +53,19 @@
                                     <input type="email" name="email" id="email" value="{{ old('email', $patient->email) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                                 </div>
                                 <div class="mb-4">
+                                    <label for="user_id" class="block text-sm font-medium text-gray-700">Tài khoản cổng bệnh nhân</label>
+                                    <select name="user_id" id="user_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                        <option value="">Chưa liên kết</option>
+                                        @foreach ($patientAccounts as $account)
+                                            <option value="{{ $account->id }}" {{ (string) old('user_id', $patient->user_id) === (string) $account->id ? 'selected' : '' }}>
+                                                {{ $account->name }} — {{ $account->phone ?: $account->email }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <p class="mt-1 text-xs text-gray-500">Chỉ liên kết sau khi đã xác minh danh tính bệnh nhân.</p>
+                                    @error('user_id') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                                </div>
+                                <div class="mb-4">
                                     <label for="address" class="block text-sm font-medium text-gray-700">Địa chỉ</label>
                                     <input type="text" name="address" id="address" value="{{ old('address', $patient->address) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                                 </div>

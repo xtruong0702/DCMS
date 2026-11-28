@@ -17,31 +17,13 @@ class PatientController extends Controller
             return null;
         }
 
-        $patient = $user->patient;
-        if (!$patient) {
-            // Chỉ tự động liên kết nếu SĐT hợp lệ và hồ sơ chưa gắn tài khoản nào
-            $cleanPhone = trim((string) $user->phone);
-            if ($cleanPhone !== '') {
-                $patient = \App\Models\Patient::where('phone', $cleanPhone)
-                    ->whereNull('user_id')
-                    ->first();
-            }
-
-            if ($patient) {
-                $patient->update(['user_id' => $user->id]);
-            } else {
-                $patient = \App\Models\Patient::create([
-                    'patient_code' => 'BN' . date('YmdHis') . random_int(100, 999),
-                    'name' => $user->name,
-                    'phone' => $cleanPhone !== '' ? $cleanPhone : null,
-                    'email' => $user->email,
-                    'address' => $user->address,
-                    'user_id' => $user->id,
-                ]);
-            }
-        }
-
-        return $patient;
+        return $user->patient ?: $user->patient()->create([
+            'patient_code' => 'BN' . date('YmdHis') . random_int(100, 999),
+            'name' => $user->name,
+            'phone' => $user->phone,
+            'email' => $user->email,
+            'address' => $user->address,
+        ]);
     }
 
     public function dashboard()
@@ -167,5 +149,27 @@ class PatientController extends Controller
             ->findOrFail($id);
         $settings = \App\Models\SystemSetting::pluck('setting_value', 'setting_key')->toArray();
         return view('patient.invoices.show', compact('invoice', 'settings'));
+    }
+
+    public function invoiceStatus(string $code)
+    {
+        $invoice = Invoice::where('invoice_code', strtoupper(trim($code)))->firstOrFail();
+        $user = Auth::user();
+
+        if (strtolower((string) $user->role?->name) === 'patient') {
+            $patient = $this->getPatient();
+            abort_unless($patient && $invoice->patient_id === $patient->id, 404);
+        }
+
+        $paidAmount = (float) $invoice->payments()->where('status', 'completed')->sum('amount');
+        $remainingAmount = max(0, (float) $invoice->final_amount - $paidAmount);
+
+        return response()->json([
+            'success' => true,
+            'status' => $invoice->status,
+            'is_paid' => $invoice->status === 'paid',
+            'paid_amount' => round($paidAmount),
+            'remaining_amount' => round($remainingAmount),
+        ]);
     }
 }

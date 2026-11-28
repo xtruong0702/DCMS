@@ -113,6 +113,7 @@
                                     @php $isChecked = ($defaultServiceId == $srv->id); @endphp
                                     <div class="service-card rounded-xl border p-3.5 transition cursor-pointer flex items-center justify-between gap-3 {{ $isChecked ? 'border-indigo-500 bg-indigo-50/60 ring-1 ring-indigo-500' : 'border-slate-200 hover:border-indigo-300 bg-white' }}"
                                          data-id="{{ $srv->id }}"
+                                         data-service-id="{{ $srv->id }}"
                                          data-name="Dịch vụ: {{ $srv->name }}"
                                          data-price="{{ round($srv->price) }}"
                                          onclick="toggleCardSelection(this, event)">
@@ -148,6 +149,7 @@
                                 @foreach($medicines as $med)
                                     <div class="medicine-card rounded-xl border border-slate-200 hover:border-emerald-300 bg-white p-3.5 transition cursor-pointer flex items-center justify-between gap-3"
                                          data-id="{{ $med->id }}"
+                                         data-medicine-id="{{ $med->id }}"
                                          data-name="Thuốc: {{ $med->name }} ({{ $med->unit ?? 'Đơn vị' }})"
                                          data-price="{{ round($med->price) }}"
                                          onclick="toggleCardSelection(this, event)">
@@ -352,13 +354,14 @@
                 if (card.querySelector('.item-checkbox').checked) {
                     const name = card.getAttribute('data-name');
                     const price = parseFloat(card.getAttribute('data-price')) || 0;
+                    const serviceId = card.getAttribute('data-service-id') || '';
+                    const medicineId = card.getAttribute('data-medicine-id') || '';
                     const qty = parseInt(card.querySelector('.card-qty').value, 10) || 1;
                     const lineTotal = price * qty;
                     serviceSubtotal += lineTotal;
 
                     hiddenContainer.insertAdjacentHTML('beforeend', `
-                        <input type="hidden" name="items[${itemIdx}][name]" value="${name}">
-                        <input type="hidden" name="items[${itemIdx}][price]" value="${price}">
+                        <input type="hidden" name="items[${itemIdx}][service_id]" value="${serviceId}">
                         <input type="hidden" name="items[${itemIdx}][quantity]" value="${qty}">
                     `);
                     summaryHtml += `
@@ -379,13 +382,14 @@
                 if (card.querySelector('.item-checkbox').checked) {
                     const name = card.getAttribute('data-name');
                     const price = parseFloat(card.getAttribute('data-price')) || 0;
+                    const serviceId = card.getAttribute('data-service-id') || '';
+                    const medicineId = card.getAttribute('data-medicine-id') || '';
                     const qty = parseInt(card.querySelector('.card-qty').value, 10) || 1;
                     const lineTotal = price * qty;
                     medicineSubtotal += lineTotal;
 
                     hiddenContainer.insertAdjacentHTML('beforeend', `
-                        <input type="hidden" name="items[${itemIdx}][name]" value="${name}">
-                        <input type="hidden" name="items[${itemIdx}][price]" value="${price}">
+                        <input type="hidden" name="items[${itemIdx}][medicine_id]" value="${medicineId}">
                         <input type="hidden" name="items[${itemIdx}][quantity]" value="${qty}">
                     `);
                     summaryHtml += `

@@ -69,6 +69,7 @@
                                 @foreach($services as $idx => $srv)
                                     @php $checked = ($idx === 0); @endphp
                                     <div class="adm-card srv-card rounded-xl border p-3.5 transition cursor-pointer flex items-center justify-between gap-2 {{ $checked ? 'border-indigo-500 bg-indigo-50/70 ring-1 ring-indigo-500' : 'border-slate-200 bg-white' }}"
+                                         data-service-id="{{ $srv->id }}"
                                          data-name="Dịch vụ: {{ $srv->name }}"
                                          data-price="{{ round($srv->price) }}"
                                          onclick="toggleAdmCard(this)">
@@ -95,6 +96,7 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="adminMedicinesGrid">
                                 @foreach($medicines as $med)
                                     <div class="adm-card med-card rounded-xl border border-slate-200 bg-white p-3.5 transition cursor-pointer flex items-center justify-between gap-2"
+                                         data-medicine-id="{{ $med->id }}"
                                          data-name="Thuốc: {{ $med->name }} ({{ $med->unit ?? 'Đơn vị' }})"
                                          data-price="{{ round($med->price) }}"
                                          onclick="toggleAdmCard(this)">
@@ -187,11 +189,12 @@
                 if (card.querySelector('.adm-cb').checked) {
                     const name = card.getAttribute('data-name');
                     const price = parseFloat(card.getAttribute('data-price')) || 0;
+                    const serviceId = card.getAttribute('data-service-id') || '';
+                    const medicineId = card.getAttribute('data-medicine-id') || '';
                     const qty = parseInt(card.querySelector('.adm-qty').value, 10) || 1;
                     srvTotal += price * qty;
                     container.insertAdjacentHTML('beforeend', `
-                        <input type="hidden" name="items[${idx}][name]" value="${name}">
-                        <input type="hidden" name="items[${idx}][price]" value="${price}">
+                        <input type="hidden" name="items[${idx}][service_id]" value="${serviceId}">
                         <input type="hidden" name="items[${idx}][quantity]" value="${qty}">
                     `);
                     idx++;
@@ -202,11 +205,12 @@
                 if (card.querySelector('.adm-cb').checked) {
                     const name = card.getAttribute('data-name');
                     const price = parseFloat(card.getAttribute('data-price')) || 0;
+                    const serviceId = card.getAttribute('data-service-id') || '';
+                    const medicineId = card.getAttribute('data-medicine-id') || '';
                     const qty = parseInt(card.querySelector('.adm-qty').value, 10) || 1;
                     medTotal += price * qty;
                     container.insertAdjacentHTML('beforeend', `
-                        <input type="hidden" name="items[${idx}][name]" value="${name}">
-                        <input type="hidden" name="items[${idx}][price]" value="${price}">
+                        <input type="hidden" name="items[${idx}][medicine_id]" value="${medicineId}">
                         <input type="hidden" name="items[${idx}][quantity]" value="${qty}">
                     `);
                     idx++;

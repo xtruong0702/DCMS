@@ -15,7 +15,17 @@ class MedicalRecordController extends Controller
     protected function ownsMedicalRecord(MedicalRecord $record): bool
     {
         $doctorId = auth()->user()->doctor->id ?? null;
-        return $doctorId !== null && (!$record->doctor_id || $record->doctor_id === $doctorId);
+        if (!$doctorId) {
+            return false;
+        }
+
+        if ((int) $record->doctor_id === (int) $doctorId) {
+            return true;
+        }
+
+        $record->loadMissing('appointment');
+        return !$record->doctor_id
+            && (int) ($record->appointment?->doctor_id ?? 0) === (int) $doctorId;
     }
 
     public function update(Request $request, $id)
@@ -148,6 +158,7 @@ class MedicalRecordController extends Controller
 
                 InvoiceDetail::create([
                     'invoice_id' => $invoice->id,
+                    'service_id' => $detail->service->id,
                     'item_name' => $itemLabel,
                     'unit_price' => $price,
                     'quantity' => $qty,

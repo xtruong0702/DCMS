@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'Đặt Lịch Khám Online - Nha Khoa Smile')
+@section('title', 'Đặt Lịch Khám Online - ' . $clinicSettings['clinic_name'])
 
 @section('content')
 <!-- Hero Đặt Lịch Khám -->
@@ -42,7 +42,7 @@
                         <span>📌</span> <span>Lưu ý tiếp nhận khám bệnh:</span>
                     </div>
                     <p>
-                        Hệ thống nhận đặt lịch trực tuyến <strong>từ ngày mai trở đi</strong> (khung giờ <strong class="tabular-nums">08:00 – 20:00</strong>). Nếu bạn cần <strong>khám ngay trong hôm nay</strong>, vui lòng đến trực tiếp phòng khám hoặc gọi Hotline <strong class="text-teal-800 tabular-nums">0775 761 388</strong> để được tiếp nhận ngay.
+                        Hệ thống nhận đặt lịch trực tuyến <strong>từ ngày mai trở đi</strong> (khung giờ <strong class="tabular-nums">08:00 – 20:00</strong>). Nếu bạn cần <strong>khám ngay trong hôm nay</strong>, vui lòng đến trực tiếp phòng khám hoặc gọi Hotline <strong class="text-teal-800 tabular-nums">{{ $clinicSettings['clinic_hotline'] }}</strong> để được tiếp nhận ngay.
                     </p>
                 </div>
 
@@ -325,9 +325,9 @@
                     <div class="p-4 rounded-xl bg-white/10 border border-white/20 flex items-center justify-between gap-3">
                         <div>
                             <div class="text-[10px] uppercase text-teal-200 font-semibold">Hotline Phòng Khám</div>
-                            <div class="font-heading-clinic text-xl font-extrabold text-white tabular-nums">0775 761 388</div>
+                            <div class="font-heading-clinic text-xl font-extrabold text-white tabular-nums">{{ $clinicSettings['clinic_hotline'] }}</div>
                         </div>
-                        <a href="tel:0775761388" class="btn-press px-4 py-2 rounded-xl bg-white text-teal-900 font-bold text-xs shadow-sm">
+                        <a href="tel:{{ $clinicHotlineTel }}" class="btn-press px-4 py-2 rounded-xl bg-white text-teal-900 font-bold text-xs shadow-sm">
                             Gọi Ngay
                         </a>
                     </div>

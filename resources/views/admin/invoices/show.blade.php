@@ -45,8 +45,8 @@
                 <!-- Header -->
                 <div class="flex flex-col sm:flex-row justify-between items-start border-b border-gray-200 pb-6 mb-6 gap-4">
                     <div>
-                        <h2 class="text-2xl font-black text-indigo-700 uppercase tracking-tight">Nha Khoa Smile</h2>
-                        <p class="text-xs text-slate-500 mt-1">Hệ thống Quản lý Phòng khám Nha khoa DCMS</p>
+                        <h2 class="text-2xl font-black text-indigo-700 uppercase tracking-tight">{{ $clinicSettings['clinic_name'] }}</h2>
+                        <p class="text-xs text-slate-500 mt-1">{{ $clinicSettings['clinic_address'] }} · {{ $clinicSettings['clinic_hotline'] }}</p>
                     </div>
                     <div class="sm:text-right">
                         <span class="text-xs uppercase font-bold text-slate-400">Hóa đơn thanh toán</span>

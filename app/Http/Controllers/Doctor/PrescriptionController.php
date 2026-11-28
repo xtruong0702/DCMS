@@ -20,9 +20,12 @@ class PrescriptionController extends Controller
         if (!$doctorId || !$prescription) {
             return false;
         }
-        $prescription->loadMissing('medicalRecord');
+        $prescription->loadMissing('medicalRecord.appointment');
         $record = $prescription->medicalRecord;
-        return $record && (!$record->doctor_id || $record->doctor_id === $doctorId);
+        return $record && (
+            (int) $record->doctor_id === (int) $doctorId
+            || (!$record->doctor_id && (int) ($record->appointment?->doctor_id ?? 0) === (int) $doctorId)
+        );
     }
 
     public function index()
@@ -74,6 +77,7 @@ class PrescriptionController extends Controller
             $qty = max(1, intval($presDetail->quantity));
             InvoiceDetail::create([
                 'invoice_id' => $invoice->id,
+                'medicine_id' => $presDetail->medicine_id,
                 'item_name' => 'Thuốc: ' . $presDetail->medicine_name . ' (' . $unitLabel . ')',
                 'unit_price' => $medPrice,
                 'quantity' => $qty,
@@ -127,7 +131,11 @@ class PrescriptionController extends Controller
 
             if ($request->medicine_id) {
                 $medicine = Medicine::where('id', $request->medicine_id)->lockForUpdate()->firstOrFail();
+            } else {
+                $medicine = Medicine::where('name', trim($medicineName))->lockForUpdate()->first();
+            }
 
+            if ($medicine) {
                 if ($medicine->stock_quantity < $request->quantity) {
                     DB::rollBack();
                     return back()->with('error', 'Thuốc [' . $medicine->name . '] không đủ tồn kho! Tồn hiện tại: ' . $medicine->stock_quantity);
@@ -164,7 +172,7 @@ class PrescriptionController extends Controller
 
             PrescriptionDetail::create([
                 'prescription_id' => $prescription->id,
-                'medicine_id' => $request->medicine_id,
+                'medicine_id' => $medicine?->id,
                 'medicine_name' => $medicineName,
                 'quantity' => $request->quantity,
                 'dosage' => $request->dosage,

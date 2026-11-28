@@ -12,14 +12,6 @@ class PublicController extends Controller
 {
     public function home()
     {
-        try {
-            if (\App\Models\Patient::count() === 0 && \Illuminate\Support\Facades\Schema::hasTable('patients')) {
-                \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
-            }
-        } catch (\Throwable $e) {
-            \Illuminate\Support\Facades\Log::warning('Auto seed on home: ' . $e->getMessage());
-        }
-
         $featuredServices = Service::where('is_active', true)->take(6)->get();
         $allServices = Service::where('is_active', true)->get();
         $doctors = $this->getAllDoctors()->take(4);
@@ -50,8 +42,40 @@ class PublicController extends Controller
         if (array_key_exists($slug, $viewMap)) {
             $services = Service::where('is_active', true)->get();
             $targetService = Service::where('name', $viewMap[$slug]['name'])->first();
+            $packagePrefix = match ($slug) {
+                'implant-chuyen-sau', 'implant' => 'PKG-IMPLANT-',
+                'rang-su-chuyen-sau', 'rang-su' => 'PKG-CROWN-',
+                'nieng-rang' => 'PKG-ORTHO-',
+                'nho-rang-khon' => 'PKG-WISDOM-',
+                'tay-trang-rang' => 'PKG-WHITENING-',
+                'dieu-tri-tuy' => 'PKG-ROOT-',
+                'lay-cao-rang' => 'PKG-SCALING-',
+                'tram-rang' => 'PKG-FILLING-',
+                default => null,
+            };
+            $packageRows = Service::where('is_active', true)
+                ->where('service_code', 'like', $packagePrefix . '%')
+                ->orderBy('price')
+                ->get()
+                ->map(function (Service $service) {
+                    $description = (string) $service->description;
+                    $warranty = 'Theo chính sách phòng khám';
+                    if (preg_match('/^Bảo hành:\s*([^.]+)\.\s*(.*)$/u', $description, $matches)) {
+                        $warranty = trim($matches[1]);
+                        $description = trim($matches[2]);
+                    }
+
+                    return [
+                        'name' => $service->name,
+                        'desc' => $description,
+                        'warranty' => $warranty,
+                        'price' => number_format((float) $service->price, 0, ',', '.') . ' đ',
+                        'service_id' => $service->id,
+                    ];
+                });
+            $targetService = $services->firstWhere('id', $packageRows->first()['service_id'] ?? null) ?? $targetService;
             $doctors = $this->getAllDoctors();
-            return view($viewMap[$slug]['view'], compact('services', 'targetService', 'doctors'));
+            return view($viewMap[$slug]['view'], compact('services', 'targetService', 'doctors', 'packageRows'));
         }
 
         abort(404);
@@ -62,24 +86,10 @@ class PublicController extends Controller
         return view('public.about');
     }
 
-    /**
-     * Đồng bộ tự động mọi tài khoản có vai trò Doctor vào bảng doctors để hiển thị đầy đủ
-     */
     protected function getAllDoctors()
     {
-        $doctorUsers = \App\Models\User::whereHas('role', function ($q) {
-            $q->whereRaw('LOWER(name) = ?', ['doctor']);
-        })->get();
-
-        foreach ($doctorUsers as $u) {
-            \App\Models\Doctor::firstOrCreate(
-                ['user_id' => $u->id],
-                ['specialty' => 'Chuyên khoa Răng Hàm Mặt']
-            );
-        }
-
         return \App\Models\Doctor::with('user')
-            ->whereHas('user')
+            ->whereHas('user.role', fn ($query) => $query->whereRaw('LOWER(name) = ?', ['doctor']))
             ->orderBy('id')
             ->get();
     }
@@ -109,7 +119,9 @@ class PublicController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'phone' => 'required|string|max:20',
+            'phone' => 'required|string|max:30',
+            'email' => 'nullable|email|max:255',
+            'topic' => 'nullable|string|max:255',
             'message' => 'required|string|max:1000',
         ], [
             'name.required' => 'Vui lòng nhập họ tên của bạn.',
@@ -182,46 +194,55 @@ class PublicController extends Controller
             ]);
         }
 
-        if ($request->filled('doctor_id')) {
-            $conflict = Appointment::findDoctorConflict(
-                (int) $request->doctor_id,
-                $parsedTime,
-                $request->filled('service_id') ? (int) $request->service_id : null
-            );
+        $bookingResult = Appointment::withDoctorScheduleLock(
+            $request->filled('doctor_id') ? (int) $request->doctor_id : null,
+            function () use ($request, $parsedTime) {
+            if ($request->filled('doctor_id')) {
+                $conflict = Appointment::findDoctorConflict(
+                    (int) $request->doctor_id,
+                    $parsedTime,
+                    $request->filled('service_id') ? (int) $request->service_id : null
+                );
 
-            if ($conflict) {
-                return back()->withInput()->withErrors([
-                    'doctor_id' => "Bác sĩ bạn chọn đã có lịch hẹn trong khung giờ {$conflict['start']} – {$conflict['end']} ({$conflict['duration']} phút). Vui lòng chọn khung giờ khác hoặc bác sĩ khác."
-                ]);
+                if ($conflict) {
+                    return ['conflict' => $conflict];
+                }
             }
-        }
 
-        // Kiểm tra xem bệnh nhân đã tồn tại qua số điện thoại chưa (không ghi đè tên hồ sơ gốc)
-        $cleanPhone = trim($request->phone);
-        $cleanName = trim($request->name);
-        $patient = Patient::where('phone', $cleanPhone)->first();
-        $bookingNote = $request->note;
+            $cleanPhone = trim($request->phone);
+            $cleanName = trim($request->name);
+            $patient = Patient::where('phone', $cleanPhone)->first();
+            $bookingNote = $request->note;
 
-        if (!$patient) {
-            $patient = Patient::create([
-                'patient_code' => 'BN' . date('YmdHis') . random_int(100, 999),
-                'name' => $cleanName,
-                'phone' => $cleanPhone,
+            if (!$patient) {
+                $patient = Patient::create([
+                    'patient_code' => 'BN' . date('YmdHis') . random_int(100, 999),
+                    'name' => $cleanName,
+                    'phone' => $cleanPhone,
+                ]);
+            } elseif (mb_strtolower($patient->name) !== mb_strtolower($cleanName)) {
+                $nameNote = '[Tên khi đặt lịch: ' . $cleanName . ']';
+                $bookingNote = $bookingNote ? ($nameNote . ' ' . $bookingNote) : $nameNote;
+            }
+
+            Appointment::create([
+                'patient_id' => $patient->id,
+                'doctor_id' => $request->doctor_id ?: null,
+                'service_id' => $request->service_id ?: null,
+                'appointment_time' => $request->appointment_time,
+                'note' => $bookingNote,
+                'status' => 'pending',
             ]);
-        } elseif (mb_strtolower($patient->name) !== mb_strtolower($cleanName)) {
-            $nameNote = '[Tên khi đặt lịch: ' . $cleanName . ']';
-            $bookingNote = $bookingNote ? ($nameNote . ' ' . $bookingNote) : $nameNote;
-        }
 
-        // Tạo lịch hẹn trạng thái 'pending'
-        Appointment::create([
-            'patient_id' => $patient->id,
-            'doctor_id' => $request->doctor_id ?: null,
-            'service_id' => $request->service_id ?: null,
-            'appointment_time' => $request->appointment_time,
-            'note' => $bookingNote,
-            'status' => 'pending' // Chờ duyệt
-        ]);
+            return ['conflict' => null];
+        });
+
+        if ($bookingResult['conflict']) {
+            $conflict = $bookingResult['conflict'];
+            return back()->withInput()->withErrors([
+                'doctor_id' => "Bác sĩ bạn chọn đã có lịch hẹn trong khung giờ {$conflict['start']} – {$conflict['end']} ({$conflict['duration']} phút). Vui lòng chọn khung giờ khác hoặc bác sĩ khác."
+            ]);
+        }
 
         return redirect()->route('public.booking')->with('success', 'Đặt lịch thành công! Phòng khám sẽ liên hệ lại để xác nhận với bạn sớm nhất.');
     }
@@ -235,22 +256,10 @@ class PublicController extends Controller
         $invoices = collect();
         $settings = \App\Models\SystemSetting::pluck('setting_value', 'setting_key')->toArray();
 
-        if ($phone !== '' || $patientCode !== '') {
-            $query = Patient::query();
-
-            if ($phone !== '' && $patientCode !== '') {
-                $query->where('phone', $phone)
-                    ->where('patient_code', $patientCode);
-            } elseif ($phone !== '') {
-                $query->where(function ($q) use ($phone) {
-                    $q->where('phone', $phone)
-                      ->orWhere('patient_code', strtoupper($phone));
-                });
-            } else {
-                $query->where('patient_code', $patientCode);
-            }
-
-            $patient = $query->first();
+        if ($phone !== '' && $patientCode !== '') {
+            $patient = Patient::where('phone', $phone)
+                ->where('patient_code', $patientCode)
+                ->first();
 
             if ($patient) {
                 $appointments = Appointment::with(['doctor.user', 'service', 'invoice'])

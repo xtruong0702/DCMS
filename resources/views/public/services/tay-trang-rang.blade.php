@@ -47,9 +47,5 @@
         ['title' => 'So Màu Sau Tẩy & Hướng Dẫn Chăm Sóc', 'desc' => 'Đối chiếu kết quả bật tone trực tiếp và hướng dẫn chế độ ăn uống giữ màu trắng bền lâu.'],
     ],
     'priceTitle' => 'Bảng Giá Tẩy Trắng Răng Niêm Yết',
-    'priceRows' => [
-        ['name' => 'Tẩy trắng răng tại nhà (Kèm máng cá nhân)', 'desc' => 'Lấy dấu ép máng vừa khít + 2 ống thuốc tẩy chính hãng', 'warranty' => 'Hướng dẫn 1:1', 'price' => '1.200.000 đ / bộ'],
-        ['name' => 'Tẩy trắng răng Laser Whitening tại phòng khám', 'desc' => 'Chiếu đèn ánh sáng lạnh 45 phút, bật 3–5 tone tức thì', 'warranty' => 'Hiệu quả ngay', 'price' => '2.000.000 đ / ca', 'badge' => 'Phổ biến', 'featured' => true],
-        ['name' => 'Gói Tẩy trắng Laser + Máng duy trì tại nhà', 'desc' => 'Kết hợp tẩy tại phòng khám và duy trì màu trắng lâu dài', 'warranty' => 'Trọn gói tiết kiệm', 'price' => '2.800.000 đ / gói', 'badge' => 'Tiết kiệm', 'featured' => true],
-    ],
+    'priceRows' => $packageRows,
 ])

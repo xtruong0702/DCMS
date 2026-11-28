@@ -14,7 +14,7 @@
         ['title' => 'Chấm dứt chảy máu chân răng & hôi miệng', 'desc' => 'Loại bỏ ổ vi khuẩn bám chặt ở viền nướu — nguyên nhân hàng đầu gây viêm lợi và hơi thở có mùi.'],
         ['title' => 'Ngăn ngừa viêm nha chu, tụt nướu, lung lay răng', 'desc' => 'Cao răng tích tụ lâu năm gây tiêu xương ổ răng; làm sạch định kỳ giúp bảo vệ răng thật suốt đời.'],
         ['title' => 'Răng sáng sạch, mịn bóng tự nhiên', 'desc' => 'Bước đánh bóng bằng bột khoáng giúp loại bỏ vết ố trà, cà phê và hạn chế mảng bám quay lại.'],
-        ['title' => 'Chi phí rất tiết kiệm', 'desc' => 'Chỉ từ 200.000 đ mỗi 6 tháng giúp phòng tránh các bệnh lý tốn kém như chữa tủy hay mất răng.'],
+        ['title' => 'Chi phí rất tiết kiệm', 'desc' => 'Chi phí theo bảng giá niêm yết hiện hành, giúp phòng tránh các bệnh lý tốn kém như chữa tủy hay mất răng.'],
     ],
     'cons' => [
         ['title' => 'Có thể hơi tê nhẹ nếu cao răng quá dày', 'desc' => 'Trường hợp lâu năm chưa lấy cao răng, nướu đang viêm có thể rỉ chút máu nhẹ và lành hẳn sau 1–2 ngày.'],
@@ -47,9 +47,5 @@
         ['title' => 'Hướng Dẫn Chải Răng & Hẹn Tái Khám', 'desc' => 'Tư vấn cách dùng chỉ nha khoa/tăm nước và ghi nhận lịch nhắc tái khám sau 6 tháng trên DCMS.'],
     ],
     'priceTitle' => 'Bảng Giá Cạo Vôi Răng & Nha Chu Niêm Yết',
-    'priceRows' => [
-        ['name' => 'Cạo vôi răng & Đánh bóng siêu âm (Độ 1 – 2)', 'desc' => 'Làm sạch toàn hàm 2 hàm + đánh bóng khoáng chất', 'warranty' => 'Khám tổng quát', 'price' => '200.000 đ / lần', 'badge' => 'Phổ biến', 'featured' => true],
-        ['name' => 'Cạo vôi răng & Chăm sóc nha chu (Độ 3)', 'desc' => 'Cao răng dày dưới nướu, kèm bơm rửa sát khuẩn túi lợi', 'warranty' => 'Khám tổng quát', 'price' => '350.000 đ / lần', 'featured' => true],
-        ['name' => 'Thổi cát Air-Flow loại bỏ vết ố cà phê, thuốc lá', 'desc' => 'Làm sạch sâu kẽ răng bằng tia nước & bột khoáng siêu mịn', 'warranty' => 'Sạch sáng ngay', 'price' => '500.000 đ / lần'],
-    ],
+    'priceRows' => $packageRows,
 ])

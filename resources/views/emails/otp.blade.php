@@ -106,13 +106,13 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>NHA KHOA SMILE</h1>
+            <h1>{{ mb_strtoupper($clinicSettings['clinic_name'] ?? 'Nha Khoa Smile') }}</h1>
             <p>Hệ thống Quản lý Khám chữa bệnh DCMS</p>
         </div>
         <div class="body">
             <div class="greeting">Xin chào {{ $name }},</div>
             <div class="text">
-                Chúng tôi nhận được yêu cầu đặt lại mật khẩu cho tài khoản của bạn tại hệ thống Nha Khoa Smile. Vui lòng sử dụng mã xác thực OTP bên dưới để hoàn tất việc đổi mật khẩu:
+                Chúng tôi nhận được yêu cầu đặt lại mật khẩu cho tài khoản của bạn tại hệ thống {{ $clinicSettings['clinic_name'] ?? 'Nha Khoa Smile' }}. Vui lòng sử dụng mã xác thực OTP bên dưới để hoàn tất việc đổi mật khẩu:
             </div>
 
             <div class="otp-box">
@@ -126,8 +126,8 @@
             </div>
         </div>
         <div class="footer">
-            <p style="margin: 0 0 4px 0;"><strong>Nha Khoa Smile</strong> - Chăm sóc nụ cười gia đình bạn</p>
-            <p style="margin: 0;">Hotline: 1900 8888 | Email hỗ trợ: support@nhakhoasmile.vn</p>
+            <p style="margin: 0 0 4px 0;"><strong>{{ $clinicSettings['clinic_name'] ?? 'Nha Khoa Smile' }}</strong> - Chăm sóc nụ cười gia đình bạn</p>
+            <p style="margin: 0;">Hotline: {{ $clinicSettings['clinic_hotline'] ?? '0775 761 388' }} | Email hỗ trợ: {{ $clinicSettings['clinic_email'] ?? 'contact@nhakhoasmile.vn' }}</p>
         </div>
     </div>
 </body>

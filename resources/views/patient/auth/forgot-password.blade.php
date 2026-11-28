@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'Quên mật khẩu - Nha Khoa Smile')
+@section('title', 'Quên mật khẩu - ' . $clinicSettings['clinic_name'])
 
 @section('content')
 <div class="min-h-screen flex bg-slate-50">

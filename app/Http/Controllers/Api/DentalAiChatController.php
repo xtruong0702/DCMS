@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Appointment;
 use App\Models\Doctor;
 use App\Models\Service;
+use App\Models\SystemSetting;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -29,14 +30,25 @@ class DentalAiChatController extends Controller
 
         $services = Service::where('is_active', true)->orderBy('price')->get();
         $doctors = Doctor::with('user')->whereHas('user')->orderBy('id')->get();
+        $clinicSettings = array_merge([
+            'clinic_name' => 'Nha Khoa Smile',
+            'clinic_address' => '204 Trần Duy Hưng, Yên Hòa, Cầu Giấy, Hà Nội',
+            'clinic_hotline' => '0775 761 388',
+        ], SystemSetting::pluck('setting_value', 'setting_key')->toArray());
+        foreach (['clinic_name' => 'Nha Khoa Smile', 'clinic_address' => '204 Trần Duy Hưng, Yên Hòa, Cầu Giấy, Hà Nội', 'clinic_hotline' => '0775 761 388'] as $key => $default) {
+            if (!isset($clinicSettings[$key]) || trim((string) $clinicSettings[$key]) === '') {
+                $clinicSettings[$key] = $default;
+            }
+        }
 
         // Phân tích ngữ cảnh đa lượt + dữ liệu thật từ DB
-        $matched = $this->analyzeIntent($userMessage, $history, $services, $doctors);
+        $matched = $this->applyClinicSettings($this->analyzeIntent($userMessage, $history, $services, $doctors), $clinicSettings);
 
         // Ưu tiên Gemini AI nếu đã cấu hình GEMINI_API_KEY
-        $geminiReply = $this->tryGeminiReply($userMessage, $history, $services, $doctors);
+        $geminiReply = $this->tryGeminiReply($userMessage, $history, $services, $doctors, $clinicSettings);
 
         if ($geminiReply !== null) {
+            $geminiReply = $this->replaceClinicText($geminiReply, $clinicSettings);
             return response()->json([
                 'success' => true,
                 'engine' => 'gemini',
@@ -53,7 +65,37 @@ class DentalAiChatController extends Controller
         ]);
     }
 
-    protected function tryGeminiReply(string $userMessage, array $history, $services, $doctors): ?string
+    private function applyClinicSettings(array $response, array $settings): array
+    {
+        $response['reply'] = $this->replaceClinicText((string) ($response['reply'] ?? ''), $settings);
+        $phoneDigits = preg_replace('/\D+/', '', (string) ($settings['clinic_hotline'] ?? ''));
+
+        foreach ($response['actions'] ?? [] as &$action) {
+            if (!empty($action['label'])) {
+                $action['label'] = str_replace('0775 761 388', $settings['clinic_hotline'], $action['label']);
+            }
+            if (!empty($action['url'])) {
+                $action['url'] = str_replace('tel:0775761388', 'tel:' . $phoneDigits, $action['url']);
+                if (str_contains($action['url'], 'google.com/maps')) {
+                    $action['url'] = 'https://www.google.com/maps/search/?api=1&query=' . urlencode($settings['clinic_address']);
+                }
+            }
+        }
+        unset($action);
+
+        return $response;
+    }
+
+    private function replaceClinicText(string $text, array $settings): string
+    {
+        return str_replace(
+            ['Nha Khoa Smile', '204 Trần Duy Hưng, Yên Hòa, Cầu Giấy, Hà Nội', '204 Trần Duy Hưng', '0775 761 388'],
+            [$settings['clinic_name'], $settings['clinic_address'], $settings['clinic_address'], $settings['clinic_hotline']],
+            $text
+        );
+    }
+
+    protected function tryGeminiReply(string $userMessage, array $history, $services, $doctors, array $clinicSettings): ?string
     {
         $apiKey = config('services.gemini.api_key') ?? env('GEMINI_API_KEY');
         if (empty($apiKey)) {
@@ -73,12 +115,12 @@ class DentalAiChatController extends Controller
         })->implode("\n");
 
         $systemPrompt = <<<PROMPT
-Bạn là Chuyên viên Tư vấn Nha khoa AI cao cấp của phòng khám Nha Khoa Smile (Hệ thống DCMS).
+Bạn là Chuyên viên Tư vấn Nha khoa AI cao cấp của phòng khám {$clinicSettings['clinic_name']} (Hệ thống DCMS).
 Thông tin phòng khám:
-- Địa chỉ: 204 Trần Duy Hưng, Yên Hòa, Cầu Giấy, Hà Nội.
-- Hotline đặt hẹn & cấp cứu: 0775 761 388.
+- Địa chỉ: {$clinicSettings['clinic_address']}.
+- Hotline đặt hẹn & cấp cứu: {$clinicSettings['clinic_hotline']}.
 - Giờ làm việc: 08:00 – 20:00 tất cả các ngày (Thứ 2 – Chủ Nhật).
-- Đặt lịch online: Từ ngày mai trở đi (08:00–20:00). Cần khám ngay trong ngày: mời đến trực tiếp phòng khám hoặc gọi Hotline 0775 761 388.
+- Đặt lịch online: Từ ngày mai trở đi (08:00–20:00). Cần khám ngay trong ngày: mời đến trực tiếp phòng khám hoặc gọi Hotline {$clinicSettings['clinic_hotline']}.
 - Thanh toán: Tiền mặt, thẻ POS, chuyển khoản VietQR MBBank tự động xác nhận qua SePay và xuất hóa đơn điện tử VAT.
 
 Bảng giá dịch vụ niêm yết hiện tại:
@@ -88,7 +130,7 @@ Bảng giá dịch vụ niêm yết hiện tại:
 {$doctorLines}
 
 Phong cách trả lời:
-1. Xưng hô lịch sự, chuyên nghiệp chuẩn y khoa ("Nha Khoa Smile" / "Anh/Chị" hoặc "Quý khách").
+1. Xưng hô lịch sự, chuyên nghiệp chuẩn y khoa ("{$clinicSettings['clinic_name']}" / "Anh/Chị" hoặc "Quý khách").
 2. Ngắn gọn, súc tích, chia ý rõ ràng bằng gạch đầu dòng, in đậm (**...**) các thông tin quan trọng.
 3. Chỉ dùng đúng giá và tên bác sĩ trong danh sách trên. Không tự kê đơn kháng sinh; luôn nhắc thăm khám trực tiếp & chụp phim khi có triệu chứng bệnh lý.
 PROMPT;
@@ -226,14 +268,16 @@ PROMPT;
         // 1. So sánh / hỏi đồng thời cả Niềng răng & Bọc răng sứ
         if (Str::contains($normalized, ['nieng rang', 'chinh nha', 'invisalign']) && Str::contains($normalized, ['rang su', 'veneer', 'boc su'])) {
             $srvOrtho = $findService(['nieng rang']);
-            $srvCrown = $findService(['rang su', 'cercon']);
-            $pOrtho = $srvOrtho ? number_format((float) $srvOrtho->price, 0, ',', '.') . ' đ' : '32.000.000 đ';
-            $pCrown = $srvCrown ? number_format((float) $srvCrown->price, 0, ',', '.') . ' đ' : '4.000.000 đ';
+            $srvCrown = $findService(['cercon']);
+            $srvVeneer = $findService(['veneer']);
+            $pOrtho = $srvOrtho ? number_format((float) $srvOrtho->price, 0, ',', '.') . ' đ' : 'xem bảng giá hiện hành';
+            $pCrown = $srvCrown ? number_format((float) $srvCrown->price, 0, ',', '.') . ' đ' : 'xem bảng giá hiện hành';
+            $pVeneer = $srvVeneer ? number_format((float) $srvVeneer->price, 0, ',', '.') . ' đ' : 'xem bảng giá hiện hành';
 
             return [
                 'reply' => "Để Anh/Chị dễ lựa chọn giữa **Niềng răng** và **Bọc răng sứ**, Nha Khoa Smile tóm tắt nhanh theo chỉ định y khoa:\n\n"
-                    . "• **Niềng răng chỉnh nha ({$pOrtho}):** Phù hợp khi răng chen chúc, hô/móm, sai khớp cắn — **bảo tồn 100% răng thật**, hiệu quả vĩnh viễn (thời gian 12–24 tháng).\n"
-                    . "• **Bọc răng sứ Cercon HT / Veneer ({$pCrown}/răng):** Phù hợp khi răng xỉn màu nặng, sứt mẻ, hình thể nhỏ/thưa nhẹ — hoàn thiện thẩm mỹ nhanh chỉ sau **2 buổi (3–5 ngày)**.\n\n"
+                    . "• **" . ($srvOrtho?->name ?? 'Niềng răng chỉnh nha') . " ({$pOrtho}):** Phù hợp khi răng chen chúc, hô/móm, sai khớp cắn — **bảo tồn 100% răng thật**, hiệu quả vĩnh viễn (thời gian 12–24 tháng).\n"
+                    . "• **Bọc răng sứ Cercon HT ({$pCrown}/răng) hoặc dán Veneer Emax ({$pVeneer}/răng):** Phù hợp khi răng xỉn màu nặng, sứt mẻ, hình thể nhỏ/thưa nhẹ — hoàn thiện thẩm mỹ nhanh chỉ sau **2 buổi (3–5 ngày)**.\n\n"
                     . "Anh/Chị nên chụp phim & thăm khám trực tiếp để Bác sĩ đo khớp cắn và tư vấn phương án bảo tồn răng tốt nhất.",
                 'actions' => [
                     ['label' => '📅 Đặt lịch tư vấn 1:1', 'url' => route('public.booking'), 'primary' => true],
@@ -413,9 +457,9 @@ PROMPT;
 
         // 9. Các chủ đề chuyên môn cụ thể
         if ($currentTopic === 'wisdom') {
-            $srv = $findService(['rang khon', 'nho rang']);
+            $srv = $findService(['piezotome']);
             $doc = $findDoctor(['rang khon', 'tieu phau', 'trong']);
-            $priceText = $srv ? number_format((float) $srv->price, 0, ',', '.') . ' đ' : '1.500.000 đ';
+            $priceText = $srv ? number_format((float) $srv->price, 0, ',', '.') . ' đ' : 'vui lòng liên hệ phòng khám';
             $docName = $doc?->user?->name ?? 'BS. CKI Vũ Đức Trọng';
 
             return [
@@ -434,7 +478,7 @@ PROMPT;
         if ($currentTopic === 'implant') {
             $srv = $findService(['implant']);
             $doc = $findDoctor(['implant', 'nam']);
-            $priceText = $srv ? number_format((float) $srv->price, 0, ',', '.') . ' đ' : '25.000.000 đ';
+            $priceText = $srv ? number_format((float) $srv->price, 0, ',', '.') . ' đ' : 'vui lòng liên hệ phòng khám';
             $docName = $doc?->user?->name ?? 'BS. CKII Lê Hoàng Nam';
 
             return [
@@ -453,7 +497,7 @@ PROMPT;
         if ($currentTopic === 'ortho') {
             $srv = $findService(['nieng rang']);
             $doc = $findDoctor(['invisalign', 'chinh nha', 'uyen', 'ha']);
-            $priceText = $srv ? number_format((float) $srv->price, 0, ',', '.') . ' đ' : '32.000.000 đ';
+            $priceText = $srv ? number_format((float) $srv->price, 0, ',', '.') . ' đ' : 'vui lòng liên hệ phòng khám';
             $docName = $doc?->user?->name ?? 'ThS. BS. Mai Phương Uyên';
 
             return [
@@ -470,9 +514,9 @@ PROMPT;
         }
 
         if ($currentTopic === 'veneer') {
-            $srv = $findService(['rang su', 'cercon']);
+            $srv = $findService(['cercon']);
             $doc = $findDoctor(['phuc hinh', 'rang su', 'tran van']);
-            $priceText = $srv ? number_format((float) $srv->price, 0, ',', '.') . ' đ' : '4.000.000 đ';
+            $priceText = $srv ? number_format((float) $srv->price, 0, ',', '.') . ' đ' : 'vui lòng liên hệ phòng khám';
             $docName = $doc?->user?->name ?? 'BS. Trần Văn A';
 
             return [
@@ -489,9 +533,9 @@ PROMPT;
         }
 
         if ($currentTopic === 'whitening') {
-            $srv = $findService(['tay trang']);
+            $srv = $findService(['laser whitening']);
             $doc = $findDoctor(['phuc hinh', 'rang su']);
-            $priceText = $srv ? number_format((float) $srv->price, 0, ',', '.') . ' đ' : '2.500.000 đ';
+            $priceText = $srv ? number_format((float) $srv->price, 0, ',', '.') . ' đ' : 'vui lòng liên hệ phòng khám';
 
             return [
                 'reply' => "**Tư vấn Tẩy trắng răng Laser Whitening:**\n\n"
@@ -510,7 +554,7 @@ PROMPT;
                 'scaling' => $findService(['voi rang', 'cao rang']),
                 default => $findService(['tram rang']),
             };
-            $priceText = $srv ? number_format((float) $srv->price, 0, ',', '.') . ' đ' : '300.000 đ';
+            $priceText = $srv ? number_format((float) $srv->price, 0, ',', '.') . ' đ' : 'vui lòng liên hệ phòng khám';
             $doc = $findDoctor(['trong', 'ha', 'tran van']);
 
             return [

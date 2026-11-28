@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'Tra Cứu Lịch Hẹn, Bệnh Án & Hóa Đơn Điện Tử - Nha Khoa Smile')
+@section('title', 'Tra Cứu Lịch Hẹn, Bệnh Án & Hóa Đơn Điện Tử - ' . $clinicSettings['clinic_name'])
 
 @section('content')
 <div class="bg-[#effcf9]">
@@ -45,7 +45,7 @@
 
                         <div class="p-3.5 rounded-2xl bg-slate-50 dark-inner-tile text-xs text-slate-600 leading-relaxed flex items-start gap-2.5">
                             <span class="text-[#d4af37] mt-0.5 shrink-0">ℹ️</span>
-                            <span>Hệ thống kiểm tra trực tiếp theo số điện thoại đã đăng ký trên bệnh án điện tử DCMS mà không cần nhập mật khẩu.</span>
+                            <span>Để bảo vệ thông tin, hệ thống yêu cầu số điện thoại và mã hồ sơ bệnh nhân đã đăng ký.</span>
                         </div>
 
                         <form action="{{ route('public.lookup') }}" method="GET" class="space-y-4">
@@ -60,10 +60,10 @@
 
                             <div>
                                 <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-1.5">
-                                    Mã hồ sơ bệnh nhân (Tùy chọn)
+                                    Mã hồ sơ bệnh nhân <span class="text-rose-500">*</span>
                                 </label>
-                                <input type="text" name="patient_code" value="{{ request('patient_code') }}"
-                                    placeholder="Ví dụ: BN2026... (có thể bỏ trống)"
+                                <input type="text" name="patient_code" value="{{ $patientCode }}" required
+                                    placeholder="Ví dụ: BN2026..."
                                     class="input-clinic w-full rounded-xl px-4 py-2.5 text-xs font-mono">
                             </div>
 
@@ -94,7 +94,7 @@
                             <div class="flex items-center gap-2">
                                 <span class="w-7 h-7 rounded-lg bg-[#d4af37]/20 border border-[#d4af37]/50 text-[#f3e5ab] flex items-center justify-center text-xs font-bold">+</span>
                                 <div>
-                                    <div class="text-[11px] font-bold tracking-wider uppercase text-white leading-none">NHA KHOA SMILE</div>
+                                    <div class="text-[11px] font-bold tracking-wider uppercase text-white leading-none">{{ $clinicSettings['clinic_name'] }}</div>
                                     <div class="text-[9px] text-[#f3e5ab] uppercase tracking-widest mt-0.5">DCMS Medical Pass</div>
                                 </div>
                             </div>
@@ -119,7 +119,7 @@
                             </div>
                             <div class="text-right">
                                 <div class="text-[9px] text-[#b0c4be] uppercase">SĐT Đăng Ký</div>
-                                <div class="text-xs font-bold text-[#f3e5ab] tabular-nums">{{ $patient ? $patient->phone : '0775 761 388' }}</div>
+                                <div class="text-xs font-bold text-[#f3e5ab] tabular-nums">{{ $patient ? $patient->phone : $clinicSettings['clinic_hotline'] }}</div>
                             </div>
                         </div>
                     </div>
@@ -146,13 +146,13 @@
                                     08:00 – 20:00 (Thứ 2 – Chủ Nhật)
                                 </div>
                                 <div class="text-[11px] text-slate-600">
-                                    204 Trần Duy Hưng, Yên Hòa, Cầu Giấy, Hà Nội
+                                    {{ $clinicSettings['clinic_address'] }}
                                 </div>
                             @endif
                         </div>
 
                         <div class="grid grid-cols-2 gap-2.5">
-                            <a href="https://www.google.com/maps/dir/?api=1&destination=204+Tr%E1%BA%A7n+Duy+H%C6%B0ng,+Y%C3%AAn+H%C3%B2a,+C%E1%BA%A7u+Gi%E1%BA%A5y,+H%C3%A0+N%E1%BB%99i" target="_blank" rel="noopener noreferrer"
+                            <a href="https://www.google.com/maps/search/?api=1&amp;query={{ urlencode($clinicSettings['clinic_address']) }}" target="_blank" rel="noopener noreferrer"
                                class="btn-press py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold text-center transition">
                                 🗺️ Chỉ Đường Maps
                             </a>
@@ -172,7 +172,7 @@
                         <div class="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center text-2xl mx-auto">⚠️</div>
                         <h3 class="font-heading-clinic !text-xl font-bold text-slate-900">Không tìm thấy hồ sơ với thông tin "{{ $phone !== '' && !empty($patientCode) ? ($phone . ' / ' . $patientCode) : ($phone ?: $patientCode) }}"</h3>
                         <p class="text-xs sm:text-sm text-slate-600">
-                            Vui lòng kiểm tra lại số điện thoại hoặc liên hệ Hotline <strong class="text-teal-800 tabular-nums">0775 761 388</strong> để được Lễ tân hỗ trợ tra cứu trực tiếp.
+                            Vui lòng kiểm tra lại số điện thoại hoặc liên hệ Hotline <strong class="text-teal-800 tabular-nums">{{ $clinicSettings['clinic_hotline'] }}</strong> để được Lễ tân hỗ trợ tra cứu trực tiếp.
                         </p>
                         <div class="pt-1">
                             <a href="{{ route('public.booking') }}" class="btn-press gold-btn-shimmer inline-flex items-center gap-1.5 px-6 py-2.5 rounded-xl text-xs uppercase tracking-wider">
@@ -196,7 +196,7 @@
                                         </div>
                                         <p class="text-xs text-slate-500 mt-0.5 tabular-nums">
                                             SĐT: <strong class="text-slate-800">{{ $patient->phone }}</strong> •
-                                            Cơ sở: 204 Trần Duy Hưng, Cầu Giấy, Hà Nội
+                                            Cơ sở: {{ $clinicSettings['clinic_address'] }}
                                         </p>
                                     </div>
                                 </div>
@@ -378,7 +378,7 @@
                         <span class="text-[#d4af37] text-base ml-2" x-text="openFaq === 1 ? '−' : '+'"></span>
                     </button>
                     <p x-show="openFaq === 1" x-cloak class="text-xs text-slate-600 leading-relaxed mt-2.5 pt-2.5 border-t border-slate-100/70">
-                        Nếu bạn thay đổi số điện thoại so với lúc đăng ký hồ sơ ban đầu, vui lòng liên hệ Hotline <strong class="tabular-nums text-[#0f3e36]">0775 761 388</strong> hoặc đến quầy Lễ tân tại 204 Trần Duy Hưng để được xác minh và cập nhật số mới vào hệ thống DCMS.
+                        Nếu bạn thay đổi số điện thoại so với lúc đăng ký hồ sơ ban đầu, vui lòng liên hệ Hotline <strong class="tabular-nums text-[#0f3e36]">{{ $clinicSettings['clinic_hotline'] }}</strong> hoặc đến quầy Lễ tân tại {{ $clinicSettings['clinic_address'] }} để được xác minh và cập nhật số mới vào hệ thống DCMS.
                     </p>
                 </div>
 
@@ -394,7 +394,7 @@
 
                 <div class="clinic-card rounded-2xl p-5">
                     <button type="button" @click="openFaq = openFaq === 3 ? null : 3" class="w-full flex items-center justify-between text-left text-xs sm:text-sm font-bold text-[#0f3e36]">
-                        <span>Hóa đơn điện tử tại Nha Khoa Smile có hỗ trợ thanh toán VietQR không?</span>
+                        <span>Hóa đơn điện tử tại {{ $clinicSettings['clinic_name'] }} có hỗ trợ thanh toán VietQR không?</span>
                         <span class="text-[#d4af37] text-base ml-2" x-text="openFaq === 3 ? '−' : '+'"></span>
                     </button>
                     <p x-show="openFaq === 3" x-cloak class="text-xs text-slate-600 leading-relaxed mt-2.5 pt-2.5 border-t border-slate-100/70">
@@ -411,7 +411,7 @@
             <div class="clinic-card rounded-3xl p-8 sm:p-10 text-center space-y-5">
                 <div class="w-11 h-11 rounded-full bg-[#effcf9] text-[#d4af37] mx-auto flex items-center justify-center text-xl font-bold border border-[#d4af37]/35">+</div>
                 <div class="space-y-2 max-w-xl mx-auto">
-                    <h2 class="font-heading-clinic !text-2xl sm:!text-3xl font-bold text-[#0f3e36]">Chưa Có Lịch Hẹn Tại Nha Khoa Smile?</h2>
+                    <h2 class="font-heading-clinic !text-2xl sm:!text-3xl font-bold text-[#0f3e36]">Chưa Có Lịch Hẹn Tại {{ $clinicSettings['clinic_name'] }}?</h2>
                     <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
                         Đặt hẹn online ngay hôm nay để được chủ động chọn Bác sĩ chuyên khoa, không cần chờ đợi tại quầy Lễ tân và nhận tư vấn phác đồ miễn phí.
                     </p>
@@ -420,8 +420,8 @@
                     <a href="{{ route('public.booking') }}" class="btn-press gold-btn-shimmer w-full sm:w-auto px-6 py-3 rounded-xl text-xs uppercase tracking-wider shadow-lg">
                         📅 Đặt Lịch Khám Online Ngay
                     </a>
-                    <a href="tel:0775761388" class="btn-press w-full sm:w-auto px-6 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold tabular-nums transition">
-                        📞 Hotline Tư Vấn: 0775 761 388
+                    <a href="tel:{{ $clinicHotlineTel }}" class="btn-press w-full sm:w-auto px-6 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold tabular-nums transition">
+                        📞 Hotline Tư Vấn: {{ $clinicSettings['clinic_hotline'] }}
                     </a>
                 </div>
                 <div class="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 pt-2 text-[11px] text-slate-500 font-medium">

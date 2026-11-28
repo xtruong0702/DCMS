@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Nha Khoa Smile - Hệ thống Quản lý DCMS') }}</title>
+        <title>{{ $clinicSettings['clinic_name'] }} - Hệ thống Quản lý DCMS</title>
 
         <!-- Fonts chuẩn Tiếng Việt (Be Vietnam Pro cho tiêu đề & Inter cho nội dung/bảng biểu) -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -163,7 +163,7 @@
             <footer class="mt-12 border-t border-slate-200 bg-white py-4">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2">
                     <div>
-                        Nha Khoa Smile DCMS • Hệ thống Quản lý Nha khoa Thông minh & Điều phối tiếp đón
+                        {{ $clinicSettings['clinic_name'] }} DCMS • Hệ thống Quản lý Nha khoa Thông minh & Điều phối tiếp đón
                     </div>
                     <div class="flex items-center gap-2">
                         <span>Phiên bản v2.4.0-stable</span>

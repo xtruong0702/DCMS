@@ -35,8 +35,12 @@
         $bankLabels = ['MB' => 'MBBank (MB)', 'TCB' => 'Techcombank (TCB)', 'VCB' => 'Vietcombank (VCB)', 'ACB' => 'ACB'];
         $bankDisplayName = $bankLabels[$bankId] ?? $bankId;
 
+        $paidAmount = (float) $invoice->payments->where('status', 'completed')->sum('amount');
+        $remainingAmount = max(0, (float) $invoice->final_amount - $paidAmount);
+        $qrAmount = $remainingAmount > 0 ? round($remainingAmount) : round($invoice->final_amount);
+
         $transferContent = 'THANH TOAN ' . $invoice->invoice_code;
-        $vietQrUrl = "https://img.vietqr.io/image/{$bankId}-{$accountNo}-compact2.png?amount=" . round($invoice->final_amount) . "&addInfo=" . urlencode($transferContent) . "&accountName=" . urlencode($accountName);
+        $vietQrUrl = "https://img.vietqr.io/image/{$bankId}-{$accountNo}-compact2.png?amount=" . $qrAmount . "&addInfo=" . urlencode($transferContent) . "&accountName=" . urlencode($accountName);
     @endphp
 
     <div class="py-6">
@@ -56,9 +60,9 @@
                         <!-- Thông tin phòng khám & tiêu đề -->
                         <div class="flex flex-col sm:flex-row justify-between items-start border-b border-slate-100 pb-6 gap-4">
                             <div>
-                                <h3 class="text-xl font-black text-[#0D7A68] uppercase tracking-tight">{{ $settings['clinic_name'] ?? 'Nha Khoa Smile' }}</h3>
-                                <p class="text-xs text-slate-500 mt-1">{{ $settings['clinic_address'] ?? '123 Nguyễn Văn Cừ, Quận 5, TP.HCM' }}</p>
-                                <p class="text-xs text-slate-500">Hotline: <span class="font-semibold text-slate-700">{{ $settings['clinic_hotline'] ?? '0775 761 388' }}</span></p>
+                                <h3 class="text-xl font-black text-[#0D7A68] uppercase tracking-tight">{{ $clinicSettings['clinic_name'] }}</h3>
+                                <p class="text-xs text-slate-500 mt-1">{{ $clinicSettings['clinic_address'] }}</p>
+                                <p class="text-xs text-slate-500">Hotline: <span class="font-semibold text-slate-700">{{ $clinicSettings['clinic_hotline'] }}</span></p>
                             </div>
                             <div class="sm:text-right">
                                 <span class="text-[11px] uppercase font-bold text-slate-400 tracking-wider">Hóa đơn điện tử</span>
@@ -212,9 +216,19 @@
                                     <span class="font-semibold">+ {{ number_format($invoice->vat_amount, 0, ',', '.') }} đ</span>
                                 </div>
                                 <div class="flex justify-between text-sm font-bold text-slate-900 pt-3 border-t-2 border-slate-900">
-                                    <span class="uppercase">Cần Thanh Toán:</span>
+                                    <span class="uppercase">Tổng Hóa Đơn:</span>
                                     <span class="text-xl font-bold text-slate-900">{{ number_format($invoice->final_amount, 0, ',', '.') }} đ</span>
                                 </div>
+                                @if($paidAmount > 0 && $invoice->status !== 'paid')
+                                    <div class="flex justify-between text-xs text-emerald-700 pt-1">
+                                        <span>Đã thanh toán (1 phần):</span>
+                                        <span class="font-bold">- {{ number_format($paidAmount, 0, ',', '.') }} đ</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm font-bold text-rose-600 pt-2 border-t border-dashed border-rose-200">
+                                        <span class="uppercase">Còn thiếu:</span>
+                                        <span class="text-lg font-extrabold">{{ number_format($remainingAmount, 0, ',', '.') }} đ</span>
+                                    </div>
+                                @endif
                             </div>
                         </div>
 
@@ -275,6 +289,7 @@
                                                     }
                                                 @endphp
                                                 <div class="show-item-card service-type rounded-xl border p-3 transition cursor-pointer flex items-center justify-between gap-2 {{ $isChecked ? 'border-[#0D7A68] bg-[#0D7A68]/5 ring-1 ring-[#0D7A68]' : 'border-slate-200 bg-white hover:border-slate-300' }}"
+                                                     data-service-id="{{ $srv->id }}"
                                                      data-name="Dịch vụ: {{ $srv->name }}"
                                                      data-price="{{ round($srv->price) }}"
                                                      onclick="toggleShowCard(this)">
@@ -314,6 +329,7 @@
                                                     }
                                                 @endphp
                                                 <div class="show-item-card medicine-type rounded-xl border p-3 transition cursor-pointer flex items-center justify-between gap-2 {{ $isMedChecked ? 'border-[#0D7A68] bg-[#0D7A68]/5 ring-1 ring-[#0D7A68]' : 'border-slate-200 bg-white hover:border-slate-300' }}"
+                                                     data-medicine-id="{{ $med->id }}"
                                                      data-name="Thuốc: {{ $med->name }} ({{ $med->unit ?? 'Đơn vị' }})"
                                                      data-price="{{ round($med->price) }}"
                                                      onclick="toggleShowCard(this)">
@@ -352,6 +368,9 @@
                                                     <div class="show-item-card {{ $isMedType ? 'medicine-type' : 'service-type' }} rounded-xl border border-[#0D7A68] bg-[#0D7A68]/5 ring-1 ring-[#0D7A68] p-3 transition cursor-pointer flex items-center justify-between gap-2"
                                                          data-name="{{ $udt->item_name }}"
                                                          data-price="{{ round($udt->unit_price) }}"
+                                                         data-existing-detail-id="{{ $udt->id }}"
+                                                         data-medicine-id="{{ $udt->medicine_id }}"
+                                                         data-service-id="{{ $udt->service_id }}"
                                                          onclick="toggleShowCard(this)">
                                                         <div class="flex items-start gap-2.5 min-w-0">
                                                             <input type="checkbox" class="show-cb mt-0.5 rounded border-slate-300 text-[#0D7A68] pointer-events-none" checked>
@@ -429,7 +448,7 @@
                                 </div>
                                 <h4 class="text-xl font-black text-white tracking-tight pt-1">Thanh toán thành công!</h4>
                                 <p class="text-xs text-emerald-100 leading-relaxed">
-                                    Cảm ơn quý khách đã tin tưởng và sử dụng dịch vụ tại <strong>{{ $settings['clinic_name'] ?? 'Nha Khoa Smile' }}</strong>.
+                                    Cảm ơn quý khách đã tin tưởng và sử dụng dịch vụ tại <strong>{{ $clinicSettings['clinic_name'] }}</strong>.
                                 </p>
                             </div>
                             <div class="bg-white/10 backdrop-blur rounded-xl p-3.5 text-left space-y-1.5 text-xs border border-white/15">
@@ -490,8 +509,8 @@
                                 <span class="font-bold text-white uppercase truncate max-w-[140px]">{{ $accountName }}</span>
                             </div>
                             <div class="flex justify-between items-center">
-                                <span class="text-teal-100">Số tiền:</span>
-                                <span class="font-bold text-amber-300">{{ number_format($invoice->final_amount, 0, ',', '.') }} đ</span>
+                                <span class="text-teal-100">{{ $paidAmount > 0 ? 'Số tiền còn thiếu:' : 'Số tiền:' }}</span>
+                                <span class="font-bold text-amber-300">{{ number_format($remainingAmount, 0, ',', '.') }} đ</span>
                             </div>
                             <div class="flex justify-between items-center pt-1 border-t border-white/20">
                                 <span class="text-teal-100">Nội dung CK:</span>
@@ -533,12 +552,20 @@
                                 </div>
 
                                 <div>
-                                    <label class="block text-xs font-bold text-slate-700 mb-1">Số tiền cần thanh toán</label>
-                                    <input type="hidden" name="amount" value="{{ round($invoice->final_amount) }}">
-                                    <div class="w-full rounded-xl bg-slate-50 border border-slate-200 px-4 py-3 flex items-center justify-between">
-                                        <span class="text-xs font-bold text-slate-600 uppercase">Tổng thu:</span>
-                                        <span class="text-lg font-bold text-slate-900">{{ number_format($invoice->final_amount, 0, ',', '.') }} đ</span>
+                                    <div class="flex items-center justify-between mb-1">
+                                        <label for="pay_amount" class="block text-xs font-bold text-slate-700">
+                                            {{ $paidAmount > 0 ? 'Số tiền thu đợt này (Còn thiếu)' : 'Số tiền thực thu (VNĐ)' }} <span class="text-red-500">*</span>
+                                        </label>
+                                        <span class="text-[11px] font-semibold text-slate-500">Tối đa: {{ number_format($remainingAmount, 0, ',', '.') }} đ</span>
                                     </div>
+                                    <input id="pay_amount" type="number" name="amount" min="1" max="{{ round($remainingAmount) }}" step="1000" value="{{ round($remainingAmount) }}" required class="w-full rounded-xl border-slate-200 text-base font-bold text-slate-900 focus:border-[#0D7A68] focus:ring-[#0D7A68]">
+                                    @if($paidAmount > 0)
+                                        <p class="mt-1.5 text-[11px] font-medium text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-2.5 py-1.5">
+                                            Đã thanh toán trước <strong>{{ number_format($paidAmount, 0, ',', '.') }} đ</strong>. Còn thiếu <strong>{{ number_format($remainingAmount, 0, ',', '.') }} đ</strong>.
+                                        </p>
+                                    @else
+                                        <p class="mt-1 text-[11px] text-slate-400">Mặc định thu đủ 100%. Có thể nhập số tiền nhỏ hơn nếu khách thanh toán từng phần.</p>
+                                    @endif
                                 </div>
 
                                 <button type="submit" class="w-full py-2.5 bg-[#0D7A68] hover:bg-[#0B6858] text-white rounded-xl font-bold text-xs shadow-xs transition flex items-center justify-center gap-2">
@@ -599,6 +626,9 @@
                 if (card.querySelector('.show-cb').checked) {
                     const name = card.getAttribute('data-name');
                     const price = parseFloat(card.getAttribute('data-price')) || 0;
+                    const serviceId = card.getAttribute('data-service-id') || '';
+                    const medicineId = card.getAttribute('data-medicine-id') || '';
+                    const existingDetailId = card.getAttribute('data-existing-detail-id') || '';
                     const qty = parseInt(card.querySelector('.show-qty').value, 10) || 1;
                     
                     if (card.classList.contains('medicine-type')) {
@@ -614,8 +644,9 @@
                         input.value = val;
                         container.appendChild(input);
                     };
-                    appendHidden('name', name);
-                    appendHidden('price', price);
+                    appendHidden('service_id', serviceId);
+                    appendHidden('medicine_id', medicineId);
+                    appendHidden('existing_detail_id', existingDetailId);
                     appendHidden('quantity', qty);
                     idx++;
                 }
@@ -639,12 +670,13 @@
         document.addEventListener('DOMContentLoaded', recalcShowSelector);
 
         @if($invoice->status !== 'paid' && $invoice->status !== 'cancelled')
-        // Tự động kiểm tra hóa đơn đã thanh toán qua Webhook ngân hàng chưa
+        // Tự động kiểm tra hóa đơn đã thanh toán (đủ hoặc thêm 1 phần) qua Webhook ngân hàng chưa
+        const initialPaidAmount = {{ round($paidAmount) }};
         setInterval(async function () {
             try {
-                const res = await fetch('/api/invoices/{{ $invoice->invoice_code }}/status');
+                const res = await fetch('{{ route('invoices.status', $invoice->invoice_code) }}');
                 const data = await res.json();
-                if (data.is_paid) {
+                if (data.is_paid || (typeof data.paid_amount === 'number' && data.paid_amount !== initialPaidAmount)) {
                     window.location.reload();
                 }
             } catch (e) {}

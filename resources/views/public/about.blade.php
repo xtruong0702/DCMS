@@ -59,7 +59,7 @@
                     </h2>
 
                     <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                        Tại Nha Khoa Smile, chúng tôi tin rằng một hàm răng khỏe đẹp bền vững phải bắt nguồn từ nền tảng sinh học chắc khỏe, khớp cắn chuẩn xác và ưu tiên <strong class="text-slate-900">bảo tồn tối đa răng thật nguyên bản</strong>.
+                        Tại {{ $clinicSettings['clinic_name'] }}, chúng tôi tin rằng một hàm răng khỏe đẹp bền vững phải bắt nguồn từ nền tảng sinh học chắc khỏe, khớp cắn chuẩn xác và ưu tiên <strong class="text-slate-900">bảo tồn tối đa răng thật nguyên bản</strong>.
                     </p>
                     <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
                         Mọi ca khám và điều trị đều được theo dõi chặt chẽ trên hệ thống bệnh án điện tử DCMS với sơ đồ 32 răng chuẩn FDI, cùng quy trình kiểm soát nhiễm khuẩn khắt khe theo quy chuẩn Bộ Y Tế.
@@ -96,7 +96,7 @@
                     <h3 class="font-heading-clinic !text-2xl sm:!text-3xl font-bold text-[#0f3e36]">
                         Cam Kết <span class="text-clinic-gradient">Chất Lượng Điều Trị</span>
                     </h3>
-                    <p class="text-xs sm:text-sm text-slate-600">Những nguyên tắc kiên định định hình uy tín của Nha Khoa Smile suốt hơn một thập kỷ qua.</p>
+                    <p class="text-xs sm:text-sm text-slate-600">Những nguyên tắc kiên định định hình uy tín của {{ $clinicSettings['clinic_name'] }} suốt hơn một thập kỷ qua.</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -176,7 +176,7 @@
                         ['year' => '2010', 'title' => 'Thành Lập Phòng Khám', 'desc' => 'Khởi đầu với đội ngũ bác sĩ tốt nghiệp ĐH Y Hà Nội cùng 4 ghế nha khoa tiêu chuẩn.'],
                         ['year' => '2016', 'title' => 'Chuyển Giao Thụy Sĩ', 'desc' => 'Trở thành đối tác chiến lược cấy ghép Implant Straumann và sứ thẩm mỹ Emax Đức.'],
                         ['year' => '2021', 'title' => 'Số Hóa Toàn Diện DCMS', 'desc' => 'Triển khai bệnh án điện tử, sơ đồ 32 răng FDI và tra cứu hóa đơn VietQR tự động.'],
-                        ['year' => 'Hiện Tại', 'title' => '15.000+ Nụ Cười Hoàn Mỹ', 'desc' => 'Không gian phòng khám hiện đại chuẩn Y khoa tại 204 Trần Duy Hưng, Cầu Giấy, Hà Nội.'],
+                        ['year' => 'Hiện Tại', 'title' => '15.000+ Nụ Cười Hoàn Mỹ', 'desc' => 'Không gian phòng khám hiện đại chuẩn Y khoa tại ' . ($clinicSettings['clinic_address'] ?? '204 Trần Duy Hưng, Yên Hòa, Cầu Giấy, Hà Nội') . '.'],
                     ] as $idx => $mile)
                         <div class="clinic-card rounded-2xl p-6 space-y-2 reveal-scale reveal-delay-{{ ($idx % 4) + 1 }}">
                             <div class="font-heading-clinic text-2xl font-extrabold text-[#d4af37] tabular-nums">{{ $mile['year'] }}</div>

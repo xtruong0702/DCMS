@@ -64,6 +64,7 @@
                                         }
                                     @endphp
                                     <div class="adm-card srv-card rounded-xl border p-3.5 transition cursor-pointer flex items-center justify-between gap-2 {{ $checked ? 'border-indigo-500 bg-indigo-50/70 ring-1 ring-indigo-500' : 'border-slate-200 bg-white' }}"
+                                         data-service-id="{{ $srv->id }}"
                                          data-name="Dịch vụ: {{ $srv->name }}"
                                          data-price="{{ round($srv->price) }}"
                                          onclick="toggleEditCard(this)">
@@ -103,6 +104,7 @@
                                         }
                                     @endphp
                                     <div class="adm-card med-card rounded-xl border p-3.5 transition cursor-pointer flex items-center justify-between gap-2 {{ $mChecked ? 'border-emerald-500 bg-emerald-50/70 ring-1 ring-emerald-500' : 'border-slate-200 bg-white' }}"
+                                         data-medicine-id="{{ $med->id }}"
                                          data-name="Thuốc: {{ $med->name }} ({{ $med->unit ?? 'Đơn vị' }})"
                                          data-price="{{ round($med->price) }}"
                                          onclick="toggleEditCard(this)">
@@ -141,6 +143,9 @@
                                         <div class="adm-card {{ $isMed ? 'med-card' : 'srv-card' }} rounded-xl border border-[#0D7A68] bg-[#0D7A68]/5 ring-1 ring-[#0D7A68] p-3.5 transition cursor-pointer flex items-center justify-between gap-2"
                                              data-name="{{ $udt->item_name }}"
                                              data-price="{{ round($udt->unit_price) }}"
+                                             data-existing-detail-id="{{ $udt->id }}"
+                                             data-medicine-id="{{ $udt->medicine_id }}"
+                                             data-service-id="{{ $udt->service_id }}"
                                              onclick="toggleEditCard(this)">
                                             <div class="flex items-start gap-2.5">
                                                 <input type="checkbox" class="adm-cb mt-0.5 rounded border-slate-300 text-[#0D7A68] pointer-events-none" checked>
@@ -234,6 +239,9 @@
                 if (card.querySelector('.adm-cb').checked) {
                     const name = card.getAttribute('data-name');
                     const price = parseFloat(card.getAttribute('data-price')) || 0;
+                    const serviceId = card.getAttribute('data-service-id') || '';
+                    const medicineId = card.getAttribute('data-medicine-id') || '';
+                    const existingDetailId = card.getAttribute('data-existing-detail-id') || '';
                     const qty = parseInt(card.querySelector('.adm-qty').value, 10) || 1;
                     if (card.classList.contains('med-card')) {
                         medTotal += price * qty;
@@ -241,8 +249,9 @@
                         srvTotal += price * qty;
                     }
                     container.insertAdjacentHTML('beforeend', `
-                        <input type="hidden" name="items[${idx}][name]" value="${name}">
-                        <input type="hidden" name="items[${idx}][price]" value="${price}">
+                        <input type="hidden" name="items[${idx}][service_id]" value="${serviceId}">
+                        <input type="hidden" name="items[${idx}][medicine_id]" value="${medicineId}">
+                        <input type="hidden" name="items[${idx}][existing_detail_id]" value="${existingDetailId}">
                         <input type="hidden" name="items[${idx}][quantity]" value="${qty}">
                     `);
                     idx++;

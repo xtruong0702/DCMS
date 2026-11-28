@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'Dịch Vụ & Bảng Giá Niêm Yết - Nha Khoa Smile')
+@section('title', 'Dịch Vụ & Bảng Giá Niêm Yết - ' . $clinicSettings['clinic_name'])
 
 @section('content')
 <!-- Hero Dịch Vụ & Bảng Giá (Medical Clinic) -->
@@ -14,7 +14,7 @@
             Dịch Vụ Nha Khoa & <span class="text-clinic-gradient">Bảng Giá Minh Bạch</span>
         </h1>
         <p class="text-slate-600 text-sm max-w-xl mx-auto leading-relaxed">
-            100% minh bạch chi phí khám chữa bệnh, sử dụng vật liệu nha khoa chính hãng, chế độ bảo hành rõ ràng và thanh toán VietQR tự động.
+            Giá niêm yết lấy từ danh mục dịch vụ hiện hành; VAT được tính theo thiết lập trên hóa đơn. Vật liệu chính hãng, chế độ bảo hành rõ ràng và thanh toán VietQR tự động.
         </p>
     </div>
 </section>
@@ -25,21 +25,21 @@
         <div class="flex flex-col sm:flex-row sm:items-end justify-between border-b border-slate-200/40 pb-4 gap-4">
             <div>
                 <span class="text-xs font-bold uppercase tracking-wider text-teal-700">Danh Mục Chuyên Khoa</span>
-                <h2 class="font-heading-clinic !text-2xl sm:!text-3xl font-bold text-slate-900 mt-1">Dịch Vụ Chuyên Khoa Nha Khoa Smile</h2>
+                <h2 class="font-heading-clinic !text-2xl sm:!text-3xl font-bold text-slate-900 mt-1">Dịch Vụ Chuyên Khoa {{ $clinicSettings['clinic_name'] }}</h2>
             </div>
             <p class="text-xs text-slate-500">Mỗi ca điều trị đều được Bác sĩ Chuyên khoa trực tiếp thăm khám</p>
         </div>
 
         @php
             $catalog = [
-                ['slug' => 'rang-su-chuyen-sau', 'title' => 'Dán Sứ Veneer Emax Siêu Mỏng', 'tag' => 'Thụy Sĩ • Phổ biến', 'desc' => 'Khôi phục men răng, form răng tự nhiên, không mài nhỏ, bảo tồn răng gốc 100%, bảo hành điện tử.', 'icon' => '✨', 'price' => '104.500.000 đ / 16 răng'],
-                ['slug' => 'implant-chuyen-sau', 'title' => 'Cấy Ghép Implant Straumann', 'tag' => 'Thụy Sĩ • Tiêu chuẩn vàng', 'desc' => 'Trụ Titanium sinh học số 1 thế giới, tích hợp xương nhanh sau 3-4 tuần, ăn nhai như răng thật.', 'icon' => '🦷', 'price' => '32.180.000 đ / trụ'],
-                ['slug' => 'nieng-rang', 'title' => 'Niềng Răng Invisalign Diamond', 'tag' => 'Hoa Kỳ • SmartTrack', 'desc' => 'Khay niềng trong suốt chính hãng Hoa Kỳ, mô phỏng dịch chuyển răng 3D bằng ClinCheck.', 'icon' => '💎', 'price' => '104.000.000 đ trọn gói'],
-                ['slug' => 'tay-trang-rang', 'title' => 'Tẩy Trắng Răng Laser Whitening', 'tag' => 'Ánh sáng lạnh • 45 phút', 'desc' => 'Bật 3-5 tone răng trắng sáng tự nhiên, không ê buốt, bảo vệ men răng an toàn tuyệt đối.', 'icon' => '🌟', 'price' => '2.000.000 đ / ca'],
-                ['slug' => 'nho-rang-khon', 'title' => 'Nhổ Răng Khôn Sóng Siêu Âm', 'tag' => 'Piezotome • Không đau', 'desc' => 'Ứng dụng máy siêu âm Piezotome bóc tách nhẹ nhàng, ít xâm lấn, mau lành thương.', 'icon' => '🛡️', 'price' => '990.000 đ / răng'],
-                ['slug' => 'dieu-tri-tuy', 'title' => 'Điều Trị Tủy Vi Phẫu', 'tag' => 'Nội nha không đau', 'desc' => 'Làm sạch ống tủy bằng máy vi phẫu sóng âm, triệt tiêu vi khuẩn và bảo tồn chân răng thật.', 'icon' => '🔬', 'price' => '1.500.000 đ / răng'],
-                ['slug' => 'lay-cao-rang', 'title' => 'Cạo Vôi Răng & Chăm Sóc Nha Chu', 'tag' => 'Tổng quát định kỳ', 'desc' => 'Làm sạch mảng bám dưới nướu bằng sóng siêu âm êm ái, đánh bóng răng ngăn ngừa viêm nướu.', 'icon' => '🫧', 'price' => '350.000 đ / lần'],
-                ['slug' => 'tram-rang', 'title' => 'Trám Răng Thẩm Mỹ Composite', 'tag' => 'Composite Nano', 'desc' => 'Phục hồi lỗ sâu, răng mẻ bằng vật liệu nano trùng khớp màu sắc men răng tự nhiên.', 'icon' => '🩹', 'price' => '500.000 đ / răng'],
+                ['slug' => 'rang-su-chuyen-sau', 'title' => 'Dán Sứ Veneer Emax Siêu Mỏng', 'tag' => 'Thụy Sĩ • Phổ biến', 'desc' => 'Khôi phục men răng, form răng tự nhiên, không mài nhỏ, bảo tồn răng gốc 100%, bảo hành điện tử.', 'icon' => '✨', 'serviceCode' => 'PKG-CROWN-VENEER-EMAX', 'priceUnit' => '/ răng'],
+                ['slug' => 'implant-chuyen-sau', 'title' => 'Cấy Ghép Implant Straumann', 'tag' => 'Thụy Sĩ • Tiêu chuẩn vàng', 'desc' => 'Trụ Titanium sinh học số 1 thế giới, tích hợp xương nhanh sau 3-4 tuần, ăn nhai như răng thật.', 'icon' => '🦷', 'serviceCode' => 'PKG-IMPLANT-SLACTIVE', 'priceUnit' => '/ trụ'],
+                ['slug' => 'nieng-rang', 'title' => 'Niềng Răng Invisalign Comprehensive', 'tag' => 'Hoa Kỳ • SmartTrack', 'desc' => 'Khay niềng trong suốt chính hãng Hoa Kỳ, mô phỏng dịch chuyển răng 3D bằng ClinCheck.', 'icon' => '💎', 'serviceCode' => 'PKG-ORTHO-INVISALIGN-COMPREHENSIVE', 'priceUnit' => '/ gói'],
+                ['slug' => 'tay-trang-rang', 'title' => 'Tẩy Trắng Răng Laser Whitening', 'tag' => 'Ánh sáng lạnh • 60 phút', 'desc' => 'Bật 3-5 tone răng trắng sáng tự nhiên, không ê buốt, bảo vệ men răng an toàn tuyệt đối.', 'icon' => '🌟', 'serviceCode' => 'PKG-WHITENING-LASER', 'priceUnit' => '/ ca'],
+                ['slug' => 'nho-rang-khon', 'title' => 'Nhổ Răng Khôn Sóng Siêu Âm', 'tag' => 'Piezotome • Không đau', 'desc' => 'Ứng dụng máy siêu âm Piezotome bóc tách nhẹ nhàng, ít xâm lấn, mau lành thương.', 'icon' => '🛡️', 'serviceCode' => 'PKG-WISDOM-PIEZOTOME', 'priceUnit' => '/ răng'],
+                ['slug' => 'dieu-tri-tuy', 'title' => 'Điều Trị Tủy Răng Hàm Lớn', 'tag' => 'Nội nha không đau', 'desc' => 'Làm sạch ống tủy bằng thiết bị nội nha chuyên dụng, triệt tiêu vi khuẩn và bảo tồn chân răng thật.', 'icon' => '🔬', 'serviceCode' => 'PKG-ROOT-MOLAR', 'priceUnit' => '/ răng'],
+                ['slug' => 'lay-cao-rang', 'title' => 'Cạo Vôi Răng & Chăm Sóc Nha Chu', 'tag' => 'Tổng quát định kỳ', 'desc' => 'Làm sạch mảng bám dưới nướu bằng sóng siêu âm êm ái, đánh bóng răng ngăn ngừa viêm nướu.', 'icon' => '🫧', 'serviceCode' => 'PKG-SCALING-GRADE-3', 'priceUnit' => '/ lần'],
+                ['slug' => 'tram-rang', 'title' => 'Trám Răng Thẩm Mỹ Composite', 'tag' => 'Composite Nano', 'desc' => 'Phục hồi lỗ sâu, răng mẻ bằng vật liệu nano trùng khớp màu sắc men răng tự nhiên.', 'icon' => '🩹', 'serviceCode' => 'PKG-FILLING-COSMETIC', 'priceUnit' => '/ răng'],
             ];
         @endphp
 
@@ -66,9 +66,12 @@
                     <div class="pt-3 border-t border-slate-100/70 flex items-center justify-between gap-2">
                         <div>
                             <span class="text-[10px] text-slate-500 block">Đơn giá niêm yết:</span>
-                            <span class="font-heading-clinic text-xs font-bold text-teal-800 tabular-nums">{{ $item['price'] }}</span>
+                            @php $priceService = $services->firstWhere('service_code', $item['serviceCode']); @endphp
+                            <span class="font-heading-clinic text-xs font-bold text-teal-800 tabular-nums">
+                                {{ $priceService ? number_format((float) $priceService->price, 0, ',', '.') . ' đ ' . $item['priceUnit'] : 'Liên hệ phòng khám' }}
+                            </span>
                         </div>
-                        <a href="{{ route('public.booking') }}" class="btn-press btn-clinic-primary px-3 py-1.5 rounded-lg text-xs shrink-0">
+                        <a href="{{ route('public.booking', ['service_id' => $priceService?->id]) }}" class="btn-press btn-clinic-primary px-3 py-1.5 rounded-lg text-xs shrink-0">
                             Đặt Lịch
                         </a>
                     </div>
@@ -147,7 +150,7 @@
                                     </td>
                                     <td class="py-3.5 px-5 text-center">
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 text-[11px] font-medium tabular-nums">
-                                            ⏱ {{ $service->duration ?? 30 }} phút
+                                            ⏱ {{ $service->duration_minutes ?? 30 }} phút
                                         </span>
                                     </td>
                                     <td class="py-3.5 px-5 text-right font-heading-clinic text-sm font-bold text-teal-800 whitespace-nowrap tabular-nums">
@@ -162,7 +165,7 @@
                             @empty
                                 <tr>
                                     <td colspan="5" class="py-12 text-center text-slate-500 text-xs">
-                                        Danh mục dịch vụ đang được cập nhật. Vui lòng liên hệ Hotline 0775 761 388 để được tư vấn trực tiếp.
+                                        Danh mục dịch vụ đang được cập nhật. Vui lòng liên hệ Hotline {{ $clinicSettings['clinic_hotline'] }} để được tư vấn trực tiếp.
                                     </td>
                                 </tr>
                             @endforelse
@@ -174,7 +177,7 @@
                     <div>
                         💡 <strong>Lưu ý:</strong> Bảng giá đã bao gồm thăm khám và tư vấn trực tiếp cùng Bác sĩ Chuyên khoa.
                     </div>
-                    <a href="tel:0775761388" class="font-bold text-teal-700 hover:underline tabular-nums">Cần tư vấn chi tiết? Gọi Hotline 0775 761 388 &rarr;</a>
+                    <a href="tel:{{ $clinicHotlineTel }}" class="font-bold text-teal-700 hover:underline tabular-nums">Cần tư vấn chi tiết? Gọi Hotline {{ $clinicSettings['clinic_hotline'] }} &rarr;</a>
                 </div>
             </div>
         </div>
@@ -211,7 +214,7 @@
                         <span class="text-teal-700 text-base ml-2" x-text="openFaq === 1 ? '−' : '+'"></span>
                     </button>
                     <p x-show="openFaq === 1" x-cloak class="text-xs text-slate-600 leading-relaxed mt-2">
-                        Khi quý khách thực hiện các dịch vụ điều trị như Implant, Niềng răng Invisalign hoặc Dán sứ Veneer tại Nha Khoa Smile, chi phí thăm khám và chụp phim 3D CT ConeBeam lập phác đồ sẽ được hỗ trợ hoàn toàn miễn phí.
+                        Khi quý khách thực hiện các dịch vụ điều trị như Implant, Niềng răng Invisalign hoặc Dán sứ Veneer tại {{ $clinicSettings['clinic_name'] }}, chi phí thăm khám và chụp phim 3D CT ConeBeam lập phác đồ sẽ được hỗ trợ hoàn toàn miễn phí.
                     </p>
                 </div>
                 <div class="py-3.5">

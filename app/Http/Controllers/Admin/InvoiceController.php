@@ -10,6 +10,7 @@ use App\Models\Appointment;
 use App\Models\Service;
 use App\Models\Medicine;
 use App\Models\SystemSetting;
+use App\Support\InvoiceItemCatalog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -50,19 +51,6 @@ class InvoiceController extends Controller
 
     private function ensureDefaultMedicinesAndServices(): void
     {
-        if (Service::count() === 0) {
-            $defaultServices = [
-                ['service_code' => 'SV001', 'name' => 'Khám tổng quát & Tư vấn nha khoa', 'price' => 100000, 'duration_minutes' => 15, 'is_active' => true],
-                ['service_code' => 'SV002', 'name' => 'Cạo vôi răng & Đánh bóng 2 hàm', 'price' => 250000, 'duration_minutes' => 30, 'is_active' => true],
-                ['service_code' => 'SV003', 'name' => 'Trám răng thẩm mỹ Composite', 'price' => 350000, 'duration_minutes' => 30, 'is_active' => true],
-                ['service_code' => 'SV004', 'name' => 'Điều trị tủy răng chuyên sâu', 'price' => 800000, 'duration_minutes' => 45, 'is_active' => true],
-                ['service_code' => 'SV005', 'name' => 'Nhổ răng khôn không đau (Piezotome)', 'price' => 1500000, 'duration_minutes' => 45, 'is_active' => true],
-                ['service_code' => 'SV006', 'name' => 'Tẩy trắng răng Laser Whitening', 'price' => 2500000, 'duration_minutes' => 60, 'is_active' => true],
-            ];
-            foreach ($defaultServices as $srv) {
-                Service::firstOrCreate(['name' => $srv['name']], $srv);
-            }
-        }
 
         if (Medicine::count() === 0) {
             $defaultMedicines = [
@@ -100,8 +88,8 @@ class InvoiceController extends Controller
             'patient_id' => 'required|exists:patients,id',
             'appointment_id' => 'nullable|exists:appointments,id',
             'items' => 'required|array|min:1',
-            'items.*.name' => 'required|string',
-            'items.*.price' => 'required|numeric|min:0',
+            'items.*.service_id' => 'nullable|integer|exists:services,id',
+            'items.*.medicine_id' => 'nullable|integer|exists:medicines,id',
             'items.*.quantity' => 'required|integer|min:1',
             'discount' => 'nullable|numeric|min:0',
             'status' => 'required|in:unpaid,paid,cancelled',
@@ -110,12 +98,9 @@ class InvoiceController extends Controller
             'items.min' => 'Vui lòng tích chọn ít nhất 1 Dịch vụ khám hoặc Thuốc.',
         ]);
 
+        $items = InvoiceItemCatalog::normalize($request->items);
         $vatRate = $this->getVatRate();
-
-        $total = 0;
-        foreach ($request->items as $item) {
-            $total += ($item['price'] * $item['quantity']);
-        }
+        $total = array_sum(array_column($items, 'total_price'));
 
         $discount = $request->discount ?? 0;
         $afterDiscount = max(0, $total - $discount);
@@ -133,13 +118,15 @@ class InvoiceController extends Controller
             'status' => $request->status,
         ]);
 
-        foreach ($request->items as $item) {
+        foreach ($items as $item) {
             InvoiceDetail::create([
                 'invoice_id' => $invoice->id,
-                'item_name' => $item['name'],
-                'unit_price' => $item['price'],
+                'service_id' => $item['service_id'],
+                'medicine_id' => $item['medicine_id'],
+                'item_name' => $item['item_name'],
+                'unit_price' => $item['unit_price'],
                 'quantity' => $item['quantity'],
-                'total_price' => $item['price'] * $item['quantity'],
+                'total_price' => $item['total_price'],
             ]);
         }
 
@@ -188,6 +175,7 @@ class InvoiceController extends Controller
                             }
                             InvoiceDetail::create([
                                 'invoice_id' => $invoice->id,
+                                'service_id' => $dDetail->service->id,
                                 'item_name' => $itemLabel,
                                 'unit_price' => $price,
                                 'quantity' => $qty,
@@ -210,6 +198,7 @@ class InvoiceController extends Controller
                         $qty = max(1, intval($pDetail->quantity));
                         InvoiceDetail::create([
                             'invoice_id' => $invoice->id,
+                            'medicine_id' => $pDetail->medicine_id,
                             'item_name' => 'Thuốc: ' . $pDetail->medicine_name . ' (' . $unitLabel . ')',
                             'unit_price' => $medPrice,
                             'quantity' => $qty,
@@ -250,18 +239,16 @@ class InvoiceController extends Controller
         $request->validate([
             'status' => 'required|in:unpaid,paid,cancelled',
             'items' => 'required|array|min:1',
-            'items.*.name' => 'required|string',
-            'items.*.price' => 'required|numeric|min:0',
+            'items.*.service_id' => 'nullable|integer|exists:services,id',
+            'items.*.medicine_id' => 'nullable|integer|exists:medicines,id',
+            'items.*.existing_detail_id' => 'nullable|integer',
             'items.*.quantity' => 'required|integer|min:1',
             'discount' => 'nullable|numeric|min:0',
         ]);
 
+        $items = InvoiceItemCatalog::normalize($request->items, $invoice);
         $vatRate = $this->getVatRate();
-
-        $total = 0;
-        foreach ($request->items as $item) {
-            $total += ($item['price'] * $item['quantity']);
-        }
+        $total = array_sum(array_column($items, 'total_price'));
 
         $discount = $request->discount ?? 0;
         $afterDiscount = max(0, $total - $discount);
@@ -279,13 +266,15 @@ class InvoiceController extends Controller
         ]);
 
         $invoice->details()->delete();
-        foreach ($request->items as $item) {
+        foreach ($items as $item) {
             InvoiceDetail::create([
                 'invoice_id' => $invoice->id,
-                'item_name' => $item['name'],
-                'unit_price' => $item['price'],
+                'service_id' => $item['service_id'],
+                'medicine_id' => $item['medicine_id'],
+                'item_name' => $item['item_name'],
+                'unit_price' => $item['unit_price'],
                 'quantity' => $item['quantity'],
-                'total_price' => $item['price'] * $item['quantity'],
+                'total_price' => $item['total_price'],
             ]);
         }
 

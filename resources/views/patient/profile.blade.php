@@ -12,7 +12,7 @@
                 Chỉ xem • Cập nhật: {{ $patient->updated_at ? $patient->updated_at->format('d/m/Y') : date('d/m/Y') }}
             </span>
         </div>
-        <p class="text-xs text-slate-500 mt-1">Thông tin định danh và tiền sử y tế điện tử của bạn tại Nha Khoa Smile</p>
+        <p class="text-xs text-slate-500 mt-1">Thông tin định danh và tiền sử y tế điện tử của bạn tại {{ $clinicSettings['clinic_name'] }}</p>
     </div>
 </div>
 
@@ -21,7 +21,7 @@
     <span class="w-7 h-7 rounded-xl bg-white text-sky-700 flex items-center justify-center shrink-0 shadow-xs font-bold">🔒</span>
     <div class="leading-relaxed">
         <strong class="font-bold">Hồ sơ y tế được bảo vệ chống chỉnh sửa tự do:</strong>
-        Để đảm bảo tính chính xác của bệnh án điện tử, chỉ có <strong>Bác sĩ</strong> hoặc <strong>Lễ tân</strong> mới có quyền cập nhật hồ sơ bệnh nhân. Nếu cần điều chỉnh thông tin, vui lòng thông báo tại quầy Lễ tân hoặc gọi Hotline <a href="tel:0775761388" class="font-bold underline tabular-nums">0775 761 388</a>.
+        Để đảm bảo tính chính xác của bệnh án điện tử, chỉ có <strong>Bác sĩ</strong> hoặc <strong>Lễ tân</strong> mới có quyền cập nhật hồ sơ bệnh nhân. Nếu cần điều chỉnh thông tin, vui lòng thông báo tại quầy Lễ tân hoặc gọi Hotline <a href="tel:{{ $clinicHotlineTel }}" class="font-bold underline tabular-nums">{{ $clinicSettings['clinic_hotline'] }}</a>.
     </div>
 </div>
 

@@ -9,6 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Database\QueryException;
 
 class PaymentWebhookController extends Controller
 {
@@ -17,7 +18,10 @@ class PaymentWebhookController extends Controller
      */
     public function handleWebhook(Request $request): JsonResponse
     {
-        Log::info('Payment Webhook Received:', $request->except(['api_key']));
+        Log::info('Payment webhook received.', [
+            'provider' => $request->route()?->getName(),
+            'has_reference' => $request->filled('referenceCode') || $request->filled('id') || $request->filled('data.reference'),
+        ]);
 
         // Kiểm tra API Key / Token (bắt buộc trên môi trường không phải local)
         $configuredApiKey = config('services.sepay.api_key') ?? env('SEPAY_API_KEY');
@@ -69,12 +73,15 @@ class PaymentWebhookController extends Controller
             ?? '';
 
         // 2. Trích xuất số tiền chuyển (bắt buộc > 0)
-        $amount = floatval(
+        $rawAmount =
             $request->input('transferAmount')
             ?? $request->input('amount')
             ?? $request->input('data.amount')
-            ?? 0
-        );
+            ?? null;
+        if (!is_numeric($rawAmount) || !is_finite((float) $rawAmount)) {
+            $rawAmount = 0;
+        }
+        $amount = (float) $rawAmount;
 
         if ($amount <= 0) {
             return response()->json([
@@ -88,15 +95,30 @@ class PaymentWebhookController extends Controller
             ?? $request->input('bank')
             ?? $request->input('data.accountNumber')
             ?? 'Chuyển khoản VietQR';
-        $referenceCode = trim((string) (
+        if (!is_scalar($gateway)) {
+            $gateway = 'Chuyển khoản VietQR';
+        }
+        $gateway = mb_substr(trim((string) $gateway), 0, 100);
+        $rawReferenceCode =
             $request->input('referenceCode')
+            ?? $request->input('transactionId')
+            ?? $request->input('transaction_id')
+            ?? $request->input('tid')
             ?? $request->input('id')
             ?? $request->input('data.reference')
-            ?? ''
-        ));
-        $paymentMethodLabel = $referenceCode !== ''
-            ? ($gateway . ' [Ref:' . $referenceCode . ']')
-            : $gateway;
+            ?? $request->input('data.id')
+            ?? $request->input('data.code')
+            ?? '';
+        $referenceCode = is_scalar($rawReferenceCode) ? trim((string) $rawReferenceCode) : '';
+        if ($referenceCode === '') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Webhook thiếu mã giao dịch duy nhất để chống ghi nhận trùng.',
+            ], 422);
+        }
+        $paymentMethodLabel = $gateway;
+        $provider = (string) ($request->route()?->getName() ?? 'api.payment.webhook');
+        $gatewayReference = hash('sha256', mb_strtolower($provider) . ':' . $referenceCode);
 
         // 4. Tìm mã hóa đơn (invoice_code) trong nội dung chuyển khoản
         $invoiceCode = null;
@@ -116,7 +138,8 @@ class PaymentWebhookController extends Controller
         }
 
         // 5-7. Khóa dòng hóa đơn trong Transaction để chống thanh toán trùng lặp (race condition & webhook retry)
-        $result = DB::transaction(function () use ($invoiceCode, $paymentMethodLabel, $referenceCode, $amount) {
+        try {
+            $result = DB::transaction(function () use ($invoiceCode, $paymentMethodLabel, $gatewayReference, $amount) {
             $invoice = Invoice::where('invoice_code', $invoiceCode)->lockForUpdate()->first();
 
             if (!$invoice) {
@@ -126,10 +149,29 @@ class PaymentWebhookController extends Controller
                 ]];
             }
 
+            if ($gatewayReference !== null) {
+                $priorPayment = Payment::where('gateway_reference', $gatewayReference)->first();
+                if ($priorPayment) {
+                    if ((int) $priorPayment->invoice_id !== (int) $invoice->id) {
+                        return ['code' => 409, 'payload' => [
+                            'success' => false,
+                            'message' => 'Mã giao dịch đã được ghi nhận cho một hóa đơn khác.',
+                        ]];
+                    }
+
+                    return ['code' => 200, 'payload' => [
+                        'success' => true,
+                        'message' => 'Giao dịch đã được ghi nhận trước đó.',
+                        'invoice_code' => $invoice->invoice_code,
+                        'status' => $invoice->status,
+                    ]];
+                }
+            }
+
             if ($invoice->status === 'paid') {
-                return ['code' => 200, 'payload' => [
-                    'success' => true,
-                    'message' => "Hóa đơn #{$invoice->invoice_code} đã hoàn tất thanh toán trước đó.",
+                return ['code' => 409, 'payload' => [
+                    'success' => false,
+                    'message' => "Hóa đơn #{$invoice->invoice_code} đã thanh toán; giao dịch mới cần được đối soát.",
                     'invoice_code' => $invoice->invoice_code,
                     'status' => 'paid'
                 ]];
@@ -142,23 +184,20 @@ class PaymentWebhookController extends Controller
                 ]];
             }
 
-            if ($referenceCode !== '') {
-                $alreadyProcessed = $invoice->payments()
-                    ->where('payment_method', 'like', '%[Ref:' . $referenceCode . ']%')
-                    ->exists();
-                if ($alreadyProcessed) {
-                    return ['code' => 200, 'payload' => [
-                        'success' => true,
-                        'message' => "Giao dịch Ref:{$referenceCode} đã được ghi nhận trước đó.",
-                        'invoice_code' => $invoice->invoice_code,
-                        'status' => $invoice->status,
-                    ]];
-                }
+            $totalPaidBefore = (float) $invoice->payments()->where('status', 'completed')->sum('amount');
+            $remaining = max(0, (float) $invoice->final_amount - $totalPaidBefore);
+            if ($amount > $remaining) {
+                return ['code' => 422, 'payload' => [
+                    'success' => false,
+                    'message' => 'Số tiền nhận được vượt quá số dư còn phải thanh toán.',
+                    'remaining_amount' => $remaining,
+                ]];
             }
 
             Payment::create([
                 'invoice_id' => $invoice->id,
                 'payment_method' => $paymentMethodLabel,
+                'gateway_reference' => $gatewayReference,
                 'amount' => $amount,
                 'status' => 'completed',
             ]);
@@ -182,36 +221,31 @@ class PaymentWebhookController extends Controller
                 'total_paid' => $totalPaid,
                 'deducted_medicines' => $deductedCount
             ]];
-        });
-
-        return response()->json($result['payload'], $result['code']);
-    }
-
-    /**
-     * API kiểm tra trạng thái hóa đơn thời gian thực (hỗ trợ trang Bệnh nhân tự động cập nhật)
-     */
-    public function checkStatus(string $code): JsonResponse
-    {
-        $invoice = Invoice::where('invoice_code', strtoupper(trim($code)))->first();
-
-        if (!$invoice) {
+            });
+        } catch (QueryException $exception) {
+            // A unique reference can race across two webhook requests. Treat the
+            // second delivery as a retry only when it belongs to this invoice.
+            $priorPayment = $gatewayReference
+                ? Payment::where('gateway_reference', $gatewayReference)->first()
+                : null;
+            if (!$priorPayment) {
+                throw $exception;
+            }
+            if ((int) $priorPayment->invoice_id !== (int) Invoice::where('invoice_code', $invoiceCode)->value('id')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Mã giao dịch đã được ghi nhận cho một hóa đơn khác.',
+                ], 409);
+            }
             return response()->json([
-                'success' => false,
-                'message' => 'Không tìm thấy hóa đơn.'
-            ], 404);
+                'success' => true,
+                'message' => 'Giao dịch đã được ghi nhận trước đó.',
+                'invoice_code' => $invoiceCode,
+                'status' => 'paid',
+            ]);
         }
 
-        $totalPaid = floatval($invoice->payments()->where('status', 'completed')->sum('amount'));
-
-        return response()->json([
-            'success' => true,
-            'invoice_code' => $invoice->invoice_code,
-            'status' => $invoice->status,
-            'is_paid' => ($invoice->status === 'paid'),
-            'final_amount' => floatval($invoice->final_amount),
-            'total_paid' => $totalPaid,
-            'paid_at' => ($invoice->status === 'paid') ? $invoice->updated_at->format('d/m/Y H:i:s') : null,
-        ]);
+        return response()->json($result['payload'], $result['code']);
     }
 
     /**

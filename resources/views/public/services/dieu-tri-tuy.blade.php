@@ -47,10 +47,5 @@
         ['title' => 'Phục Hồi Thân Răng (Trám / Bọc Sứ)', 'desc' => 'Trám tái tạo thân răng bằng Composite hoặc tư vấn bọc mão sứ bảo vệ răng ăn nhai bền chắc.'],
     ],
     'priceTitle' => 'Bảng Giá Điều Trị Tủy Răng Niêm Yết',
-    'priceRows' => [
-        ['name' => 'Điều trị tủy răng cửa / răng nanh (1 ống tủy)', 'desc' => 'Bao gồm làm sạch bằng máy định vị chóp & trám bít', 'warranty' => 'Theo dõi định kỳ', 'price' => '800.000 đ / răng'],
-        ['name' => 'Điều trị tủy răng hàm nhỏ (1–2 ống tủy)', 'desc' => 'Trâm xoay máy nội nha + trám tái tạo Composite', 'warranty' => 'Theo dõi định kỳ', 'price' => '1.200.000 đ / răng', 'badge' => 'Phổ biến', 'featured' => true],
-        ['name' => 'Điều trị tủy răng hàm lớn (3–4 ống tủy)', 'desc' => 'Nhiều ống tủy phức tạp, chụp phim kiểm tra trước & sau', 'warranty' => 'Theo dõi định kỳ', 'price' => '1.500.000 – 2.000.000 đ', 'featured' => true],
-        ['name' => 'Điều trị tủy lại (Ca chữa tủy cũ bị tái viêm)', 'desc' => 'Tháo vật liệu cũ, khử khuẩn chuyên sâu và trám bít lại', 'warranty' => 'Theo dõi định kỳ', 'price' => '2.000.000 đ / răng'],
-    ],
+    'priceRows' => $packageRows,
 ])

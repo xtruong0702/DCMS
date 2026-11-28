@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'Đăng nhập Cổng Bệnh Nhân - Nha Khoa Smile')
+@section('title', 'Đăng nhập Cổng Bệnh Nhân - ' . $clinicSettings['clinic_name'])
 
 @section('content')
 <div class="min-h-[calc(100vh-80px)] flex bg-[#effcf9]">
@@ -21,7 +21,7 @@
                 </div>
                 <div>
                     <span class="text-xs uppercase tracking-wider font-bold text-[#f3e5ab]">Cổng Bệnh Nhân</span>
-                    <h2 class="font-heading-clinic text-xl font-bold !text-white">Nha Khoa Smile</h2>
+                    <h2 class="font-heading-clinic text-xl font-bold !text-white">{{ $clinicSettings['clinic_name'] }}</h2>
                 </div>
             </div>
 

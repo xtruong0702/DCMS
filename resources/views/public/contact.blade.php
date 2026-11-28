@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'Liên Hệ & Địa Chỉ Phòng Khám - Nha Khoa Smile')
+@section('title', 'Liên Hệ & Địa Chỉ Phòng Khám - ' . $clinicSettings['clinic_name'])
 
 @section('content')
 <!-- Hero Liên Hệ -->
@@ -11,7 +11,7 @@
             <span>Tiếp Nhận & Chăm Sóc Bệnh Nhân</span>
         </div>
         <h1 class="font-heading-clinic !text-3xl sm:!text-4xl font-extrabold tracking-tight text-slate-900">
-            Liên Hệ <span class="text-clinic-gradient">Nha Khoa Smile</span>
+            Liên Hệ <span class="text-clinic-gradient">{{ $clinicSettings['clinic_name'] }}</span>
         </h1>
         <p class="text-slate-600 text-sm max-w-xl mx-auto leading-relaxed">
             Đội ngũ Lễ tân và Bác sĩ tư vấn luôn sẵn sàng hỗ trợ giải đáp mọi thắc mắc về tình trạng răng miệng, bảng giá và lịch hẹn khám.
@@ -28,25 +28,25 @@
                 <div class="bg-white rounded-2xl p-6 sm:p-7 border border-slate-200/40 shadow-sm space-y-5">
                     <div>
                         <span class="text-xs font-bold uppercase tracking-wider text-teal-700">Thông Tin Phòng Khám</span>
-                        <h2 class="font-heading-clinic !text-xl font-bold text-slate-900 mt-0.5">Phòng Khám Nha Khoa Smile</h2>
+                        <h2 class="font-heading-clinic !text-xl font-bold text-slate-900 mt-0.5">{{ $clinicSettings['clinic_name'] }}</h2>
                         <p class="text-xs text-slate-500 mt-0.5">Không gian khám chữa bệnh chuẩn Y khoa hiện đại.</p>
                     </div>
 
                     <div class="space-y-3 text-xs">
-                        <a href="https://www.google.com/maps/dir/?api=1&destination=204+Tr%E1%BA%A7n+Duy+H%C6%B0ng,+Y%C3%AAn+H%C3%B2a,+C%E1%BA%A7u+Gi%E1%BA%A5y,+H%C3%A0+N%E1%BB%99i" target="_blank" rel="noopener noreferrer" class="p-4 rounded-xl bg-slate-50 border border-slate-200/40 hover:border-teal-400 transition flex items-start gap-3.5 group">
+                        <a href="https://www.google.com/maps/search/?api=1&amp;query={{ urlencode($clinicSettings['clinic_address']) }}" target="_blank" rel="noopener noreferrer" class="p-4 rounded-xl bg-slate-50 border border-slate-200/40 hover:border-teal-400 transition flex items-start gap-3.5 group">
                             <div class="w-9 h-9 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center shrink-0 text-base border border-teal-500/10">📍</div>
                             <div>
                                 <div class="text-[11px] uppercase font-semibold text-slate-500">Địa chỉ phòng khám</div>
-                                <div class="font-bold text-slate-900 mt-0.5 group-hover:text-teal-700 transition">204 Trần Duy Hưng, Yên Hòa, Cầu Giấy, Hà Nội</div>
+                                <div class="font-bold text-slate-900 mt-0.5 group-hover:text-teal-700 transition">{{ $clinicSettings['clinic_address'] }}</div>
                                 <div class="text-[11px] text-teal-700 font-semibold mt-1">🗺️ Xem chỉ đường trên Google Maps &rarr;</div>
                             </div>
                         </a>
 
-                        <a href="tel:0775761388" class="p-4 rounded-xl bg-teal-50/70 border border-teal-500/15 hover:border-teal-400 transition flex items-start gap-3.5 group">
+                        <a href="tel:{{ $clinicHotlineTel }}" class="p-4 rounded-xl bg-teal-50/70 border border-teal-500/15 hover:border-teal-400 transition flex items-start gap-3.5 group">
                             <div class="w-9 h-9 rounded-xl bg-teal-600 text-white flex items-center justify-center shrink-0 text-base">📞</div>
                             <div>
                                 <div class="text-[11px] uppercase font-semibold text-teal-700">Hotline Tư Vấn & Cấp Cứu 24/7</div>
-                                <div class="font-heading-clinic text-base font-extrabold text-teal-900 group-hover:underline mt-0.5 tabular-nums">0775 761 388</div>
+                                <div class="font-heading-clinic text-base font-extrabold text-teal-900 group-hover:underline mt-0.5 tabular-nums">{{ $clinicSettings['clinic_hotline'] }}</div>
                                 <div class="text-[11px] text-slate-600 mt-0.5">Tư vấn chuyên môn & điều phối lịch khám</div>
                             </div>
                         </a>
@@ -59,12 +59,13 @@
                                 <div class="text-[11px] text-slate-500 mt-0.5">Làm việc xuyên trưa, cả Thứ 7 & Chủ Nhật</div>
                             </div>
                         </div>
+                        <a href="{{ $clinicSettings['clinic_website'] }}" target="_blank" rel="noopener noreferrer" class="block px-4 pb-1 text-xs font-semibold text-teal-800 hover:underline">{{ $clinicSettings['clinic_website'] }}</a>
 
                         <div class="p-4 rounded-xl bg-slate-50 border border-slate-200/40 flex items-start gap-3.5">
                             <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0 text-base border border-emerald-500/10">✉️</div>
                             <div>
                                 <div class="text-[11px] uppercase font-semibold text-slate-500">Hòm thư điện tử</div>
-                                <div class="font-bold text-slate-900 mt-0.5">contact@nhakhoasmile.vn</div>
+                                <div class="font-bold text-slate-900 mt-0.5">{{ $clinicSettings['clinic_email'] }}</div>
                                 <div class="text-[11px] text-slate-500 mt-0.5">Tiếp nhận phản hồi và yêu cầu hồ sơ bệnh án</div>
                             </div>
                         </div>
@@ -139,18 +140,18 @@
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
                     <span class="text-[11px] font-bold uppercase tracking-wider text-teal-700">Bản Đồ & Chỉ Dẫn Đường Đi</span>
-                    <h3 class="font-heading-clinic !text-xl font-bold text-slate-900 mt-0.5">204 Trần Duy Hưng, Yên Hòa, Cầu Giấy, Hà Nội</h3>
+                    <h3 class="font-heading-clinic !text-xl font-bold text-slate-900 mt-0.5">{{ $clinicSettings['clinic_address'] }}</h3>
                     <p class="text-xs text-slate-500 mt-0.5">Mặt đường lớn Trần Duy Hưng, thuận tiện di chuyển và có chỗ đỗ ô tô, xe máy.</p>
                 </div>
-                <a href="https://www.google.com/maps/dir/?api=1&destination=204+Tr%E1%BA%A7n+Duy+H%C6%B0ng,+Y%C3%AAn+H%C3%B2a,+C%E1%BA%A7u+Gi%E1%BA%A5y,+H%C3%A0+N%E1%BB%99i" target="_blank" rel="noopener noreferrer" class="btn-press btn-clinic-primary px-5 py-2.5 rounded-xl text-xs inline-flex items-center justify-center gap-2 shrink-0">
+                <a href="https://www.google.com/maps/search/?api=1&amp;query={{ urlencode($clinicSettings['clinic_address']) }}" target="_blank" rel="noopener noreferrer" class="btn-press btn-clinic-primary px-5 py-2.5 rounded-xl text-xs inline-flex items-center justify-center gap-2 shrink-0">
                     <span>🗺️</span>
                     <span>Mở Chỉ Đường Google Maps</span>
                 </a>
             </div>
             <div class="rounded-2xl overflow-hidden shadow-md ring-1 ring-slate-900/5 h-72 sm:h-96 bg-slate-100">
                 <iframe
-                    title="Bản đồ Nha Khoa Smile - 204 Trần Duy Hưng, Yên Hòa, Cầu Giấy, Hà Nội"
-                    src="https://maps.google.com/maps?q=204%20Tr%E1%BA%A7n%20Duy%20H%C6%B0ng,%20Y%C3%AAn%20H%C3%B2a,%20C%E1%BA%A7u%20Gi%E1%BA%A5y,%20H%C3%A0%20N%E1%BB%99i&t=&z=16&ie=UTF8&iwloc=&output=embed"
+                    title="Bản đồ {{ $clinicSettings['clinic_name'] }} - {{ $clinicSettings['clinic_address'] }}"
+                    src="https://maps.google.com/maps?q={{ urlencode($clinicSettings['clinic_address']) }}&t=&z=16&ie=UTF8&iwloc=&output=embed"
                     class="w-full h-full border-0"
                     loading="lazy"
                     referrerpolicy="no-referrer-when-downgrade"
@@ -164,7 +165,7 @@
             <div class="clinic-card rounded-2xl p-5 space-y-2">
                 <div class="icon-pop w-10 h-10 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center text-lg">🚗</div>
                 <h4 class="font-heading-clinic !text-base font-bold text-slate-900">Bãi Đỗ Ô Tô & Xe Máy Miễn Phí</h4>
-                <p class="text-xs text-slate-600 leading-relaxed">Khu vực đỗ xe rộng rãi ngay trước cửa phòng khám 204 Trần Duy Hưng, có nhân viên bảo vệ hỗ trợ 24/7.</p>
+                <p class="text-xs text-slate-600 leading-relaxed">Khu vực đỗ xe rộng rãi ngay trước cửa phòng khám tại {{ $clinicSettings['clinic_address'] }}, có nhân viên bảo vệ hỗ trợ.</p>
             </div>
             <div class="clinic-card rounded-2xl p-5 space-y-2">
                 <div class="icon-pop w-10 h-10 rounded-xl bg-sky-50 text-sky-700 flex items-center justify-center text-lg">🧭</div>

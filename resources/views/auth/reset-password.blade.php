@@ -4,7 +4,7 @@
             NK
         </div>
         <h2 class="text-2xl font-bold text-slate-800">Đặt lại mật khẩu</h2>
-        <p class="text-gray-500 mt-1 text-sm">Hệ thống DCMS - Nha Khoa Smile</p>
+        <p class="text-gray-500 mt-1 text-sm">Hệ thống DCMS - {{ $clinicSettings['clinic_name'] }}</p>
         @if (session('auth_reset_identity'))
             <p class="text-xs text-blue-600 font-semibold mt-2 bg-blue-50 py-1 px-3 rounded-full inline-block">
                 Tài khoản: {{ session('auth_reset_identity') }}

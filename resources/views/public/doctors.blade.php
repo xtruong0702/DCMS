@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'Đội Ngũ Bác Sĩ Chuyên Khoa - Nha Khoa Smile')
+@section('title', 'Đội Ngũ Bác Sĩ Chuyên Khoa - ' . $clinicSettings['clinic_name'])
 
 @section('content')
 <div class="bg-[#effcf9]" x-data="{
@@ -29,7 +29,7 @@
             </div>
 
             <h1 class="font-heading-clinic !text-3xl sm:!text-4xl lg:!text-5xl font-extrabold tracking-tight text-[#0f3e36]">
-                Đội Ngũ Bác Sĩ <span class="text-clinic-gradient">Nha Khoa Smile</span>
+                Đội Ngũ Bác Sĩ <span class="text-clinic-gradient">{{ $clinicSettings['clinic_name'] }}</span>
             </h1>
 
             <p class="text-slate-600 text-xs sm:text-sm max-w-2xl mx-auto leading-relaxed">
