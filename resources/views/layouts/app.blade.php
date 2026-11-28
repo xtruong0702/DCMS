@@ -6,6 +6,7 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <title>{{ $clinicSettings['clinic_name'] }} - Hệ thống Quản lý DCMS</title>
+        <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}?v=2">
 
         <!-- Fonts chuẩn Tiếng Việt (Be Vietnam Pro cho tiêu đề & Inter cho nội dung/bảng biểu) -->
         <link rel="preconnect" href="https://fonts.googleapis.com">

@@ -6,6 +6,7 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <title>Đăng nhập - {{ $clinicSettings['clinic_name'] }}</title>
+        <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}?v=2">
 
         <!-- Fonts chuẩn Tiếng Việt (Be Vietnam Pro cho tiêu đề & Inter cho nội dung) -->
         <link rel="preconnect" href="https://fonts.googleapis.com">

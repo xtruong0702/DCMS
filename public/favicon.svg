@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0F5A4E"/>
+      <stop offset="100%" stop-color="#083B33"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#F3E5AB"/>
+      <stop offset="50%" stop-color="#D4AF37"/>
+      <stop offset="100%" stop-color="#B88A1E"/>
+    </linearGradient>
+  </defs>
+  <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#bg)" stroke="url(#gold)" stroke-width="2.5"/>
+  <!-- Stylized Tooth Icon -->
+  <path d="M21 17C16.5 17 13 21 13 26.5C13 34 17 42 20.5 49C22.2 51.5 24.5 51.2 25.7 48L28 40.5C29 37.5 35 37.5 36 40.5L38.3 48C39.5 51.2 41.8 51.5 43.5 49C47 42 51 34 51 26.5C51 21 47.5 17 43 17C38.5 17 36 20.2 32 20.2C28 20.2 25.5 17 21 17Z" fill="#FFFFFF" stroke="#E2F5F1" stroke-width="1.2" stroke-linejoin="round"/>
+  <!-- Golden Sparkle -->
+  <path d="M48 11L49.4 14.6L53 16L49.4 17.4L48 21L46.6 17.4L43 16L46.6 14.6L48 11Z" fill="url(#gold)"/>
+</svg>
