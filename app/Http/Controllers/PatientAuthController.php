@@ -8,11 +8,13 @@ use App\Models\Patient;
 use App\Models\Role;
 use App\Traits\EnsuresClinicDataSeeded;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 use App\Mail\ResetPasswordOtpMail;
+use App\Models\SystemSetting;
 
 class PatientAuthController extends Controller
 {
@@ -27,7 +29,12 @@ class PatientAuthController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'phone' => 'required|string|max:20|unique:users',
+            'email' => 'nullable|email|max:255|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
+        ], [
+            'phone.unique' => 'Số điện thoại này đã được đăng ký tài khoản.',
+            'email.email' => 'Địa chỉ Email (Gmail) không hợp lệ.',
+            'email.unique' => 'Địa chỉ Email này đã được sử dụng cho tài khoản khác.',
         ]);
 
         // Tạo role Patient nếu chưa có
@@ -36,12 +43,15 @@ class PatientAuthController extends Controller
             ['description' => 'Bệnh nhân']
         );
 
+        $cleanEmail = $request->filled('email') ? strtolower(trim((string) $request->email)) : null;
+
         // A phone number alone does not prove identity. Create a private profile
         // for the new account; staff can link an existing clinical record later.
-        $user = DB::transaction(function () use ($request, $patientRole) {
+        $user = DB::transaction(function () use ($request, $patientRole, $cleanEmail) {
             $user = User::create([
-                'name' => $request->name,
+                'name' => trim($request->name),
                 'phone' => trim($request->phone),
+                'email' => $cleanEmail,
                 'password' => Hash::make($request->password),
                 'role_id' => $patientRole->id,
                 'is_active' => true,
@@ -49,8 +59,9 @@ class PatientAuthController extends Controller
 
             Patient::create([
                 'patient_code' => 'BN' . date('YmdHis') . random_int(100, 999),
-                'name' => $request->name,
+                'name' => trim($request->name),
                 'phone' => trim($request->phone),
+                'email' => $cleanEmail,
                 'user_id' => $user->id,
             ]);
             return $user;
@@ -149,9 +160,11 @@ class PatientAuthController extends Controller
             ]);
         }
 
+        $hotline = SystemSetting::where('setting_key', 'clinic_hotline')->value('setting_value') ?: '0775 761 388';
+
         if (isset($user->is_active) && !$user->is_active) {
             return back()->withInput()->withErrors([
-                'login' => 'Tài khoản này đã bị khóa. Vui lòng liên hệ Hotline 0775 761 388.',
+                'login' => "Tài khoản này đã bị khóa. Vui lòng liên hệ Hotline {$hotline}.",
             ]);
         }
 
@@ -162,17 +175,12 @@ class PatientAuthController extends Controller
         $mailSent = false;
 
         if ($recipientEmail && filter_var($recipientEmail, FILTER_VALIDATE_EMAIL)) {
-            try {
-                Mail::to($recipientEmail)->send(new ResetPasswordOtpMail($otp, $user->name));
-                $mailSent = true;
-            } catch (\Throwable $e) {
-                Log::warning('Không thể gửi email OTP đặt lại mật khẩu: ' . $e->getMessage());
-            }
+            $mailSent = $this->deliverOtpEmail($recipientEmail, $otp, $user->name);
         }
 
         if (!$mailSent && !app()->isLocal()) {
             return back()->withInput()->withErrors([
-                'login' => 'Tài khoản chưa liên kết email hợp lệ hoặc không thể gửi mã OTP lúc này. Vui lòng liên hệ Hotline 0775 761 388 để được hỗ trợ đặt lại mật khẩu.',
+                'login' => "Tài khoản chưa liên kết email hợp lệ hoặc không thể gửi mã OTP lúc này. Vui lòng liên hệ Hotline {$hotline} để được hỗ trợ đặt lại mật khẩu.",
             ]);
         }
 
@@ -272,5 +280,122 @@ class PatientAuthController extends Controller
         session()->forget(['patient_reset_user_id', 'patient_reset_identity', 'patient_reset_otp', 'patient_reset_expires_at', 'patient_reset_attempts']);
 
         return redirect()->route('patient.login')->with('success', 'Đổi mật khẩu thành công! Quý khách vui lòng đăng nhập bằng mật khẩu mới.');
+    }
+
+    /**
+     * Gửi email OTP qua Brevo API / Resend API (HTTPS - không bị chặn cổng SMTP trên Railway)
+     * hoặc fallback sang Laravel Mail (Gmail SMTP / log).
+     */
+    private function deliverOtpEmail(string $recipientEmail, string $otp, string $name): bool
+    {
+        $settings = SystemSetting::pluck('setting_value', 'setting_key')->toArray();
+        $clinicName = trim((string) ($settings['clinic_name'] ?? '')) ?: 'Nha Khoa Smile';
+        $subject = "Mã xác thực OTP đặt lại mật khẩu - {$clinicName}";
+        $fromEmail = config('mail.from.address') ?: ($settings['clinic_email'] ?? 'contact@nhakhoasmile.vn');
+        $fromName = config('mail.from.name') ?: $clinicName;
+
+        $clinicSettings = [
+            'clinic_name' => $clinicName,
+            'clinic_hotline' => trim((string) ($settings['clinic_hotline'] ?? '')) ?: '0775 761 388',
+            'clinic_email' => trim((string) ($settings['clinic_email'] ?? '')) ?: 'contact@nhakhoasmile.vn',
+        ];
+
+        // Ưu tiên 0: Google Apps Script Web App (gửi trực tiếp từ Gmail của bạn qua HTTPS 443)
+        $gmailWebhookUrl = config('services.gmail_webhook.url') ?? env('GMAIL_WEBHOOK_URL');
+        if (!empty($gmailWebhookUrl)) {
+            try {
+                $html = view('emails.otp', [
+                    'otp' => $otp,
+                    'name' => $name,
+                    'clinicSettings' => $clinicSettings,
+                ])->render();
+
+                $response = Http::timeout(15)
+                    ->withOptions(['allow_redirects' => true])
+                    ->post($gmailWebhookUrl, [
+                        'secret' => (string) (config('services.gmail_webhook.secret') ?? env('GMAIL_WEBHOOK_SECRET', '')),
+                        'to' => $recipientEmail,
+                        'subject' => $subject,
+                        'html' => $html,
+                        'from_name' => $fromName,
+                    ]);
+
+                $json = $response->json();
+                if ($response->successful() && (!is_array($json) || ($json['success'] ?? true) === true)) {
+                    return true;
+                }
+
+                Log::warning('Gmail Apps Script gửi OTP thất bại: HTTP ' . $response->status() . ' - ' . mb_substr($response->body(), 0, 300));
+            } catch (\Throwable $e) {
+                Log::warning('Gmail Apps Script gửi OTP lỗi: ' . $e->getMessage());
+            }
+        }
+
+        $brevoKey = config('services.brevo.api_key') ?? env('BREVO_API_KEY');
+        if (!empty($brevoKey)) {
+            try {
+                $html = view('emails.otp', [
+                    'otp' => $otp,
+                    'name' => $name,
+                    'clinicSettings' => $clinicSettings,
+                ])->render();
+
+                $response = Http::timeout(12)
+                    ->withHeaders([
+                        'api-key' => $brevoKey,
+                        'accept' => 'application/json',
+                    ])
+                    ->post('https://api.brevo.com/v3/smtp/email', [
+                        'sender' => ['name' => $fromName, 'email' => $fromEmail],
+                        'to' => [['email' => $recipientEmail, 'name' => $name]],
+                        'subject' => $subject,
+                        'htmlContent' => $html,
+                    ]);
+
+                if ($response->successful()) {
+                    return true;
+                }
+
+                Log::warning('Brevo API gửi OTP thất bại: HTTP ' . $response->status() . ' - ' . $response->body());
+            } catch (\Throwable $e) {
+                Log::warning('Brevo API gửi OTP lỗi: ' . $e->getMessage());
+            }
+        }
+
+        $resendKey = config('services.resend.key') ?? env('RESEND_API_KEY');
+        if (!empty($resendKey)) {
+            try {
+                $html = view('emails.otp', [
+                    'otp' => $otp,
+                    'name' => $name,
+                    'clinicSettings' => $clinicSettings,
+                ])->render();
+
+                $response = Http::timeout(12)
+                    ->withToken($resendKey)
+                    ->post('https://api.resend.com/emails', [
+                        'from' => "{$fromName} <{$fromEmail}>",
+                        'to' => [$recipientEmail],
+                        'subject' => $subject,
+                        'html' => $html,
+                    ]);
+
+                if ($response->successful()) {
+                    return true;
+                }
+
+                Log::warning('Resend API gửi OTP thất bại: HTTP ' . $response->status() . ' - ' . $response->body());
+            } catch (\Throwable $e) {
+                Log::warning('Resend API gửi OTP lỗi: ' . $e->getMessage());
+            }
+        }
+
+        try {
+            Mail::to($recipientEmail)->send(new ResetPasswordOtpMail($otp, $name));
+            return true;
+        } catch (\Throwable $e) {
+            Log::warning('Không thể gửi email OTP đặt lại mật khẩu qua SMTP: ' . $e->getMessage());
+            return false;
+        }
     }
 }

@@ -45,6 +45,14 @@
                 </div>
 
                 <div>
+                    <label for="email" class="block text-xs font-bold uppercase text-slate-600 mb-1.5">Email (Gmail) <span class="text-rose-500">*</span></label>
+                    <input id="email" name="email" type="email" required value="{{ old('email') }}"
+                           class="input-clinic w-full px-3.5 py-2.5 rounded-xl text-xs font-medium"
+                           placeholder="Ví dụ: nguyenvana@gmail.com">
+                    <p class="mt-1 text-[11px] text-slate-400">Dùng để đăng nhập và nhận mã OTP khi quên mật khẩu.</p>
+                </div>
+
+                <div>
                     <label for="password" class="block text-xs font-bold uppercase text-slate-600 mb-1.5">Mật khẩu <span class="text-rose-500">*</span></label>
                     <input id="password" name="password" type="password" required
                            class="input-clinic w-full px-3.5 py-2.5 rounded-xl text-xs font-medium"

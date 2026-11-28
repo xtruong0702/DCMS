@@ -29,8 +29,10 @@ class ResetPasswordOtpMail extends Mailable
      */
     public function envelope(): Envelope
     {
+        $clinicName = \App\Models\SystemSetting::where('setting_key', 'clinic_name')->value('setting_value') ?: 'Nha Khoa Smile';
+
         return new Envelope(
-            subject: 'Mã xác thực OTP đặt lại mật khẩu - Nha Khoa Smile',
+            subject: "Mã xác thực OTP đặt lại mật khẩu - {$clinicName}",
         );
     }
 
