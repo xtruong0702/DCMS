@@ -210,9 +210,42 @@ class PublicController extends Controller
             }
 
             $cleanPhone = trim($request->phone);
+            $normalizedPhone = preg_replace('/\D+/', '', $cleanPhone);
             $cleanName = trim($request->name);
-            $patient = Patient::where('phone', $cleanPhone)->first();
             $bookingNote = $request->note;
+            $patient = null;
+
+            // 1. Nếu khách hàng đang đăng nhập bằng tài khoản Bệnh nhân -> gắn trực tiếp vào hồ sơ bệnh nhân của họ
+            $authUser = \Illuminate\Support\Facades\Auth::user();
+            if ($authUser && strtolower((string) ($authUser->role->name ?? '')) === 'patient') {
+                $patient = $authUser->patient ?: $authUser->patient()->create([
+                    'patient_code' => 'BN' . date('YmdHis') . random_int(100, 999),
+                    'name' => $authUser->name ?: $cleanName,
+                    'phone' => $authUser->phone ?: $cleanPhone,
+                    'email' => $authUser->email,
+                ]);
+            }
+
+            // 2. Nếu đặt lịch dạng khách vãng lai -> tìm hồ sơ theo SĐT (ưu tiên hồ sơ đã liên kết tài khoản user_id)
+            if (!$patient) {
+                $candidates = Patient::where('phone', $cleanPhone)
+                    ->when($normalizedPhone !== '' && $normalizedPhone !== $cleanPhone, function ($q) use ($normalizedPhone) {
+                        $q->orWhere('phone', $normalizedPhone);
+                    })
+                    ->orderByRaw('CASE WHEN user_id IS NOT NULL THEN 0 ELSE 1 END')
+                    ->orderBy('id')
+                    ->get();
+
+                $patient = $candidates->first();
+
+                if (!$patient && $normalizedPhone !== '') {
+                    $patient = Patient::whereNotNull('phone')
+                        ->orderByRaw('CASE WHEN user_id IS NOT NULL THEN 0 ELSE 1 END')
+                        ->orderBy('id')
+                        ->get()
+                        ->first(fn ($p) => preg_replace('/\D+/', '', (string) $p->phone) === $normalizedPhone);
+                }
+            }
 
             if (!$patient) {
                 $patient = Patient::create([

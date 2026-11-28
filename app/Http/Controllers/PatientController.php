@@ -17,13 +17,55 @@ class PatientController extends Controller
             return null;
         }
 
-        return $user->patient ?: $user->patient()->create([
-            'patient_code' => 'BN' . date('YmdHis') . random_int(100, 999),
-            'name' => $user->name,
-            'phone' => $user->phone,
-            'email' => $user->email,
-            'address' => $user->address,
-        ]);
+        $patient = $user->patient;
+
+        if (!$patient) {
+            $normalizedUserPhone = preg_replace('/\D+/', '', (string) $user->phone);
+            if ($normalizedUserPhone !== '') {
+                $unlinked = \App\Models\Patient::whereNull('user_id')
+                    ->whereNotNull('phone')
+                    ->orderBy('id')
+                    ->get()
+                    ->first(fn ($p) => preg_replace('/\D+/', '', (string) $p->phone) === $normalizedUserPhone);
+
+                if ($unlinked) {
+                    $unlinked->update([
+                        'user_id' => $user->id,
+                        'email' => $unlinked->email ?: $user->email,
+                    ]);
+                    $patient = $unlinked;
+                }
+            }
+        }
+
+        if (!$patient) {
+            $patient = $user->patient()->create([
+                'patient_code' => 'BN' . date('YmdHis') . random_int(100, 999),
+                'name' => $user->name,
+                'phone' => $user->phone,
+                'email' => $user->email,
+                'address' => $user->address,
+            ]);
+        }
+
+        // Tự động gộp các lịch hẹn đặt online (hồ sơ chưa gắn user_id) cùng SĐT vào hồ sơ chính của bệnh nhân
+        $normalizedPhone = preg_replace('/\D+/', '', (string) ($patient->phone ?: $user->phone));
+        if ($normalizedPhone !== '') {
+            $orphanIds = \App\Models\Patient::whereNull('user_id')
+                ->where('id', '!=', $patient->id)
+                ->whereNotNull('phone')
+                ->get()
+                ->filter(fn ($p) => preg_replace('/\D+/', '', (string) $p->phone) === $normalizedPhone)
+                ->pluck('id');
+
+            if ($orphanIds->isNotEmpty()) {
+                Appointment::whereIn('patient_id', $orphanIds)->update(['patient_id' => $patient->id]);
+                MedicalRecord::whereIn('patient_id', $orphanIds)->update(['patient_id' => $patient->id]);
+                Invoice::whereIn('patient_id', $orphanIds)->update(['patient_id' => $patient->id]);
+            }
+        }
+
+        return $patient;
     }
 
     public function dashboard()

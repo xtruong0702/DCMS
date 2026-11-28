@@ -45,25 +45,41 @@ class PatientAuthController extends Controller
 
         $cleanEmail = $request->filled('email') ? strtolower(trim((string) $request->email)) : null;
 
-        // A phone number alone does not prove identity. Create a private profile
-        // for the new account; staff can link an existing clinical record later.
-        $user = DB::transaction(function () use ($request, $patientRole, $cleanEmail) {
+        $cleanPhone = trim($request->phone);
+        $normalizedPhone = preg_replace('/\D+/', '', $cleanPhone);
+
+        $user = DB::transaction(function () use ($request, $patientRole, $cleanEmail, $cleanPhone, $normalizedPhone) {
             $user = User::create([
                 'name' => trim($request->name),
-                'phone' => trim($request->phone),
+                'phone' => $cleanPhone,
                 'email' => $cleanEmail,
                 'password' => Hash::make($request->password),
                 'role_id' => $patientRole->id,
                 'is_active' => true,
             ]);
 
-            Patient::create([
-                'patient_code' => 'BN' . date('YmdHis') . random_int(100, 999),
-                'name' => trim($request->name),
-                'phone' => trim($request->phone),
-                'email' => $cleanEmail,
-                'user_id' => $user->id,
-            ]);
+            // Liên kết hồ sơ bệnh nhân chưa có tài khoản (từ đặt lịch online / khám trực tiếp) cùng SĐT nếu có
+            $existingPatient = Patient::whereNull('user_id')
+                ->whereNotNull('phone')
+                ->orderBy('id')
+                ->get()
+                ->first(fn ($p) => preg_replace('/\D+/', '', (string) $p->phone) === $normalizedPhone);
+
+            if ($existingPatient) {
+                $existingPatient->update([
+                    'user_id' => $user->id,
+                    'email' => $existingPatient->email ?: $cleanEmail,
+                ]);
+            } else {
+                Patient::create([
+                    'patient_code' => 'BN' . date('YmdHis') . random_int(100, 999),
+                    'name' => trim($request->name),
+                    'phone' => $cleanPhone,
+                    'email' => $cleanEmail,
+                    'user_id' => $user->id,
+                ]);
+            }
+
             return $user;
         });
 
