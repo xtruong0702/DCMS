@@ -1,62 +1,73 @@
 @extends('layouts.public')
 
-@section('title', 'Đặt lại mật khẩu - Nha Khoa Smile')
+@section('title', 'Đặt lại mật khẩu - ' . $clinicSettings['clinic_name'])
 
 @section('content')
-<div class="min-h-screen flex bg-slate-50">
-    <!-- Left: Image & Branding -->
-    <div class="hidden lg:flex lg:w-1/2 relative bg-blue-600 overflow-hidden items-center justify-center">
+<div class="min-h-[calc(100vh-80px)] flex bg-[#effcf9]">
+    <!-- Left: Emerald & Gold Clinic Branding Panel -->
+    <div class="hidden lg:flex lg:w-1/2 relative bg-[#0f3e36] overflow-hidden items-center justify-center">
         <div class="absolute inset-0 z-0">
-            <img src="https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&q=80&w=1200" alt="Nha Khoa Smile" class="w-full h-full object-cover opacity-40 mix-blend-overlay">
-            <div class="absolute inset-0 bg-gradient-to-br from-blue-700/80 to-cyan-500/80"></div>
+            <img src="https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&q=80&w=1200" alt="{{ $clinicSettings['clinic_name'] }}" class="w-full h-full object-cover opacity-20 mix-blend-overlay">
+            <div class="absolute inset-0 bg-gradient-to-br from-[#0f3e36] via-[#0c2d27] to-[#081412]"></div>
         </div>
-        
-        <div class="relative z-10 p-12 text-white max-w-lg">
-            <div class="w-16 h-16 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center text-white font-bold text-2xl shadow-xl border border-white/30 mb-8">
-                NK
-            </div>
-            <h1 class="text-4xl font-extrabold tracking-tight mb-4 leading-tight">Bảo vệ nụ cười, <br><span class="text-cyan-300">an tâm trọn vẹn</span></h1>
-            <p class="text-blue-100 text-lg mb-8">Thiết lập mật khẩu mới có độ bảo mật cao để bảo vệ hồ sơ bệnh án và dữ liệu khám chữa bệnh của quý khách.</p>
-            
-            <div class="bg-white/10 backdrop-blur-md p-6 rounded-3xl border border-white/20 text-white space-y-3">
-                <div class="flex items-center gap-3">
-                    <span class="w-6 h-6 rounded-full bg-cyan-400 text-blue-900 font-bold text-xs flex items-center justify-center">✓</span>
-                    <span class="text-sm">Tối thiểu 6 ký tự</span>
+
+        <div class="relative z-10 p-12 text-white max-w-lg space-y-6">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-white/15 backdrop-blur-md rounded-2xl flex items-center justify-center shadow-lg border border-[#d4af37]/35">
+                    <svg class="w-7 h-7 text-[#f3e5ab]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
                 </div>
-                <div class="flex items-center gap-3">
-                    <span class="w-6 h-6 rounded-full bg-cyan-400 text-blue-900 font-bold text-xs flex items-center justify-center">✓</span>
-                    <span class="text-sm">Kết hợp chữ cái và số để tăng độ an toàn</span>
+                <div>
+                    <span class="text-xs uppercase tracking-wider font-bold text-[#f3e5ab]">{{ $clinicSettings['clinic_name'] }}</span>
+                    <h2 class="font-heading-clinic text-xl font-bold !text-white">Thiết Lập Mật Khẩu Mới</h2>
+                </div>
+            </div>
+
+            <h1 class="font-heading-clinic text-3xl font-bold tracking-tight leading-tight !text-white">
+                Bảo vệ nụ cười, <br><span class="text-[#f3e5ab]">An tâm trọn vẹn</span>
+            </h1>
+            <p class="text-[#d9ebe7] text-sm leading-relaxed">
+                Nhập mã OTP 6 chữ số đã gửi về Gmail của bạn và đặt mật khẩu mới để bảo vệ hồ sơ bệnh án điện tử.
+            </p>
+
+            <div class="bg-white/10 backdrop-blur-md border border-[#d4af37]/25 p-5 rounded-2xl space-y-2.5 text-xs text-white">
+                <div class="flex items-center gap-2.5">
+                    <span class="w-5 h-5 rounded-full bg-[#d4af37] text-[#081412] font-bold text-[10px] flex items-center justify-center">✓</span>
+                    <span>Mật khẩu tối thiểu 6 ký tự</span>
+                </div>
+                <div class="flex items-center gap-2.5">
+                    <span class="w-5 h-5 rounded-full bg-[#d4af37] text-[#081412] font-bold text-[10px] flex items-center justify-center">✓</span>
+                    <span>Nên kết hợp chữ cái và số để tăng độ bảo mật</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Right: Form -->
-    <div class="w-full lg:w-1/2 flex items-center justify-center p-8 sm:p-12 lg:p-24 relative overflow-hidden">
-        <div class="absolute top-0 right-0 w-64 h-64 bg-cyan-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 transform translate-x-1/2 -translate-y-1/2"></div>
-        <div class="absolute bottom-0 left-0 w-64 h-64 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 transform -translate-x-1/2 translate-y-1/2"></div>
-        
-        <div class="w-full max-w-md relative z-10 bg-white/70 backdrop-blur-xl p-10 rounded-[2.5rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/50">
-            <div class="text-center mb-8">
-                <div class="w-14 h-14 bg-cyan-50 text-cyan-600 rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-inner">
-                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+    <!-- Right: Reset Password Form -->
+    <div class="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-10 lg:p-14">
+        <div class="clinic-card w-full max-w-md p-8 sm:p-10 rounded-3xl">
+            <div class="mb-6">
+                <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-teal-50 text-teal-800 mb-3">
+                    <span class="pulse-dot pulse-dot-emerald"></span>
+                    Xác Thực OTP • DCMS
                 </div>
-                <h2 class="text-3xl font-extrabold text-slate-800 mb-2">Đặt lại mật khẩu</h2>
-                <p class="text-gray-500 text-sm">
-                    Tài khoản: <span class="font-bold text-slate-800">{{ $identity ?? session('patient_reset_identity') }}</span>
+                <h2 class="font-heading-clinic !text-2xl font-bold text-slate-900 tracking-tight">Đặt lại mật khẩu</h2>
+                <p class="text-xs text-slate-500 mt-1">
+                    Email tài khoản: <strong class="text-slate-900">{{ $identity ?? session('patient_reset_identity') }}</strong>
                 </p>
             </div>
 
             @if (session('status'))
-                <div class="bg-cyan-50/90 border border-cyan-200 text-cyan-900 p-4 rounded-2xl text-sm mb-6 flex items-start gap-3 shadow-sm">
-                    <svg class="w-5 h-5 flex-shrink-0 mt-0.5 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <div class="bg-emerald-50 border border-emerald-500/20 text-emerald-800 p-3.5 rounded-xl text-xs mb-4 flex items-start gap-2.5">
+                    <svg class="w-4 h-4 flex-shrink-0 mt-0.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     <div class="font-medium leading-relaxed">{{ session('status') }}</div>
                 </div>
             @endif
 
             @if ($errors->any())
-                <div class="bg-red-50/80 backdrop-blur-sm border border-red-100 text-red-600 p-4 rounded-2xl text-sm mb-6 flex items-start gap-3">
-                    <svg class="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <div class="bg-rose-50 border border-rose-500/20 text-rose-700 p-3.5 rounded-xl text-xs mb-4 flex items-start gap-2.5">
+                    <svg class="w-4 h-4 flex-shrink-0 mt-0.5 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     <ul class="list-none m-0 p-0 space-y-1">
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
@@ -65,59 +76,41 @@
                 </div>
             @endif
 
-            <form action="{{ route('patient.password.update') }}" method="POST" class="space-y-5">
+            <form action="{{ route('patient.password.update') }}" method="POST" class="space-y-4">
                 @csrf
 
-                <!-- OTP Input -->
-                <div class="space-y-1">
-                    <label for="otp" class="block text-xs font-bold text-gray-600 uppercase tracking-wider ml-1">Mã xác thực OTP (6 chữ số)</label>
-                    <div class="relative group">
-                        <label for="otp" class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-cyan-500 transition-colors">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        </label>
-                        <input id="otp" name="otp" type="text" maxlength="6" required autofocus
-                               class="w-full pl-12 pr-4 py-3.5 bg-gray-50/50 border border-gray-200 rounded-2xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all text-gray-900 tracking-widest font-mono text-lg font-bold placeholder-gray-300" 
-                               placeholder="123456" value="{{ old('otp') }}">
-                    </div>
+                <div>
+                    <label for="otp" class="block text-xs font-bold uppercase text-slate-600 mb-1.5">Mã xác thực OTP (6 chữ số) <span class="text-rose-500">*</span></label>
+                    <input id="otp" name="otp" type="text" maxlength="6" required autofocus value="{{ old('otp') }}"
+                           class="input-clinic w-full px-3.5 py-2.5 rounded-xl text-base font-mono font-bold tracking-widest"
+                           placeholder="123456">
                 </div>
 
-                <!-- New Password Input -->
-                <div class="space-y-1">
-                    <label for="password" class="block text-xs font-bold text-gray-600 uppercase tracking-wider ml-1">Mật khẩu mới</label>
-                    <div class="relative group">
-                        <label for="password" class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-cyan-500 transition-colors">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                        </label>
-                        <input id="password" name="password" type="password" required 
-                               class="w-full pl-12 pr-4 py-3.5 bg-gray-50/50 border border-gray-200 rounded-2xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all text-gray-900 placeholder-gray-400 font-medium" 
-                               placeholder="Tối thiểu 6 ký tự">
-                    </div>
+                <div>
+                    <label for="password" class="block text-xs font-bold uppercase text-slate-600 mb-1.5">Mật khẩu mới <span class="text-rose-500">*</span></label>
+                    <input id="password" name="password" type="password" required
+                           class="input-clinic w-full px-3.5 py-2.5 rounded-xl text-xs font-medium"
+                           placeholder="Tối thiểu 6 ký tự">
                 </div>
 
-                <!-- Password Confirmation Input -->
-                <div class="space-y-1">
-                    <label for="password_confirmation" class="block text-xs font-bold text-gray-600 uppercase tracking-wider ml-1">Nhập lại mật khẩu mới</label>
-                    <div class="relative group">
-                        <label for="password_confirmation" class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-cyan-500 transition-colors">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                        </label>
-                        <input id="password_confirmation" name="password_confirmation" type="password" required 
-                               class="w-full pl-12 pr-4 py-3.5 bg-gray-50/50 border border-gray-200 rounded-2xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all text-gray-900 placeholder-gray-400 font-medium" 
-                               placeholder="Xác nhận mật khẩu">
-                    </div>
+                <div>
+                    <label for="password_confirmation" class="block text-xs font-bold uppercase text-slate-600 mb-1.5">Nhập lại mật khẩu mới <span class="text-rose-500">*</span></label>
+                    <input id="password_confirmation" name="password_confirmation" type="password" required
+                           class="input-clinic w-full px-3.5 py-2.5 rounded-xl text-xs font-medium"
+                           placeholder="Xác nhận mật khẩu mới">
                 </div>
 
-                <button type="submit" class="w-full relative inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white font-bold rounded-2xl shadow-lg shadow-blue-500/30 transform hover:-translate-y-0.5 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                    Xác nhận & Lưu mật khẩu mới
-                    <svg class="w-5 h-5 ml-2 -mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                <button type="submit" class="btn-press btn-clinic-primary w-full py-3 rounded-xl text-xs flex items-center justify-center gap-2 mt-2">
+                    <span>Xác nhận &amp; Lưu mật khẩu mới</span>
+                    <span>✓</span>
                 </button>
             </form>
 
-            <div class="mt-8 text-center text-sm text-gray-600 flex items-center justify-between">
-                <a href="{{ route('patient.password.request') }}" class="font-semibold text-blue-600 hover:text-blue-700 transition-colors">
+            <div class="mt-6 pt-5 border-t border-slate-100/70 flex items-center justify-between text-xs text-slate-500">
+                <a href="{{ route('patient.password.request') }}" class="font-bold text-teal-700 hover:underline">
                     &larr; Gửi lại mã OTP
                 </a>
-                <a href="{{ route('patient.login') }}" class="font-medium text-slate-500 hover:text-slate-700 transition-colors">
+                <a href="{{ route('patient.login') }}" class="font-semibold text-slate-500 hover:underline">
                     Hủy bỏ
                 </a>
             </div>
@@ -125,4 +118,3 @@
     </div>
 </div>
 @endsection
-

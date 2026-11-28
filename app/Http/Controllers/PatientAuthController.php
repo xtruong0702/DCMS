@@ -130,25 +130,24 @@ class PatientAuthController extends Controller
     public function sendResetOtp(Request $request)
     {
         $request->validate([
-            'login' => 'required|string',
+            'email' => 'required|email|max:255',
         ], [
-            'login.required' => 'Vui lòng nhập Số điện thoại hoặc Email đã đăng ký.',
+            'email.required' => 'Vui lòng nhập địa chỉ Email (Gmail) đã đăng ký.',
+            'email.email' => 'Vui lòng nhập đúng định dạng Email (Gmail), không nhập số điện thoại.',
         ]);
 
-        $login = trim($request->input('login'));
+        $email = strtolower(trim((string) $request->input('email')));
         $patient = null;
 
-        // Chỉ cho phép đặt lại mật khẩu qua luồng này đối với tài khoản Bệnh nhân (Patient)
+        // Chỉ cho phép đặt lại mật khẩu qua luồng này đối với tài khoản Bệnh nhân (Patient) bằng Email
         $user = User::whereHas('role', function ($q) {
                 $q->whereRaw('LOWER(name) = ?', ['patient']);
             })
-            ->where(function ($q) use ($login) {
-                $q->where('phone', $login)->orWhere('email', $login);
-            })
+            ->whereRaw('LOWER(email) = ?', [$email])
             ->first();
 
         if (!$user) {
-            $patient = Patient::where('phone', $login)->whereNotNull('user_id')->with('user.role')->first();
+            $patient = Patient::whereRaw('LOWER(email) = ?', [$email])->whereNotNull('user_id')->with('user.role')->first();
             if ($patient && $patient->user && strtolower($patient->user->role->name ?? '') === 'patient') {
                 $user = $patient->user;
             }
@@ -156,7 +155,7 @@ class PatientAuthController extends Controller
 
         if (!$user) {
             return back()->withInput()->withErrors([
-                'login' => 'Không tìm thấy tài khoản bệnh nhân với thông tin đã nhập. Nhân viên phòng khám vui lòng liên hệ Quản trị viên.',
+                'email' => 'Không tìm thấy tài khoản bệnh nhân nào với địa chỉ Email này. Nhân viên phòng khám vui lòng liên hệ Quản trị viên.',
             ]);
         }
 
@@ -164,14 +163,14 @@ class PatientAuthController extends Controller
 
         if (isset($user->is_active) && !$user->is_active) {
             return back()->withInput()->withErrors([
-                'login' => "Tài khoản này đã bị khóa. Vui lòng liên hệ Hotline {$hotline}.",
+                'email' => "Tài khoản này đã bị khóa. Vui lòng liên hệ Hotline {$hotline}.",
             ]);
         }
 
         $otp = (string) random_int(100000, 999999);
 
-        // Gửi email chứa OTP nếu tài khoản có email
-        $recipientEmail = $user->email ?? ($patient->email ?? null);
+        // Gửi email chứa OTP về chính địa chỉ Email vừa nhập
+        $recipientEmail = $user->email ?: ($patient->email ?? $email);
         $mailSent = false;
 
         if ($recipientEmail && filter_var($recipientEmail, FILTER_VALIDATE_EMAIL)) {
@@ -180,13 +179,13 @@ class PatientAuthController extends Controller
 
         if (!$mailSent && !app()->isLocal()) {
             return back()->withInput()->withErrors([
-                'login' => "Tài khoản chưa liên kết email hợp lệ hoặc không thể gửi mã OTP lúc này. Vui lòng liên hệ Hotline {$hotline} để được hỗ trợ đặt lại mật khẩu.",
+                'email' => "Không thể gửi mã OTP tới email này lúc này. Vui lòng thử lại sau hoặc liên hệ Hotline {$hotline}.",
             ]);
         }
 
         session([
             'patient_reset_user_id' => $user->id,
-            'patient_reset_identity' => $login,
+            'patient_reset_identity' => $recipientEmail,
             'patient_reset_otp' => $otp,
             'patient_reset_expires_at' => now()->addMinutes(15),
             'patient_reset_attempts' => 0,
